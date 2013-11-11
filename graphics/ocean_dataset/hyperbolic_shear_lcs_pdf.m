@@ -1,9 +1,9 @@
 function hyperbolic_shear_lcs_pdf
 
 lcs_tool_root = fullfile('..','..','..','..','lcs_toolbox');
-ocean_dataset_demo = fullfile(lcs_tool_root,'demo','ocean_dataset');
+demo = fullfile(lcs_tool_root,'demo','ocean_dataset');
 
-oldFolder = cd(ocean_dataset_demo);
+oldFolder = cd(demo);
 
 try
     addpath(fullfile('..','..'))

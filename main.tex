@@ -421,32 +421,27 @@ To obtain shear LCS Poincare sections are specified. The maximum orbit length is
 
 To obtain hyperbolic LCS, the local maximisation distance is set to eight times the main grid spacing and the maximum strainline length is set to $1 \times 10^8$.
 
-The forward time LCS obtained are shown in Figure~\ref{f:bickley jet hyperbolic shear lcs forward} and the backward time LCS (i.e. with the flow timespan set to $t \in [4 L_x/U,0]$ are shown in Figure~\ref{f:bickley jet hyperbolic shear lcs backward}. In Figures~\ref{f:bickley jet hyperbolic shear lcs details forward} and~\ref{f:bickley jet hyperbolic shear lcs details backward} the same LCS are shown with details.
-
-Forward time stretchlines are shown in Figure~\ref{f:bickley jet forward stretchlines} and backward time stretchlines are shown in Figure~\ref{f:bickley jet backward stretchlines}.
+The forward time LCS obtained are shown in Figure~\ref{f:bickley jet hyperbolic shear lcs strainline} and the backward time LCS (i.e. with the flow timespan set to $t \in [4 L_x/U,0]$ are shown in Figure~\ref{f:bickley jet hyperbolic shear lcs stretchline}. In Figures~\ref{f:bickley jet hyperbolic shear lcs details forward} and~\ref{f:bickley jet hyperbolic shear lcs details backward} the same LCS are shown with details.
 
 \begin{figure}
 \begin{center}
-% demo/bickley_jet/hyperbolic_shear_lcs.m, commit aaf20ed
-\includegraphics[width=\textwidth]{graphics/bickley_jet/hyperbolic_shear_lcs_forward}
+\includegraphics[width=\textwidth]{graphics/bickley_jet/hyperbolic_shear_lcs_strainline}
 \end{center}
-\caption{Bickley jet forward time shear (green) and hyperbolic (red) LCS.}
-\label{f:bickley jet hyperbolic shear lcs forward}
+\caption{Bickley jet lambda-line (green) and strainline (red) LCS.}
+\label{f:bickley jet hyperbolic shear lcs strainline}
 \end{figure}
 
 \begin{figure}
 \begin{center}
-% demo/bickley_jet/hyperbolic_shear_lcs.m, commit aaf20ed
-\includegraphics[width=\textwidth]{graphics/bickley_jet/hyperbolic_shear_lcs_backward}
+\includegraphics[width=\textwidth]{graphics/bickley_jet/hyperbolic_shear_lcs_stretchline}
 \end{center}
-\caption{Bickley jet backward time shear (green) and hyperbolic (blue) LCS.}
-\label{f:bickley jet hyperbolic shear lcs backward}
+\caption{Bickley jet backward time shear (green) and stretchline (blue) LCS.}
+\label{f:bickley jet hyperbolic shear lcs stretchline}
 \end{figure}
 
 \begin{figure}
 \begin{center}
-% demo/bickley_jet/hyperbolic_shear_lcs_details.m, commit 3331187
-\includegraphics[width=\textwidth]{graphics/bickley_jet/hyperbolic_shear_lcs_details_forward}
+\includegraphics[width=\textwidth]{graphics/bickley_jet/hyperbolic_shear_lcs_details_strainline}
 \end{center}
 \caption{Same LCS as in Figure~\ref{f:bickley jet hyperbolic shear lcs forward}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed shearlines with thick green curves are outermost shearlines, i.e. shear LCS. White dots indicate $\lambda_2$ local maximums used for strainline integration initial positions.}
 \label{f:bickley jet hyperbolic shear lcs details forward}
@@ -455,28 +450,10 @@ Forward time stretchlines are shown in Figure~\ref{f:bickley jet forward stretch
 \begin{figure}
 \begin{center}
 % demo/bickley_jet/hyperbolic_shear_lcs_details.m, commit 3331187
-\includegraphics[width=\textwidth]{graphics/bickley_jet/hyperbolic_shear_lcs_details_backward}
+\includegraphics[width=\textwidth]{graphics/bickley_jet/hyperbolic_shear_lcs_details_stretchline}
 \end{center}
 \caption{Same LCS as in Figure~\ref{f:bickley jet hyperbolic shear lcs backward}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed shearlines with thick green curves are outermost shearlines, i.e. shear LCS. White dots indicate $\lambda_2$ local maximums used for strainline integration initial positions.}
 \label{f:bickley jet hyperbolic shear lcs details backward}
-\end{figure}
-
-\begin{figure}
-\begin{center}
-% demo/bickley_jet/stretchlines.m, commit fc52909
-\includegraphics[width=\textwidth]{graphics/bickley_jet/stretchlines_forward}
-\end{center}
-\caption{Bickley jet forward time stretchlines.}
-\label{f:bickley jet forward stretchlines}
-\end{figure}
-
-\begin{figure}
-\begin{center}
-% demo/bickley_jet/stretchlines.m, commit fc52909
-\includegraphics[width=\textwidth]{graphics/bickley_jet/stretchlines_backward}
-\end{center}
-\caption{Bickley jet backward time stretchlines.}
-\label{f:bickley jet backward stretchlines}
 \end{figure}
 
 \subsection{Ocean dataset}
@@ -489,26 +466,23 @@ Forward time stretchlines are shown in Figure~\ref{f:bickley jet forward stretch
 
 \begin{figure}
 \begin{center}
-% demo/ocean_dataset/hyperbolic_shear_lcs.m, commit 65fab59
-\includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_forward}
+\includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_strainline}
 \end{center}
 \caption{Ocean dataset forward time shear (green) and hyperbolic (red) LCS.}
-\label{f:ocean dataset hyperbolic shear lcs forward}
+\label{f:ocean dataset hyperbolic shear lcs strainline}
 \end{figure}
 
 \begin{figure}
 \begin{center}
-% demo/ocean_dataset/hyperbolic_shear_lcs.m, commit 65fab59
-\includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_backward}
+\includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_stretchline}
 \end{center}
 \caption{Ocean dataset backward time shear (green) and hyperbolic (blue) LCS.}
-\label{f:ocean dataset hyperbolic shear lcs backward}
+\label{f:ocean dataset hyperbolic shear lcs stretchline}
 \end{figure}
 
 \begin{figure}
 \begin{center}
-% demo/ocean_dataset/hyperbolic_shear_lcs_details.m, commit 65fab59
-\includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_details_forward}
+\includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_details_strainline}
 \end{center}
 \caption{Same LCS as in Figure~\ref{f:ocean dataset hyperbolic shear lcs forward}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed shearlines with thick green curves are outermost shearlines, i.e. shear LCS. White dots indicate $\lambda_2$ local maximums used for strainline integration initial positions.}
 \label{f:ocean dataset hyperbolic shear lcs details forward}
@@ -516,8 +490,7 @@ Forward time stretchlines are shown in Figure~\ref{f:bickley jet forward stretch
 
 \begin{figure}
 \begin{center}
-% demo/ocean_dataset/hyperbolic_shear_lcs_details.m, commit 65fab59
-\includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_details_backward}
+\includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_details_stretchline}
 \end{center}
 \caption{Same LCS as in Figure~\ref{f:ocean dataset hyperbolic shear lcs backward}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed shearlines with thick green curves are outermost shearlines, i.e. shear LCS. White dots indicate $\lambda_2$ local maximums used for strainline integration initial positions.}
 \label{f:ocean dataset hyperbolic shear lcs details backward}
