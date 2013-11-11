@@ -11,7 +11,7 @@ try
     cd(oldFolder)
     
     hFigure = 1;
-    filename = 'hyperbolic_shear_lcs_forward';
+    filename = 'hyperbolic_shear_lcs_strainline';
     savefig(hFigure,filename)
     delete_title(hFigure)
     filenamePDF = [filename,'.pdf'];
@@ -21,7 +21,7 @@ try
     print_pdf(hFigure,filename)
     
     hFigure = 2;
-    filename = 'hyperbolic_shear_lcs_backward';
+    filename = 'hyperbolic_shear_lcs_stretchline';
     savefig(hFigure,filename)
     delete_title(hFigure)
     filenamePDF = [filename,'.pdf'];

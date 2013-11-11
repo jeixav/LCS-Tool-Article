@@ -356,7 +356,7 @@ for i = 1:nPoincareSection
 end
 \end{lstlisting}
 
-The forward time LCS obtained are shown in Figure~\ref{f:double gyre hyperbolic shear lcs forward} and the backward time LCS (i.e. with the flow timespan set to $t \in [20,0]$) are shown in Figure~\ref{f:double gyre hyperbolic shear lcs backward}. In Figures~\ref{f:double gyre hyperbolic shear lcs details forward} and~\ref{f:double gyre hyperbolic shear lcs details backward} the same LCS are shown with details: the finite-time Lyapunov exponent, closed shearlines inside the outermost shearlines and $\lambda_2$ local maximums used for strainline integration initial positions.
+The forward time LCS obtained are shown in Figure~\ref{f:double gyre hyperbolic shear lcs strainline} and the backward time LCS (i.e. with the flow timespan set to $t \in [20,0]$) are shown in Figure~\ref{f:double gyre hyperbolic shear lcs stretchline}. In Figures~\ref{f:double gyre hyperbolic shear lcs details strainline} and~\ref{f:double gyre hyperbolic shear lcs details stretchline} the same LCS are shown with details: the finite-time Lyapunov exponent, closed shearlines inside the outermost shearlines and $\lambda_2$ local maximums used for strainline integration initial positions.
 
 \begin{figure}
 \begin{center}
@@ -379,15 +379,14 @@ The forward time LCS obtained are shown in Figure~\ref{f:double gyre hyperbolic 
 \includegraphics[width=\textwidth]{graphics/double_gyre/hyperbolic_shear_lcs_details_strainline}
 \end{center}
 \caption{Same LCS as in Figure~\ref{f:double gyre hyperbolic shear lcs strainline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines with thick green curves being outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_2$ local maximums used for strainline integration initial positions.}
-\label{f:double gyre hyperbolic shear lcs details forward}
+\label{f:double gyre hyperbolic shear lcs details strainline}
 \end{figure}
 
 \begin{figure}
 \begin{center}
-% LCS Tool commit ac3a7705aec81577b1aba3cafe598066dd689203
 \includegraphics[width=\textwidth]{graphics/double_gyre/hyperbolic_shear_lcs_details_stretchline}
 \end{center}
-\caption{Same LCS as in Figure~\ref{f:double gyre hyperbolic shear lcs stretchline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines and thick green curves are outermost lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_1$ local minimums used for stretchline integration intial positions.}
+\caption{Same LCS as in Figure~\ref{f:double gyre hyperbolic shear lcs stretchline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines and thick green curves are outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_1$ local minimums used for stretchline integration intial positions.}
 \label{f:double gyre hyperbolic shear lcs details stretchline}
 \end{figure}
 
@@ -421,7 +420,7 @@ To obtain shear LCS Poincare sections are specified. The maximum orbit length is
 
 To obtain hyperbolic LCS, the local maximisation distance is set to eight times the main grid spacing and the maximum strainline length is set to $1 \times 10^8$.
 
-The forward time LCS obtained are shown in Figure~\ref{f:bickley jet hyperbolic shear lcs strainline} and the backward time LCS (i.e. with the flow timespan set to $t \in [4 L_x/U,0]$ are shown in Figure~\ref{f:bickley jet hyperbolic shear lcs stretchline}. In Figures~\ref{f:bickley jet hyperbolic shear lcs details forward} and~\ref{f:bickley jet hyperbolic shear lcs details backward} the same LCS are shown with details.
+The forward time LCS obtained are shown in Figure~\ref{f:bickley jet hyperbolic shear lcs strainline} and the backward time LCS (i.e. with the flow timespan set to $t \in [4 L_x/U,0]$ are shown in Figure~\ref{f:bickley jet hyperbolic shear lcs stretchline}. In Figures~\ref{f:bickley jet hyperbolic shear lcs details strainline} and~\ref{f:bickley jet hyperbolic shear lcs details stretchline} the same LCS are shown with details.
 
 \begin{figure}
 \begin{center}
@@ -443,17 +442,16 @@ The forward time LCS obtained are shown in Figure~\ref{f:bickley jet hyperbolic 
 \begin{center}
 \includegraphics[width=\textwidth]{graphics/bickley_jet/hyperbolic_shear_lcs_details_strainline}
 \end{center}
-\caption{Same LCS as in Figure~\ref{f:bickley jet hyperbolic shear lcs forward}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed shearlines with thick green curves are outermost shearlines, i.e. shear LCS. White dots indicate $\lambda_2$ local maximums used for strainline integration initial positions.}
-\label{f:bickley jet hyperbolic shear lcs details forward}
+\caption{Same LCS as in Figure~\ref{f:bickley jet hyperbolic shear lcs strainline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines with thick green curves being outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_2$ local maximums used for strainline integration initial positions.}
+\label{f:bickley jet hyperbolic shear lcs details strainline}
 \end{figure}
 
 \begin{figure}
 \begin{center}
-% demo/bickley_jet/hyperbolic_shear_lcs_details.m, commit 3331187
 \includegraphics[width=\textwidth]{graphics/bickley_jet/hyperbolic_shear_lcs_details_stretchline}
 \end{center}
-\caption{Same LCS as in Figure~\ref{f:bickley jet hyperbolic shear lcs backward}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed shearlines with thick green curves are outermost shearlines, i.e. shear LCS. White dots indicate $\lambda_2$ local maximums used for strainline integration initial positions.}
-\label{f:bickley jet hyperbolic shear lcs details backward}
+\caption{Same LCS as in Figure~\ref{f:bickley jet hyperbolic shear lcs stretchline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines with thick green curves being outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_2$ local maximums used for stretchline integration initial positions.}
+\label{f:bickley jet hyperbolic shear lcs details stretchline}
 \end{figure}
 
 \subsection{Ocean dataset}
@@ -468,7 +466,7 @@ The forward time LCS obtained are shown in Figure~\ref{f:bickley jet hyperbolic 
 \begin{center}
 \includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_strainline}
 \end{center}
-\caption{Ocean dataset forward time shear (green) and hyperbolic (red) LCS.}
+\caption{Ocean dataset lambda-line (green) and strainline (red) LCS.}
 \label{f:ocean dataset hyperbolic shear lcs strainline}
 \end{figure}
 
@@ -476,7 +474,7 @@ The forward time LCS obtained are shown in Figure~\ref{f:bickley jet hyperbolic 
 \begin{center}
 \includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_stretchline}
 \end{center}
-\caption{Ocean dataset backward time shear (green) and hyperbolic (blue) LCS.}
+\caption{Ocean dataset lambda-line (green) and stretchline (blue) LCSs.}
 \label{f:ocean dataset hyperbolic shear lcs stretchline}
 \end{figure}
 
@@ -484,16 +482,16 @@ The forward time LCS obtained are shown in Figure~\ref{f:bickley jet hyperbolic 
 \begin{center}
 \includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_details_strainline}
 \end{center}
-\caption{Same LCS as in Figure~\ref{f:ocean dataset hyperbolic shear lcs forward}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed shearlines with thick green curves are outermost shearlines, i.e. shear LCS. White dots indicate $\lambda_2$ local maximums used for strainline integration initial positions.}
-\label{f:ocean dataset hyperbolic shear lcs details forward}
+\caption{Same LCS as in Figure~\ref{f:ocean dataset hyperbolic shear lcs strainline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines with thick green curves being outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_2$ local maximums used for strainline integration initial positions.}
+\label{f:ocean dataset hyperbolic shear lcs details strainline}
 \end{figure}
 
 \begin{figure}
 \begin{center}
 \includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_details_stretchline}
 \end{center}
-\caption{Same LCS as in Figure~\ref{f:ocean dataset hyperbolic shear lcs backward}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed shearlines with thick green curves are outermost shearlines, i.e. shear LCS. White dots indicate $\lambda_2$ local maximums used for strainline integration initial positions.}
-\label{f:ocean dataset hyperbolic shear lcs details backward}
+\caption{Same LCS as in Figure~\ref{f:ocean dataset hyperbolic shear lcs stretchline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines and thick green curves are outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_1$ local minimums used for stretchline integration intial positions.}
+\label{f:ocean dataset hyperbolic shear lcs details stretchline}
 \end{figure}
 
 % \subsection{Adaptive Step Size Integration of Strainlines and Shearlines}

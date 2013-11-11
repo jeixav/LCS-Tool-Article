@@ -11,7 +11,7 @@ try
     cd(oldFolder)
     
     hFigure = 1;
-    filename = 'hyperbolic_shear_lcs_details_forward';
+    filename = 'hyperbolic_shear_lcs_details_strainline';
     savefig(hFigure,filename)
     delete_title(hFigure)
     filenamePDF = [filename,'.pdf'];
@@ -23,7 +23,7 @@ try
     % FIXME hFigure should not be hard-coded; should probably search for
     % matching title string
     hFigure = 12;
-    filename = 'hyperbolic_shear_lcs_details_backward';
+    filename = 'hyperbolic_shear_lcs_details_stretchline';
     savefig(hFigure,filename)
     delete_title(hFigure)
     filenamePDF = [filename,'.pdf'];
