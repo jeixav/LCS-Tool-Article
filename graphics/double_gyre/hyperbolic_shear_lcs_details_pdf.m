@@ -1,32 +1,40 @@
 function hyperbolic_shear_lcs_details_pdf
 
 lcs_tool_root = fullfile('..','..','..','..','lcs_toolbox');
-double_gyre_demo = fullfile(lcs_tool_root,'demo','double_gyre');
+demo = fullfile(lcs_tool_root,'demo','double_gyre');
 
-addpath(lcs_tool_root)
-addpath(double_gyre_demo)
+oldFolder = cd(demo);
 
-hyperbolic_shear_lcs_details
-
-hFigure = 1;
-delete_title(hFigure)
-
-filename = 'hyperbolic_shear_lcs_details_forward.pdf';
-if exist(filename,'file')
-    delete(filename)
+try
+    addpath(fullfile('..','..'))
+    hyperbolic_shear_lcs_details
+    cd(oldFolder)
+    
+    hFigure = 1;
+    filename = 'hyperbolic_shear_lcs_details_strainline';
+    savefig(hFigure,filename)
+    delete_title(hFigure)
+    filenamePDF = [filename,'.pdf'];
+    if exist(filenamePDF,'file')
+        delete(filenamePDF)
+    end
+    print_pdf(hFigure,filename)
+    
+    % FIXME hFigure should not be hard-coded; should probably search for title
+    % string
+    hFigure = 6;
+    filename = 'hyperbolic_shear_lcs_details_stretchline';
+    savefig(hFigure,filename)
+    delete_title(hFigure)
+    filenamePDF = [filename,'.pdf'];
+    if exist(filenamePDF,'file')
+        delete(filenamePDF)
+    end
+    print_pdf(hFigure,filename)
+catch err
+    cd(oldFolder)
+    rethrow(err)
 end
-print_pdf(hFigure,filename)
-
-% FIXME hFigure should not be hard-coded; should probably search for title
-% string
-hFigure = 6;
-delete_title(hFigure)
-
-filename = 'hyperbolic_shear_lcs_details_backward.pdf';
-if exist(filename,'file')
-    delete(filename)
-end
-print_pdf(hFigure,filename)
 
 function delete_title(hFigure)
 
