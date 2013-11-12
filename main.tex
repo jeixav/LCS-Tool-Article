@@ -414,6 +414,19 @@ The velocity is given by:
 \]
 The parameter values used are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$. The domain of the flow is set to $x \in [0,L_x]$, $y \in [-4 \times 10^6, 4 \times 10^6]$ and the timespan is set to $4 L_x/U$.
 
+Figure~\ref{f:Bickley jet FTLE resolutions} shows the FTLE at various resolutions. Visual inspection of these figures indicates that a resolution of $500 \times 199$ is acceptable since increasing the resolution to $1000 \times 398$ does not change the appearance of the FTLE noticeably.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=.85\textwidth]{graphics/bickley_jet/ftle_100_39}
+\includegraphics[width=.85\textwidth]{graphics/bickley_jet/ftle_250_99}
+\includegraphics[width=.85\textwidth]{graphics/bickley_jet/ftle_500_199}
+\includegraphics[width=.85\textwidth]{graphics/bickley_jet/ftle_1000_398}
+\end{center}
+\caption{Bickley jet FTLE at various resolutions.}
+\label{f:Bickley jet FTLE resolutions}
+\end{figure}
+
 To calculate the Cauchy-Green strain tensor and its eigenvalues and eigenvectors, the main grid resolution is set to $500 \times 200$ and the auxiliary grid spacing is set to one percent of the main grid spacing (i.e. 400.) The main grid is used to calculate eigenvalues and flow incompressibility is imposed. Periodic boundary conditions are imposed in the horizontal direction. 
 
 To obtain shear LCS Poincare sections are specified. The maximum orbit length is set to twice the circumference circles whose radius would be the Poincare sections.
