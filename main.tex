@@ -395,24 +395,44 @@ The forward time LCS obtained are shown in Figure~\ref{f:double gyre hyperbolic 
 The Bickley jet models a zonal jet flanked above and below by
 stationary vortices. This is an idealised model of geophysical flows
 such as the polar night jet perturbed by a Rossby
-wave\parencite{beron-vera10:_invar_lagran,haller12:_geodes_theor_trans_barrier_two_dimen_flows}.
+wave\parencite{haller12:_geodes_theor_trans_barrier_two_dimen_flows,beron-vera10:_invar_lagran}.
 
-The model is defined by two stream functions, $\psi(x,y,t) = \psi_0(x,y) + \psi_1(x,y,t)$, where:
+The velocity is given by $\boldsymbol{v}(x,y,t) = (-\partial_y \psi, \partial_x \psi)$ and
 \begin{gather*}
+\psi(x,y,t) = \psi_0(x,y) + \psi_1(x,y,t),\\
 \psi_0(x,y) = c_3 y - U L_y \tanh\frac{y}{L_y} + \epsilon_3 U L_y \mathrm{sech}^2\frac{y}{L_y} \cos k_3 x,\\
 \psi_1(x,y,t) = U L_y \mathrm{sech}^2\frac{y}{L_y} \mathrm{Re}\left[ \sum_{n=1}^2 \epsilon_n f_n(t) e^{i k_n x}\right].
 \end{gather*}
-The forcing function is a solution of the Duffing oscillators with parameters in the chaotic regime, specifically
+Periodic boundary conditions are imposed in the $x$-direction.The forcing function we choose is a chaotic solution of the Duffing oscillators with parameters in the chaotic regime, specifically
 \begin{gather*}
 \frac{d \phi_1}{dt} = \phi_2,\\
 \frac{d \phi_1}{dt} = -0.1 \phi_2 - \phi_1^3 + 11 \cos(t),\\
 f_{1,2}(t) = 2.625 \times 10^{-2} \phi_1(t/6.238 \times 10^5)
 \end{gather*}
-The velocity is given by:
-\[
-\boldsymbol{v}(x,y,t) = (-\partial_y \psi, \partial_x \psi).
-\]
-The parameter values used are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$. The domain of the flow is set to $x \in [0,L_x]$, $y \in [-4 \times 10^6, 4 \times 10^6]$ and the timespan is set to $4 L_x/U$.
+The parameter values used are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$. The domain of the flow is set to $x \in [0,L_x]$, $y \in [-2.25 L_y, 2.25 L_y]$ and the timespan is $t \in [0,4 L_x/U]$. We skip listing the file that defines the velocity equations; in regards to input and output variables, it is similar to the double gyre function (Listing~\ref{l:double gyre derivative}.) The LCS Tool script that specifies the parameters we are using is given in Listing~\ref{l:Bickley jet input}. Note the use of the \texttt{periodicBc} variable to specify periodic boundary conditions.
+
+\begin{lstlisting}[caption={Bickley jet input file: \texttt{demo/bickley\_jet/hyperbolic\_shear\_lcs.m}.},label=l:Bickley jet input]
+%% Input parameters
+u = 62.66;
+lengthX = pi*earthRadius;
+lengthY = 1.77e6;
+epsilon = [.075,.4,.3];
+domain = [0,lengthX;[-1,1]*2.25*lengthY];
+
+% Make x and y grid spacing as equal as possible
+resolutionX = 500;
+gridSpace = diff(domain(1,:))/(double(resolutionX)-1);
+resolutionY = round(diff(domain(2,:))/gridSpace);
+resolution = [resolutionX,resolutionY];
+
+timespan = [0,4*lengthX/u];
+
+%% Velocity definition
+perturbationCase = 3;
+derivative = @(t,x,~)derivative(t,x,false,u,lengthX,lengthY,epsilon,perturbationCase);
+incompressible = true;
+periodicBc = [true,false];
+\end{lstlisting}
 
 Figure~\ref{f:Bickley jet FTLE resolutions} shows the FTLE at various resolutions. Visual inspection of these figures indicates that a resolution of $500 \times 199$ is acceptable since increasing the resolution to $1000 \times 398$ does not change the appearance of the FTLE noticeably.
 
@@ -427,11 +447,34 @@ Figure~\ref{f:Bickley jet FTLE resolutions} shows the FTLE at various resolution
 \label{f:Bickley jet FTLE resolutions}
 \end{figure}
 
-To calculate the Cauchy-Green strain tensor and its eigenvalues and eigenvectors, the main grid resolution is set to $500 \times 200$ and the auxiliary grid spacing is set to one percent of the main grid spacing (i.e. 400.) The main grid is used to calculate eigenvalues and flow incompressibility is imposed. Periodic boundary conditions are imposed in the horizontal direction. 
+To calculate the Cauchy-Green eigenvalues and eigenvectors we therefore set the grid resolution to $500 \times 199$. We also specify the flow is incompressible. Commands to obtain lambda-lines are given in listing~\ref{l:Bickley jet lambda-line commands}. The primary input needed are the positions of the Poincare sections which we determine
 
-To obtain shear LCS Poincare sections are specified. The maximum orbit length is set to twice the circumference circles whose radius would be the Poincare sections.
+\begin{lstlisting}[caption={LCS Tool commands Bickley jet lambda-lines, subset of \texttt{demo/bickley\_jet/hyperbolic\_shear\_lcs.m}.},label=l:Bickley jet lambda-line commands]
+lambda = 1;
+lambdaLineOdeSolverOptions = odeset('relTol',1e-4);
 
-To obtain hyperbolic LCS, the local maximisation distance is set to eight times the main grid spacing and the maximum strainline length is set to $1 \times 10^8$.
+poincareSection = struct('endPosition',{},'numPoints',{},'orbitMaxLength',{});
+poincareSection(1).endPosition = [6.5,-1.4;5.2,-1.4]*1e6;
+poincareSection(2).endPosition = [1.35e7,-1.4e6;1.5e7,-.5e6];
+poincareSection(3).endPosition = [3.25,1.5;1.4,2.6]*1e6;
+poincareSection(4).endPosition = [1e7,1.5e6;8e6,2.6e6];
+poincareSection(5).endPosition = [1.65e7,1.5e6;1.5e7,2.6e6];
+
+% Number of orbit seed points along each Poincare section
+[poincareSection.numPoints] = deal(80);
+
+% Set maximum orbit length to twice the expected circumference
+nPoincareSection = numel(poincareSection);
+for i = 1:nPoincareSection
+    rOrbit = hypot(diff(poincareSection(i).endPosition(:,1)),diff(poincareSection(i).endPosition(:,2)));
+    poincareSection(i).orbitMaxLength = 2*(2*pi*rOrbit);
+end
+
+[shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda);
+closedLambdaLine = poincare_closed_orbit_multi(domain,resolution,shearline,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions,'periodicBc',periodicBc);
+\end{lstlisting}
+
+To obtain strainline hyperbolic LCS, we must set a local maximisation distance and a maximum LCS length. To demonstrate the 
 
 The forward time LCS obtained are shown in Figure~\ref{f:bickley jet hyperbolic shear lcs strainline} and the backward time LCS (i.e. with the flow timespan set to $t \in [4 L_x/U,0]$ are shown in Figure~\ref{f:bickley jet hyperbolic shear lcs stretchline}. In Figures~\ref{f:bickley jet hyperbolic shear lcs details strainline} and~\ref{f:bickley jet hyperbolic shear lcs details stretchline} the same LCS are shown with details.
 

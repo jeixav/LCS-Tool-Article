@@ -5,8 +5,7 @@ function ftle_resolutions
 lcs_tool_root = fullfile('..','..','..','..','lcs_toolbox');
 demo = fullfile(lcs_tool_root,'demo','bickley_jet');
 
-oldFolder = cd(demo);
-addpath(fullfile('..','..'))
+addpath(lcs_tool_root,demo)
 
 resolutionX = [100,250,500,1000];
 
@@ -32,12 +31,10 @@ for m = 1:numel(resolutionX)
    ftle_ = ftle(cgEigenvalue2,diff(timespan));
 
    hAxes = setup_figure(domain);
-   title(hAxes,['Resolution: (',num2str(resolution(1)),',',num2str(resolution(2)),')'])
+   title(hAxes,['Resolution: ',num2str(resolution(1)),'\times',num2str(resolution(2))])
    plot_ftle(hAxes,domain,resolution,ftle_);
    colormap(hAxes,flipud(gray))
-   filename = fullfile(oldFolder,['ftle_',num2str(resolution(1)),'_',num2str(resolution(2))]);
+   filename = ['ftle_',num2str(resolution(1)),'_',num2str(resolution(2))];
    print_pdf(gcf,filename)
    close(gcf)
 end
-
-cd(oldFolder)

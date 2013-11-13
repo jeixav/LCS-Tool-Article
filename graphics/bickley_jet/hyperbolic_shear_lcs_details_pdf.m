@@ -3,38 +3,21 @@ function hyperbolic_shear_lcs_details_pdf
 lcs_tool_root = fullfile('..','..','..','..','lcs_toolbox');
 demo = fullfile(lcs_tool_root,'demo','bickley_jet');
 
-oldFolder = cd(demo);
+addpath(lcs_tool_root,demo)
 
-try
-    addpath(fullfile('..','..'))
-    hyperbolic_shear_lcs_details
-    cd(oldFolder)
+hyperbolic_shear_lcs_details
     
-    hFigure = 1;
-    filename = 'hyperbolic_shear_lcs_details_strainline';
-    savefig(hFigure,filename)
-    delete_title(hFigure)
-    filenamePDF = [filename,'.pdf'];
-    if exist(filenamePDF,'file')
-        delete(filenamePDF)
-    end
-    print_pdf(hFigure,filename)
+hFigure = 1;
+delete_title(hFigure)
+filename = 'hyperbolic_shear_lcs_details_strainline';
+print_pdf(hFigure,filename)
     
-    % FIXME hFigure should not be hard-coded; should probably search for title
-    % string
-    hFigure = 12;
-    filename = 'hyperbolic_shear_lcs_details_stretchline';
-    savefig(hFigure,filename)
-    delete_title(hFigure)
-    filenamePDF = [filename,'.pdf'];
-    if exist(filenamePDF,'file')
-        delete(filenamePDF)
-    end
-    print_pdf(hFigure,filename)
-catch err
-    cd(oldFolder)
-    rethrow(err)
-end
+% FIXME hFigure number should not be hard-coded; should probably search for
+% title string
+hFigure = 12;
+delete_title(hFigure)
+filename = 'hyperbolic_shear_lcs_details_stretchline';
+print_pdf(hFigure,filename)
 
 function delete_title(hFigure)
 
