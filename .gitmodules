@@ -1,0 +1,3 @@
+[submodule "lcs_tool"]
+	path = lcs_tool
+	url = ../../lcs_toolbox
