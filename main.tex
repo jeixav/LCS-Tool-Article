@@ -226,7 +226,7 @@ An example of a Poincare return map produced from integration of the $\boldsymbo
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=\textwidth]{graphics/double_gyre/poincare_return_map}
+%\includegraphics[width=\textwidth]{graphics/double_gyre/poincare_return_map}
 \end{center}
 \caption{Example of a Poincare return map obtained for shear LCS. Circle markers indicate closed orbit positions. The filled circle indicates the outermost closed orbit and shear LCS.}
 \label{f:Poincare return map}
@@ -285,111 +285,50 @@ derivative_(idx1) = -pi*amplitude*sin(pi*forcing).*cos(pi*x(idx2));
 derivative_(idx2) = pi*amplitude*cos(pi*forcing).*sin(pi*x(idx2)).*(2*a*x(idx1) + b);
 \end{lstlisting}
 
-The parameter values used are: $A = 0.1$, $\epsilon = 0.1$, $\omega = \pi/5$. The flow timespan is $t \in [0,20]$. The physical domain of the double gyre flow is $x \in [0,2]$, $y \in [0,1]$, however to help capture behaviour near the fixed points of the unperturbed system at $(x,y) = (1,0)$ and $(x,y) = (1,1)$ in computations, the domain is enlarged to $x \in [-0.1,2.1]$, $y \in [-0.05,1.05]$. To calculate the Cauchy-Green strain tensor and its eigenvalues and eigenvectors, the main grid resolution is set to $551 \times 276$. The main grid is used to calculate eigenvalues and flow incompressibility is imposed. The LCS Tool code that corresponds to these parameters is in Listing~\ref{l:double gyre input}. The variable named flow is a MATLAB structure that contains fields corresponding to input parameters; using structures allows passing input arguments to LCS Tool functions with a compact notation.
-
-\begin{lstlisting}[firstnumber=4,caption={Double gyre input parameter definitions; subset of the file: \texttt{demo/double\_gyre/hyperbolic\_shear\_lcs.m}.},label=l:double gyre input]
-epsilon = .1;
-amplitude = .1;
-omega = pi/5;
-
-flow.imposeIncompressibility = true;
-flow.derivative = @(t,x,useEoV)derivative(t,x,useEoV,epsilon,amplitude,omega);
-flow.domain = [-.1,2.1;-.05,1.05];
-flow.timespan = [0,20];
-flow.resolution = [551,276];
-\end{lstlisting}
-
-To obtain shear LCSs, Poincare section positions are specified. Figure~\ref{f:Poincare sections with FTLE} illustrates how Poincare sections are placed in regions where the FTLE ridges have a circular pattern. The set of LCS Tool commands used to detect shear LCSs is given in Listing~\ref{l:double gyre shear LCS commands}. First the function \texttt{eig\_cgStrain} calculates the Cauchy-Green strain eigenvalues and eigenvectors. The most important function is \texttt{poincare\_closed\_orbit\_multi} that takes as input a list of Poincare sections, calculates Poincare return maps for the $\eta_+$ and $\eta_-$ vector fields and returns positions of all closed orbits.
+In what follows, the parameter values are: $A = 0.1$, $\epsilon = 0.1$, $\omega = \pi/5$. The flow timespan is $t \in [0,5]$ and the domain is $x \in [0,2]$, $y \in [0,1]$. In Figure~\ref{f:double gyre FTLE}, we show the FTLE at a resolution of $500\times250$.
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=\textwidth]{graphics/double_gyre/poincare_sections}
+\includegraphics[width=\textwidth]{graphics/double_gyre/ftle}
 \end{center}
-\caption{Poincare sections positions with FTLE.}
-\label{f:Poincare sections with FTLE}
+\caption{Double gyre FTLE.}
+\label{f:double gyre FTLE}
 \end{figure}
 
-\begin{lstlisting}[caption={Double gyre shear LCS detection commands. Subset of \texttt{hyperbolic\_shear\_lcs.m}.},label=l:double gyre shear LCS commands,firstnumber=24]
-% Compute Cauchy-Green strain eigenvalues and eigenvectors
-[flow.cgEigenvalue,flow.cgEigenvector] = eig_cgStrain(flow);
-% FIXME Should use m-by-n or (m*n)-by-2 array forms throughout LCS Tool
-cgEigenvalue = reshape(flow.cgEigenvalue,[fliplr(flow.resolution),2]);
-cgEigenvector = reshape(flow.cgEigenvector,[fliplr(flow.resolution),4]);
+By examining the FTLE, we can position Poincare sections to detect lambda-line LCSs. An LCS Tool script to perform this operation is given in Listing~\ref{l:double gyre lambda-line LCS} where two Poincare sections are defined. In the script we have set error tolerances for integration of the Cauchy-Green strain tensor and lambda lines. These numerical parameters help achieve convergence.
 
-% Define Poincare sections; first point in center of elliptic region and
-% second point outside elliptic region
-poincareSection = struct('endPosition',{},'numPoints',{},'orbitMaxLength',{});
+\lstinputlisting[caption={Double gyre script for lambda-line LCSs},label=l:double gyre lambda-line LCS]{listings/double_gyre/lambda_lcs.m}
 
-poincareSection(1).endPosition = [.5,.6;.35,.5];
-poincareSection(2).endPosition = [1.5,.4;1.7,.5];
+In Figure~\ref{fig:double_gyre_lambda_lcs_convergence} the resolution of the  Cauchy-Green strain tensor is varied from $500 \times 250$ to $1000 \times 500$. The location of the outermost closed lambda-line changes little, demonstrating convergence.
 
-% Number of orbit seed points along each Poincare section
-[poincareSection.numPoints] = deal(80);
+\begin{figure}[hbt]
+  \centering
+  \includegraphics[width=.8\textwidth]{graphics/double_gyre/lambda_lcs_convergence_500}
+\includegraphics[width=.8\textwidth]{graphics/double_gyre/lambda_lcs_convergence_750}
+\includegraphics[width=.8\textwidth]{graphics/double_gyre/lambda_lcs_convergence_1000}
+  \caption{Double gyre closed lambda-line at varying resolutions}
+  \label{fig:double_gyre_lambda_lcs_convergence}
+\end{figure}
 
-% Set maximum orbit length to twice the expected circumference
-nPoincareSection = numel(poincareSection);
-for i = 1:nPoincareSection
-    rOrbit = hypot(diff(poincareSection(i).endPosition(:,1)),diff(poincareSection(i).endPosition(:,2)));
-    poincareSection(i).orbitMaxLength = 2*(2*pi*rOrbit);
-end
-
-[shearline.etaPos,shearline.etaNeg] = lagrangian_shear(flow.cgEigenvector,flow.cgEigenvalue);
-
-% Compute closed shearlines
-closedOrbits = poincare_closed_orbit_multi(flow,shearline,poincareSection);
-\end{lstlisting}
-
-To obtain hyperbolic LCS, the local maximisation distance is set to twice the main grid spacing. To limit integration time, the maximum strainline length is set to 20. LCS Tool commands are shown in Listing~\ref{l:double gyre hyperbolic LCS commands}. The function \texttt{seed\_curves\_from\_lambda\_max} calculates strainline positions. The function \texttt{remove\_strain\_in\_shear} then removes the segments of strainlines within the outermost shearline of each Poincare section.
-
-\begin{lstlisting}[caption={Double gyre hyperbolic LCS detection commands. Subset of \texttt{hyperbolic\_shear\_lcs.m}.},label=l:double gyre hyperbolic LCS commands,firstnumber=60]
-strainlineMaxLength = 20;
-gridSpace = diff(flow.domain(1,:))/(double(flow.resolution(1))-1);
-localMaxDistance = 2*gridSpace;
-
-% Compute strainlines
-strainlinePosition = seed_curves_from_lambda_max(localMaxDistance,strainlineMaxLength,cgEigenvalue(:,:,2),cgEigenvector(:,:,1:2),flow.domain);
-
-for i = 1:nPoincareSection
-    % Remove strainlines inside of ellitpic regions
-    strainlinePosition = remove_strain_in_shear(strainlinePosition,closedOrbits{i}{1}{end});
-    strainlinePosition = remove_strain_in_shear(strainlinePosition,closedOrbits{i}{2}{end});
-end
-\end{lstlisting}
-
-The forward time LCS obtained are shown in Figure~\ref{f:double gyre hyperbolic shear lcs strainline} and the backward time LCS (i.e. with the flow timespan set to $t \in [20,0]$) are shown in Figure~\ref{f:double gyre hyperbolic shear lcs stretchline}. In Figures~\ref{f:double gyre hyperbolic shear lcs details strainline} and~\ref{f:double gyre hyperbolic shear lcs details stretchline} the same LCS are shown with details: the finite-time Lyapunov exponent, closed shearlines inside the outermost shearlines and $\lambda_2$ local maximums used for strainline integration initial positions.
+We continue the example by adding the calculation of hyperbolic strainline and stretchline LCSs. Figures~\ref{fig:double_gyre_lambda_strain_lcs} and~\ref{fig:double_gyre_lambda_stretch_lcs} show the results and listing~\ref{l:double_gyre_lambda_strain_stretch_lcs} gives the LCS Tool commands. Note that the local maximisation distance is usually set larger for stretchlines than for strainlines. This is due to the fact stretchlines do not follow $\lambda_1$ minimum ridges.
 
 \begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{graphics/double_gyre/hyperbolic_shear_lcs_strainline}
-\end{center}
-\caption{Double gyre lambda-line (green) and strainline (red) LCSs.}
-\label{f:double gyre hyperbolic shear lcs strainline}
+  \centering
+  \includegraphics[width=\textwidth]{graphics/double_gyre/lambda_strain_lcs}
+  \caption{Double gyre lambda-line and strainline LCSs}
+  \label{fig:double_gyre_lambda_strain_lcs}
 \end{figure}
 
 \begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{graphics/double_gyre/hyperbolic_shear_lcs_stretchline}
-\end{center}
-\caption{Double gyre lambda-line (green) and stretchline (blue) LCSs.}
-\label{f:double gyre hyperbolic shear lcs stretchline}
+  \centering
+  \includegraphics[width=\textwidth]{graphics/double_gyre/lambda_stretch_lcs}
+  \caption{Double gyre lambda-line and stretchline LCSs}
+  \label{fig:double_gyre_lambda_stretch_lcs}
 \end{figure}
 
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{graphics/double_gyre/hyperbolic_shear_lcs_details_strainline}
-\end{center}
-\caption{Same LCS as in Figure~\ref{f:double gyre hyperbolic shear lcs strainline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines with thick green curves being outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_2$ local maximums used for strainline integration initial positions.}
-\label{f:double gyre hyperbolic shear lcs details strainline}
-\end{figure}
+\lstinputlisting[caption={LCS Tool commands for strainline and stretchline LCSs},label=l:double_gyre_lambda_strain_stretch_lcs]{listings/double_gyre/lambda_strain_stretch_lcs.m}
 
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{graphics/double_gyre/hyperbolic_shear_lcs_details_stretchline}
-\end{center}
-\caption{Same LCS as in Figure~\ref{f:double gyre hyperbolic shear lcs stretchline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines and thick green curves are outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_1$ local minimums used for stretchline integration intial positions.}
-\label{f:double gyre hyperbolic shear lcs details stretchline}
-\end{figure}
-
+\clearpage
 \subsection{Bickley jet}
 
 The Bickley jet models a zonal jet flanked above and below by
@@ -403,13 +342,35 @@ The velocity is given by $\boldsymbol{v}(x,y,t) = (-\partial_y \psi, \partial_x 
 \psi_0(x,y) = c_3 y - U L_y \tanh\frac{y}{L_y} + \epsilon_3 U L_y \mathrm{sech}^2\frac{y}{L_y} \cos k_3 x,\\
 \psi_1(x,y,t) = U L_y \mathrm{sech}^2\frac{y}{L_y} \mathrm{Re}\left[ \sum_{n=1}^2 \epsilon_n f_n(t) e^{i k_n x}\right].
 \end{gather*}
-Periodic boundary conditions are imposed in the $x$-direction.The forcing function we choose is a chaotic solution of the Duffing oscillators with parameters in the chaotic regime, specifically
+The forcing function we choose is a chaotic solution of the Duffing oscillator, specifically
 \begin{gather*}
 \frac{d \phi_1}{dt} = \phi_2,\\
 \frac{d \phi_1}{dt} = -0.1 \phi_2 - \phi_1^3 + 11 \cos(t),\\
 f_{1,2}(t) = 2.625 \times 10^{-2} \phi_1(t/6.238 \times 10^5)
 \end{gather*}
-The parameter values used are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$. The domain of the flow is set to $x \in [0,L_x]$, $y \in [-2.25 L_y, 2.25 L_y]$ and the timespan is $t \in [0,4 L_x/U]$. We skip listing the file that defines the velocity equations; in regards to input and output variables, it is similar to the double gyre function (Listing~\ref{l:double gyre derivative}.) The LCS Tool script that specifies the parameters we are using is given in Listing~\ref{l:Bickley jet input}. Note the use of the \texttt{periodicBc} variable to specify periodic boundary conditions.
+The parameters used are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$.
+
+Figure~\ref{f:Bickley jet FTLE} shows the overall appearance of the Bickley jet. To get a sense of the numerical parameters required to detect LCSs in this flow, we analyse lambda-line closed orbits of one vortex for a short timespan.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=.85\textwidth]{graphics/bickley_jet/ftle_overview}
+\end{center}
+\caption{Bickley jet FTLE}
+\label{f:Bickley jet FTLE}
+\end{figure}
+
+% $[0,2L_x/U]$.
+% Loose closed orbits as increase lambda-line integration accuracy
+
+First, we set a Poincare section so that the first point is near the centre of the region where we seek a vortex and the second point is outside this region, or at least a reasonable distance from the outermost closed lambda-line we find.
+
+% We analyse lambda-line LCSs in a subdomain of this flow.
+% 1. FTLE field
+% 2. Poincare sections
+% 3. Convergence by varying resolution and other parameters.
+
+Start with numerical parameters that give answers quickly and increase accuracy until observe convergence visually.
 
 \begin{lstlisting}[caption={Bickley jet input file: \texttt{demo/bickley\_jet/hyperbolic\_shear\_lcs.m}.},label=l:Bickley jet input]
 %% Input parameters
@@ -433,19 +394,6 @@ derivative = @(t,x,~)derivative(t,x,false,u,lengthX,lengthY,epsilon,perturbation
 incompressible = true;
 periodicBc = [true,false];
 \end{lstlisting}
-
-Figure~\ref{f:Bickley jet FTLE resolutions} shows the FTLE at various resolutions. Visual inspection of these figures indicates that a resolution of $500 \times 199$ is acceptable since increasing the resolution to $1000 \times 398$ does not change the appearance of the FTLE noticeably.
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=.85\textwidth]{graphics/bickley_jet/ftle_100_39}
-\includegraphics[width=.85\textwidth]{graphics/bickley_jet/ftle_250_99}
-\includegraphics[width=.85\textwidth]{graphics/bickley_jet/ftle_500_199}
-\includegraphics[width=.85\textwidth]{graphics/bickley_jet/ftle_1000_398}
-\end{center}
-\caption{Bickley jet FTLE at various resolutions.}
-\label{f:Bickley jet FTLE resolutions}
-\end{figure}
 
 To calculate the Cauchy-Green eigenvalues and eigenvectors we therefore set the grid resolution to $500 \times 199$. We also specify the flow is incompressible. Commands to obtain lambda-lines are given in listing~\ref{l:Bickley jet lambda-line commands}. The primary input needed are the positions of the Poincare sections which we determine
 
@@ -512,10 +460,17 @@ The forward time LCS obtained are shown in Figure~\ref{f:bickley jet hyperbolic 
 
 \subsection{Ocean dataset}
 
+For the last example, we choose a measured geophysical flow where, in contrast to the previous examples, the two dimensional incompressible velocity field is presented as a dataset with discrete temporal and spatial resolution. Our region of interest is a small domain in the South Atlantic Ocean, where exceptionally coherent eddies, Agulhas rings, were recently found using methods provided by LCS Tool\parencite{haller13:_coher_lagran}. The oceanic velocity field is obtained from altimetric satelite measurements of the sea surface height under the assumption that the flow is geostrophic. Under this assumption the sea surface height $\eta$ serves as a streamfunction and in a longitude-latitude $(\varphi,\theta)$ coordinate system the evolution of a fluid particle is given by
+\begin{eqnarray}
+\dot{\varphi}(\varphi,\theta,t) = -\frac{g}{R^2 f(\theta) \cos\theta}\partial_{\theta}\eta(\varphi,\theta,t)\label{e:dtlon}\\
+\dot{\theta}(\varphi,\theta,t) = +\frac{g}{R^2 f(\theta) \cos\theta}\partial_{\varphi}\eta(\varphi,\theta,t)
+\label{e:dtlat}
+\end{eqnarray}
+where $g$ is the gravitational acceleration, $R$ is the mean radius of Earth, and $f(\theta):=2\Omega\sin\theta$ is the Coriolis parameter with $\Omega$ being the Earth's mean angular velocity. The data is given at a spatial resolution of $1/4\degree$ and temporal resolution of $7\,\mathrm{days}$. Due to the discrete data, defining the right hand side of Eq.\,(\ref{e:dtlon}) and (\ref{e:dtlat}) involves interpolation in space and time with a spline interpolation scheme. An interpolant is generated first, then the function \texttt{flowdata\_derivative} evaluates the interpolant at the needed coordinates. The interpolation time was chosen to be $T=90\,\mathrm{days}$, a multiple of the turn over time of the mesoscale eddies in the domain. The resolution of the grid of initial conditions is set to $400\times400$ which corresponds to a resolution of roughly $0.015^\circ$ and gives good results. With this choice the resolution of the tracer grid is of the order of $15$ times higher than the resolution of the velocity field.
+Figures~\ref{f:ocean dataset hyperbolic shear lcs strainline} and \ref{f:ocean dataset hyperbolic shear lcs stretchline} show elliptic and hyperbolic LCS on 22 November 2006, i.e., the same time instant shown in~\textcite{haller13:_coher_lagran,beron-vera13:_objec_agulh}. The analysis with LCS Tool reveals a large coherent eddy bounded by a closed lambda-line at $(3,-32)$ and four further smaller coherent eddy cores. 
+
 \begin{itemize}
-\item auxiliaryGridRelativeDelta = 0.1
-\item eigenvalueFromMainGrid = false;
-\item Cauchy-Green resolution must be higher than dataset
+\item Cauchy-Green resolution higher than dataset
 \end{itemize}
 
 \begin{figure}
@@ -690,6 +645,10 @@ LCS Tool is built atop MATLAB\parencite{mathworks13:_matlab} and leverages that 
 In addition to improving computational performance, we hope LCS Tool will be the foundation to integrate new theoretical advances, for example the variational LCS jet core identification method\parencite{farazmand13:_shearless} and the 
 analysis of LCSs in higher dimensions\parencite{blazevski:_hyper_ellip_trans_barrier_three}.
 
+\subsection*{Acknowledgements}
+
+The altimeter products used in this work are produced by SSALTO/DUACS and distributed by AVISO, with support from CNES \url{http://www.aviso.oceanobs.com/duacs}.
+
 \printbibliography
 
 \end{document}
@@ -698,3 +657,4 @@ analysis of LCSs in higher dimensions\parencite{blazevski:_hyper_ellip_trans_bar
 % ispell-dictionary: "en_GB"
 % End:
 % LocalWords:  stretchline stretchlines incompressible gyre eigenvector eigenvectors incompressibility dataset datasets LCS strainline shearline Lyapunov Bickley Rossby timespan variational adaptively vortices parametrise advected
+%  LocalWords:  strainlines

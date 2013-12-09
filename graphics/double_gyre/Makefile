@@ -1,26 +1,34 @@
 .PHONY: all
-all:	hyperbolic_shear_lcs_strainline.pdf \
-	hyperbolic_shear_lcs_stretchline.pdf \
-	hyperbolic_shear_lcs_details_strainline.pdf \
-	hyperbolic_shear_lcs_details_stretchline.pdf
+all:	ftle.pdf \
+	lambda_lcs_convergence_500.pdf \
+	lambda_lcs_convergence_750.pdf \
+	lambda_lcs_convergence_1000.pdf \
+	lambda_strain_lcs.pdf \
+	lambda_stretch_lcs.pdf
 
-hyperbolic_shear_lcs_strainline.pdf: hyperbolic_shear_lcs_pdf.m
-	matlab -nodisplay -r "try, hyperbolic_shear_lcs_pdf, catch, end, exit" >/dev/null
+ftle.pdf: ftle_.m
+	matlab -nodisplay -r "ftle_, exit" >/dev/null
 
-hyperbolic_shear_lcs_stretchline.pdf: hyperbolic_shear_lcs_pdf.m
-	matlab -nodisplay -r "try, hyperbolic_shear_lcs_pdf, catch, end, exit" > /dev/null
+lambda_lcs_convergence_500.pdf: lambda_lcs_convergence.m
+	matlab -nodisplay -r "lambda_lcs_convergence, exit" >/dev/null
 
-hyperbolic_shear_lcs_details_strainline.pdf: hyperbolic_shear_lcs_details_pdf.m
-	matlab -nodisplay -r "try, hyperbolic_shear_lcs_details_pdf, catch, end, exit" >/dev/null
+lambda_lcs_convergence_750.pdf: lambda_lcs_convergence.m
+	matlab -nodisplay -r "lambda_lcs_convergence, exit" >/dev/null
 
-hyperbolic_shear_lcs_details_stretchline.pdf: hyperbolic_shear_lcs_details_pdf.m
-	matlab -nodisplay -r "try, hyperbolic_shear_lcs_details_pdf, catch, end, exit" >/dev/null
+lambda_lcs_convergence_1000.pdf: lambda_lcs_convergence.m
+	matlab -nodisplay -r "lambda_lcs_convergence, exit" >/dev/null
+
+lambda_strain_lcs.pdf: lambda_strain_lcs.m
+	matlab -nodisplay -r "lambda_strain_lcs, exit" >/dev/null
+
+lambda_stretch_lcs.pdf: lambda_stretch_lcs.m
+	matlab -nodisplay -r "lambda_stretch_lcs, exit" >/dev/null
 
 .PHONY: clean
 clean:
-	rm -f hyperbolic_shear_lcs_strainline.pdf \
-	hyperbolic_shear_lcs_stretchline.pdf \
-	hyperbolic_shear_lcs_details_strainline.pdf \
-	hyperbolic_shear_lcs_details_stretchline.pdf \
-	hyperbolic_shear_lcs_strainline.fig \
-	hyperbolic_shear_lcs_stretchline.fig
+	rm -f ftle_pdf \
+	lambda_lcs_convergence_500.pdf \
+	lambda_lcs_convergence_750.pdf \
+	lambda_lcs_convergence_1000.pdf \
+	lambda_strain_lcs.pdf \
+	lambda_stretch_lcs.pdf

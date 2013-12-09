@@ -1,9 +1,8 @@
-hyperbolic_shear_lcs_strainline.fig
-hyperbolic_shear_lcs_stretchline.fig
-hyperbolic_shear_lcs_stretchline.pdf
-hyperbolic_shear_lcs_details_stretchline.fig
-hyperbolic_shear_lcs_details_stretchline.pdf
-hyperbolic_shear_lcs_details_strainline.fig
-hyperbolic_shear_lcs_details_strainline.pdf
-hyperbolic_shear_lcs_strainline.fig
-hyperbolic_shear_lcs_strainline.pdf
+ftle.pdf
+lambda_lcs_convergence_1000.pdf
+lambda_lcs_convergence_500.pdf
+lambda_lcs_convergence_750.pdf
+lambda_strain_lcs.pdf
+lambda_stretch_lcs.pdf
+poincare_return_map.fig
+poincare_return_map.pdf
