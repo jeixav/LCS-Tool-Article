@@ -1,46 +1,24 @@
 .PHONY: all
-all:	hyperbolic_shear_lcs_strainline.pdf \
-	hyperbolic_shear_lcs_stretchline.pdf \
-	hyperbolic_shear_lcs_details_strainline.pdf \
-	hyperbolic_shear_lcs_details_stretchline.pdf \
-	ftle_100_39.pdf \
-	ftle_250_99.pdf \
-	ftle_500_199.pdf \
-	ftle_1000_398.pdf
+all:	ftle_overview.pdf \
+	lambda_lcs_full.pdf \
+	strain_lcs \
+	stretch_lcs
 
-hyperbolic_shear_lcs_strainline.pdf: hyperbolic_shear_lcs_pdf.m
-	matlab -nodisplay -r "try, hyperbolic_shear_lcs_pdf, catch, end, exit" >/dev/null
+ftle_overview.pdf: ftle_overview.m
+	matlab -nodisplay -r "ftle_overview, exit" >/dev/null
 
-hyperbolic_shear_lcs_stretchline.pdf: hyperbolic_shear_lcs_pdf.m
-	matlab -nodisplay -r "try, hyperbolic_shear_lcs_pdf, catch, end, exit" > /dev/null
+lambda_lcs_full.pdf: lambda_lcs_full.m
+	matlab -nodisplay -r "lambda_lcs_full, exit" >/dev/null
 
-hyperbolic_shear_lcs_details_strainline.pdf: hyperbolic_shear_lcs_details_pdf.m
-	matlab -nodisplay -r "try, hyperbolic_shear_lcs_details_pdf, catch, end, exit" >/dev/null
+strain_lcs.pdf: strain_lcs.m
+	matlab -nodisplay -r "strain_lcs, exit" >/dev/null
 
-hyperbolic_shear_lcs_details_stretchline.pdf: hyperbolic_shear_lcs_details_pdf.m
-	matlab -nodisplay -r "try, hyperbolic_shear_lcs_details_pdf, catch, end, exit" >/dev/null
-
-ftle_100_39.pdf: ftle_resolutions.m
-	matlab -nodisplay -r "try, ftle_resolutions, catch, end, exit" >/dev/null
-
-ftle_250_99.pdf: ftle_resolutions.m
-	matlab -nodisplay -r "try, ftle_resolutions, catch, end, exit" >/dev/null
-
-ftle_500_199.pdf: ftle_resolutions.m
-	matlab -nodisplay -r "try, ftle_resolutions, catch, end, exit" >/dev/null
-
-ftle_1000_398.pdf: ftle_resolutions.m
-	matlab -nodisplay -r "try, ftle_resolutions, catch, end, exit" >/dev/null
+stretch_lcs.pdf: stretch_lcs.m
+	matlab -nodisplay -r "strain_lcs, exit" >/dev/null
 
 .PHONY: clean
 clean:
-	rm -f hyperbolic_shear_lcs_strainline.pdf \
-	hyperbolic_shear_lcs_stretchline.pdf \
-	hyperbolic_shear_lcs_details_strainline.pdf \
-	hyperbolic_shear_lcs_details_stretchline.pdf \
-	hyperbolic_shear_lcs_strainline.fig \
-	hyperbolic_shear_lcs_stretchline.fig \
-	ftle_100_39.pdf \
-	ftle_250_99.pdf \
-	ftle_500_199.pdf \
-	ftle_1000_398.pdf
+	rm -f ftle_overview.pdf \
+	lambda_lcs_full.pdf \
+	strain_lcs \
+	stretch_lcs

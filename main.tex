@@ -41,7 +41,7 @@
 \tableofcontents
 
 \abstract{
-We give a practical introduction to Lagrangian coherent structures (LCSs.) The article reviews recent results in variational LCS theory, presents algorithms to detect LCSs in two dimensional time dependent flows, and demonstrates a LCS computational engine called LCS Tool using examples.
+We give an applied introduction to Lagrangian coherent structures (LCSs.) We review recent results in variational LCS theory, present algorithms based on the theory and implement the algorithms in a computational engine called LCS Tool. We use LCS Tool to analyse flow examples.
 }
 
 \section{Introduction}
@@ -310,7 +310,7 @@ In Figure~\ref{fig:double_gyre_lambda_lcs_convergence} the resolution of the  Ca
   \label{fig:double_gyre_lambda_lcs_convergence}
 \end{figure}
 
-We continue the example by adding the calculation of hyperbolic strainline and stretchline LCSs. Figures~\ref{fig:double_gyre_lambda_strain_lcs} and~\ref{fig:double_gyre_lambda_stretch_lcs} show the results and listing~\ref{l:double_gyre_lambda_strain_stretch_lcs} gives the LCS Tool commands. Note that the local maximisation distance is usually set larger for stretchlines than for strainlines. This is due to the fact stretchlines do not follow $\lambda_1$ minimum ridges.
+We continue the example by adding the calculation of hyperbolic strainline and stretchline LCSs. Figures~\ref{fig:double_gyre_lambda_strain_lcs} and~\ref{fig:double_gyre_lambda_stretch_lcs} show the results and Listing~\ref{lst:double_gyre_lambda_strain_stretch_lcs} gives the LCS Tool commands. The local maximisation distance is set larger for stretchlines than for strainlines usually. This is because strainlines follow ridges of $\lambda_2$ maximums whereas stretchlines do not follow ridges of $\lambda_1$ minimums.
 
 \begin{figure}
   \centering
@@ -326,9 +326,10 @@ We continue the example by adding the calculation of hyperbolic strainline and s
   \label{fig:double_gyre_lambda_stretch_lcs}
 \end{figure}
 
-\lstinputlisting[caption={LCS Tool commands for strainline and stretchline LCSs},label=l:double_gyre_lambda_strain_stretch_lcs]{listings/double_gyre/lambda_strain_stretch_lcs.m}
+\lstinputlisting[caption={LCS Tool commands for strainline and stretchline LCSs},label=lst:double_gyre_lambda_strain_stretch_lcs]{listings/double_gyre/lambda_strain_stretch_lcs.m}
 
 \clearpage
+
 \subsection{Bickley jet}
 
 The Bickley jet models a zonal jet flanked above and below by
@@ -336,7 +337,7 @@ stationary vortices. This is an idealised model of geophysical flows
 such as the polar night jet perturbed by a Rossby
 wave\parencite{haller12:_geodes_theor_trans_barrier_two_dimen_flows,beron-vera10:_invar_lagran}.
 
-The velocity is given by $\boldsymbol{v}(x,y,t) = (-\partial_y \psi, \partial_x \psi)$ and
+The velocity is given by $\boldsymbol{v}(x,y,t) = (-\partial_y \psi, \partial_x \psi)$ where
 \begin{gather*}
 \psi(x,y,t) = \psi_0(x,y) + \psi_1(x,y,t),\\
 \psi_0(x,y) = c_3 y - U L_y \tanh\frac{y}{L_y} + \epsilon_3 U L_y \mathrm{sech}^2\frac{y}{L_y} \cos k_3 x,\\
@@ -348,115 +349,43 @@ The forcing function we choose is a chaotic solution of the Duffing oscillator, 
 \frac{d \phi_1}{dt} = -0.1 \phi_2 - \phi_1^3 + 11 \cos(t),\\
 f_{1,2}(t) = 2.625 \times 10^{-2} \phi_1(t/6.238 \times 10^5)
 \end{gather*}
-The parameters used are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$.
+The parameter values we use are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$.
 
-Figure~\ref{f:Bickley jet FTLE} shows the overall appearance of the Bickley jet. To get a sense of the numerical parameters required to detect LCSs in this flow, we analyse lambda-line closed orbits of one vortex for a short timespan.
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=.85\textwidth]{graphics/bickley_jet/ftle_overview}
-\end{center}
-\caption{Bickley jet FTLE}
-\label{f:Bickley jet FTLE}
-\end{figure}
-
-% $[0,2L_x/U]$.
-% Loose closed orbits as increase lambda-line integration accuracy
-
-First, we set a Poincare section so that the first point is near the centre of the region where we seek a vortex and the second point is outside this region, or at least a reasonable distance from the outermost closed lambda-line we find.
-
-% We analyse lambda-line LCSs in a subdomain of this flow.
-% 1. FTLE field
-% 2. Poincare sections
-% 3. Convergence by varying resolution and other parameters.
-
-Start with numerical parameters that give answers quickly and increase accuracy until observe convergence visually.
-
-\begin{lstlisting}[caption={Bickley jet input file: \texttt{demo/bickley\_jet/hyperbolic\_shear\_lcs.m}.},label=l:Bickley jet input]
-%% Input parameters
-u = 62.66;
-lengthX = pi*earthRadius;
-lengthY = 1.77e6;
-epsilon = [.075,.4,.3];
-domain = [0,lengthX;[-1,1]*2.25*lengthY];
-
-% Make x and y grid spacing as equal as possible
-resolutionX = 500;
-gridSpace = diff(domain(1,:))/(double(resolutionX)-1);
-resolutionY = round(diff(domain(2,:))/gridSpace);
-resolution = [resolutionX,resolutionY];
-
-timespan = [0,4*lengthX/u];
-
-%% Velocity definition
-perturbationCase = 3;
-derivative = @(t,x,~)derivative(t,x,false,u,lengthX,lengthY,epsilon,perturbationCase);
-incompressible = true;
-periodicBc = [true,false];
-\end{lstlisting}
-
-To calculate the Cauchy-Green eigenvalues and eigenvectors we therefore set the grid resolution to $500 \times 199$. We also specify the flow is incompressible. Commands to obtain lambda-lines are given in listing~\ref{l:Bickley jet lambda-line commands}. The primary input needed are the positions of the Poincare sections which we determine
-
-\begin{lstlisting}[caption={LCS Tool commands Bickley jet lambda-lines, subset of \texttt{demo/bickley\_jet/hyperbolic\_shear\_lcs.m}.},label=l:Bickley jet lambda-line commands]
-lambda = 1;
-lambdaLineOdeSolverOptions = odeset('relTol',1e-4);
-
-poincareSection = struct('endPosition',{},'numPoints',{},'orbitMaxLength',{});
-poincareSection(1).endPosition = [6.5,-1.4;5.2,-1.4]*1e6;
-poincareSection(2).endPosition = [1.35e7,-1.4e6;1.5e7,-.5e6];
-poincareSection(3).endPosition = [3.25,1.5;1.4,2.6]*1e6;
-poincareSection(4).endPosition = [1e7,1.5e6;8e6,2.6e6];
-poincareSection(5).endPosition = [1.65e7,1.5e6;1.5e7,2.6e6];
-
-% Number of orbit seed points along each Poincare section
-[poincareSection.numPoints] = deal(80);
-
-% Set maximum orbit length to twice the expected circumference
-nPoincareSection = numel(poincareSection);
-for i = 1:nPoincareSection
-    rOrbit = hypot(diff(poincareSection(i).endPosition(:,1)),diff(poincareSection(i).endPosition(:,2)));
-    poincareSection(i).orbitMaxLength = 2*(2*pi*rOrbit);
-end
-
-[shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda);
-closedLambdaLine = poincare_closed_orbit_multi(domain,resolution,shearline,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions,'periodicBc',periodicBc);
-\end{lstlisting}
-
-To obtain strainline hyperbolic LCS, we must set a local maximisation distance and a maximum LCS length. To demonstrate the 
-
-The forward time LCS obtained are shown in Figure~\ref{f:bickley jet hyperbolic shear lcs strainline} and the backward time LCS (i.e. with the flow timespan set to $t \in [4 L_x/U,0]$ are shown in Figure~\ref{f:bickley jet hyperbolic shear lcs stretchline}. In Figures~\ref{f:bickley jet hyperbolic shear lcs details strainline} and~\ref{f:bickley jet hyperbolic shear lcs details stretchline} the same LCS are shown with details.
+Figure~\ref{fig:Bickley_jet_FTLE} shows the overall appearance of the Bickley jet and in Figure~\ref{fig:Bickley_jet_lambda_LCS_full} lambda-line LCSs are shown. The latter figure demonstrates a poor result since the LCSs change shape significantly from one eddy to the next. To address this problem we could try to adjust numerical parameters such as the resolution, but with our hardware memory availability was reached before achieving convergence. To circumvent this problem, we analyse lambda-line closed orbits of one vortex for a short timespan.
 
 \begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{graphics/bickley_jet/hyperbolic_shear_lcs_strainline}
-\end{center}
-\caption{Bickley jet lambda-line (green) and strainline (red) LCS.}
-\label{f:bickley jet hyperbolic shear lcs strainline}
+  \centering
+  \includegraphics[width=.85\textwidth]{graphics/bickley_jet/ftle_overview}
+  \caption{Bickley jet FTLE}
+  \label{fig:Bickley_jet_FTLE}
 \end{figure}
 
 \begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{graphics/bickley_jet/hyperbolic_shear_lcs_stretchline}
-\end{center}
-\caption{Bickley jet backward time shear (green) and stretchline (blue) LCS.}
-\label{f:bickley jet hyperbolic shear lcs stretchline}
+  \centering
+  \includegraphics[width=.85\textwidth]{graphics/bickley_jet/lambda_lcs_full}
+  \caption{Bickley jet lambda-line LCSs}
+  \label{fig:Bickley_jet_lambda_LCS_full}
+\end{figure}
+
+To calculate strainline and stretchline LCSs we set the timespan to $t \in [0,2L_x/U]$. The script used to detect strainlines is given in Listing~\ref{lst:bickley_jet_strain_lcs} and the results are shown in Figure~\ref{fig:Bickley_jet_strain_lcs}. Stretchline LCSs are shown in Figure~\ref{fig:Bickley_jet_stretch_lcs}.
+
+\lstinputlisting[caption={LCS Tool commands for Bickley jet strainline LCSs},label=lst:bickley_jet_strain_lcs]{listings/bickley_jet/strain_lcs.m}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.85\textwidth]{graphics/bickley_jet/strain_lcs}
+  \caption{Bickley jet strainline LCSs}
+  \label{fig:Bickley_jet_strain_lcs}
 \end{figure}
 
 \begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{graphics/bickley_jet/hyperbolic_shear_lcs_details_strainline}
-\end{center}
-\caption{Same LCS as in Figure~\ref{f:bickley jet hyperbolic shear lcs strainline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines with thick green curves being outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_2$ local maximums used for strainline integration initial positions.}
-\label{f:bickley jet hyperbolic shear lcs details strainline}
+  \centering
+  \includegraphics[width=.85\textwidth]{graphics/bickley_jet/stretch_lcs}
+  \caption{Bickley jet stretchline LCSs}
+  \label{fig:Bickley_jet_stretch_lcs}
 \end{figure}
 
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{graphics/bickley_jet/hyperbolic_shear_lcs_details_stretchline}
-\end{center}
-\caption{Same LCS as in Figure~\ref{f:bickley jet hyperbolic shear lcs stretchline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines with thick green curves being outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_2$ local maximums used for stretchline integration initial positions.}
-\label{f:bickley jet hyperbolic shear lcs details stretchline}
-\end{figure}
+\clearpage
 
 \subsection{Ocean dataset}
 
