@@ -1,3 +1,4 @@
 [submodule "lcs_tool"]
 	path = lcs_tool
 	url = git://github.com/jeixav/LCS-Tool.git
+	branch = dev
