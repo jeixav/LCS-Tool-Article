@@ -32,6 +32,7 @@ poincareSection.endPosition = [6.5,-1.4;4.5,-3.5]*1e6;
 rOrbit = hypot(diff(poincareSection.endPosition(:,1)),diff(poincareSection.endPosition(:,2)));
 poincareSection.orbitMaxLength = 2*(2*pi*rOrbit);
 lambdaLineColor = [0,.6,0];
+dThresh = 1e-3;
 
 warning('off','eig_cgStrain:unequalDelta')
 warning('off','eig_cgStrain:unequalAuxGridDelta')
@@ -69,7 +70,7 @@ for m = 1:numel(resolutionX)
     drawnow
     
     [shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda);
-    [closedLambdaLine,~,hFigure] = poincare_closed_orbit_multi(domain,resolution,shearline,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions,'dThresh',1e-3,'showGraph',true);
+    [closedLambdaLine,~,hFigure] = poincare_closed_orbit_multi(domain,resolution,shearline,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions,'dThresh',dThresh,'showGraph',true);
     delete(hFigure(2))
     hPoincare = findobj(hFigure(1),'type','axes','Tag',[]);
     title(hPoincare,['Poincare return map, resolution: ',num2str(resolution(1)),'\times',num2str(resolution(2))])

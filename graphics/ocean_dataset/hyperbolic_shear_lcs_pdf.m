@@ -1,38 +1,16 @@
 function hyperbolic_shear_lcs_pdf
 
-lcs_tool_root = fullfile('..','..','..','..','lcs_toolbox');
-demo = fullfile(lcs_tool_root,'demo','ocean_dataset');
+hyperbolic_shear_lcs
 
-oldFolder = cd(demo);
+hFigure = 1;
+filename = 'hyperbolic_shear_lcs_strainline';
+delete_title(hFigure)
+print_pdf(hFigure,filename)
 
-try
-    addpath(fullfile('..','..'))
-    hyperbolic_shear_lcs
-    cd(oldFolder)
-    
-    hFigure = 1;
-    filename = 'hyperbolic_shear_lcs_strainline';
-    savefig(hFigure,filename)
-    delete_title(hFigure)
-    filenamePDF = [filename,'.pdf'];
-    if exist(filenamePDF,'file')
-        delete(filenamePDF)
-    end
-    print_pdf(hFigure,filename)
-    
-    hFigure = 2;
-    filename = 'hyperbolic_shear_lcs_stretchline';
-    savefig(hFigure,filename)
-    delete_title(hFigure)
-    filenamePDF = [filename,'.pdf'];
-    if exist(filenamePDF,'file')
-        delete(filenamePDF)
-    end
-    print_pdf(hFigure,filename)
-catch err
-    cd(oldFolder)
-    rethrow(err)
-end
+hFigure = 2;
+filename = 'hyperbolic_shear_lcs_stretchline';
+delete_title(hFigure)
+print_pdf(hFigure,filename)
 
 function delete_title(hFigure)
 

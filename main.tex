@@ -102,15 +102,17 @@ and curves uniformly stretched by the same factor $\lambda$ when advected by the
 differential equations: 
 \begin{equation}
 \boldsymbol r' = \boldsymbol \eta_\pm(\boldsymbol r),
-\label{e:etafields}
+\label{eq:etafields}
 \end{equation}
 where
-\[
-\boldsymbol \eta_\pm = \sqrt{\frac{\lambda_2 - \lambda^2}{\lambda_2 - \lambda_1}} \boldsymbol \xi_1 \pm \sqrt{\frac{\lambda^2 - \lambda_1}{\lambda_2 - \lambda_1}} \boldsymbol \xi_2.
-\]
-In subsequent sections $\lambda = 1$ always.
+\begin{equation}
+\boldsymbol \eta_\pm = \sqrt{\frac{\lambda_2 - \lambda^2}{\lambda_2 - \lambda_1}} \boldsymbol \xi_1 \pm \sqrt{\frac{\lambda^2 - \lambda_1}{\lambda_2 
+- \lambda_1}} \boldsymbol \xi_2.
+\label{eq:eta}
+\end{equation}
+In subsequent sections $\lambda = 1$ always. We call the curves associated with coherent Lagrangian vortices lambda-lines.
 
-We find hyperbolic LCSs from a variational approach based on shear, as presented in~\textcite{farazmand13:_shearless}. The Lagrangian shear is calculated:
+Hyperbolic LCSs are given by a variational approach based on shear presented in~\textcite{farazmand13:_shearless}. The Lagrangian shear is calculated as:
 \[
 p(s) = \frac{\langle \boldsymbol r'(s), D(\boldsymbol r(s)) \boldsymbol r'(s)\rangle}{\sqrt{\langle \boldsymbol r'(s), C(\boldsymbol r(s)) \boldsymbol r'(s)\rangle \langle \boldsymbol r'(s), \boldsymbol r'(s)\rangle}}
 \]
@@ -136,13 +138,15 @@ and attracting LCSs are obtained as a solution of the stretchline differential e
 \boldsymbol r' = \boldsymbol \xi_2(\boldsymbol r).
 \]
 
+\clearpage
+
 \section{Methods}
 
 This section presents the numerical methods used to compute Lagrangian coherent structures. In other words, the algorithms that constitute LCS Tool are presented.
 
 \subsection{The Cauchy-Green strain tensor}
 
-To obtain Lagrangian coherent structures the Cauchy-Green strain tensor must be calculated first. More specifically, the eigenvalues and eigenvectors of the Cauchy-Green strain tensor are needed. The function associated with this calculation in LCS Tool is \texttt{eig\_cgStrain}. The main steps of this function are enumerated in Table~\ref{t:Cauchy-Green algorithm}.
+To obtain Lagrangian coherent structures the Cauchy-Green strain tensor must be calculated first. More specifically, the eigenvalues and eigenvectors of the Cauchy-Green strain tensor are needed. The function associated with this calculation in LCS Tool is \lstinline!eig_cgStrain!. The main steps of this function are enumerated in Table~\ref{t:Cauchy-Green algorithm} and Table~\ref{t:eig_cgStrain syntax} summarises the function syntax.
 
 \begin{table}
 \begin{enumerate}
@@ -151,8 +155,36 @@ To obtain Lagrangian coherent structures the Cauchy-Green strain tensor must be 
 \item Use finite differences to approximate the derivative of the flow map, $D F_{t_0}^t(\boldsymbol x_0)$.
 \item Compute the Cauchy-Green strain tensor, $C_{t_0}^t = \left(D F_{t_0}^t\right)^T D F_{t_0}^t$ and its eigenvalues, $\lambda_{1,2}$ and eigenvectors, $\xi_{1,2}$.
 \end{enumerate}
-\caption{Algorithm used to calculate the Cauchy-Green strain tensor eigenvalues and eigenvectors.}
+\caption{Algorithm to calculate the Cauchy-Green strain tensor eigenvalues and eigenvectors}
 \label{t:Cauchy-Green algorithm}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|p{.7\textwidth}|}
+\hline \hline
+\multicolumn{2}{|p{\textwidth}|}{\lstinline![cgEigenvector,cgEigenvalue] = eig_cgStrain(derivative,domain,timespan,resolution)!}\\
+\hline
+\lstinline!derivative! & function handle for flow velocity equations\\
+\hline
+\lstinline!domain! & $2 \times 2$ array to define flow domain\\
+\hline
+\lstinline!timespan! & $1 \times 2$ array to define flow timespan\\
+\hline
+\lstinline!resolution! & $1 \times 2$ array to define Cauchy-Green strain main grid resolution\\
+\hline
+\lstinline!auxGridRelDelta! & optional scalar between 0 and 0.5 to specify auxiliary grid spacing. Default is $10^{-2}$.\\
+\hline
+\lstinline!eigenvalueFromMainGrid! & optional logical to control whether eigenvalues of Cauchy-Green strain are calculated from main or auxiliary grid. Default is \lstinline!true!.\\
+\hline
+\lstinline!incompressibile! & optional logical to specify if incompressibility is imposed. Default is  \lstinline!false!.\\
+\hline
+\lstinline!odeSolverOptions! & optional \lstinline!odeset! structure to specify flow map integration options\\
+\hline \hline
+\end{tabular}
+\caption{Syntax of the function \lstinline!eig_cgStrain!}
+\label{t:eig_cgStrain syntax}
+\end{center}
 \end{table}
 
 We setup a Cartesian grid according to user-defined resolutions. We can find the optimal resolution by an iterative procedure in which we start with a low resolution and double it until convergence of LCSs is observed visually. A resolution of about 500 grid point along the longest axis usually gives good results. Furthermore an auxiliary grid is setup. This is illustrated in Figure~\ref{f:main and auxiliary grids}. The improvements the auxiliary grid yields compared to using only the main grid were reported in \textcite{farazmand12:_comput_lagran}. Experience indicates that optimal results are obtained when the auxiliary grid spacing is between 1 and 10\% of the main grid spacing.
@@ -165,9 +197,9 @@ We setup a Cartesian grid according to user-defined resolutions. We can find the
 \label{f:main and auxiliary grids}
 \end{figure}
 
-The function \texttt{eig\_cgStrain} provides the option to calculate the eigenvector from the auxiliary grid, but the eigenvalues from the main grid. We have found that for flows defined analytically the eigenvalues should be calculated from the main grid whereas for the flows defined by datasets, using the auxiliary grid gives better results.
+The function \lstinline!eig_cgStrain! provides the option to calculate the eigenvector from the auxiliary grid, but the eigenvalues from the main grid. We have found that for flows defined analytically the eigenvalues should be calculated from the main grid whereas for the flows defined by datasets, using the auxiliary grid gives better results.
 
-As stated, typically we set the main grid resolution of the Cauchy-Green strain tensor to around 500 grid points. For a square domain, this implies the velocity equations must be integrated, after including 4 auxiliary grid points around every main grid point, at 1.25 million grid points. The ``natural'' way to perform these integration calculations would be to solve a two dimensional first-order ODE system at every grid point and iterate over every grid point within a for-loop. With 1.25 million grid points this calculation can take an excessively long time. To alleviate this problem, we solve the flow equations in a vector form where the equations at all grid points are combined into a single system of equation, even though the system of composed of independent blocks of two dimensional first-order ODE systems. MATLAB's \texttt{ode45} function is used to perform the integration and the flow integration typically takes five to ten minutes with default error tolerances. The drawback of vector form integration is its memory requirements can become excessive at high resolutions, furthermore, writing the velocity function in vector form is more error-prone than the intrinsic two dimensional form.
+As stated, typically we set the main grid resolution of the Cauchy-Green strain tensor to around 500 grid points. For a square domain, this implies the velocity equations must be integrated, after including 4 auxiliary grid points around every main grid point, at 1.25 million grid points. The ``natural'' way to perform these integration calculations would be to solve a two dimensional first-order ODE system at every grid point and iterate over every grid point within a for-loop. With 1.25 million grid points this calculation can take an excessively long time. To alleviate this problem, we solve the flow equations in a vector form where the equations at all grid points are combined into a single system of equation, even though the system of composed of independent blocks of two dimensional first-order ODE systems. MATLAB's \lstinline!ode45! function is used to perform the integration and the flow integration typically takes five to ten minutes with default error tolerances. The drawback of vector form integration is its memory requirements can become excessive at high resolutions, furthermore, writing the velocity function in vector form is more error-prone than the intrinsic two dimensional form.
 
 The Cauchy-Green strain tensor can have singularities (i.e. $C_{t_0}^t(\boldsymbol x_0) = I$). Such points are isolated in general\parencite{delmarcelle94}, therefore no special accommodations for are made in computations for singularities of the Cauchy-Green strain tensor.
 
@@ -175,7 +207,7 @@ The Cauchy-Green strain tensor can have singularities (i.e. $C_{t_0}^t(\boldsymb
 
 Flows that are incompressible, meaning $\nabla \cdot \boldsymbol v = 0$, satisfy the relation $\lambda_1(\boldsymbol x_0) \lambda_2(\boldsymbol x_0) = 1, \forall \: \boldsymbol x_0 \: \in \: U$\parencite{arnold78:_mathem}. This gives the possibility of imposing incompressibility when calculating the eigenvalues of the Cauchy-Green strain tensor by first calculating $\lambda_2$ and then setting $\lambda_1(\boldsymbol x_0) = 1/\lambda_2(\boldsymbol x_0)$. This procedure should be applied carefully since by changing $\lambda_1$ but not $\xi_1$, the error in satisfying the eigenvalue equation for the Cauchy-Green strain tensor may increase.
 
-At some grid points it may occur that $\lambda_2 < 1$ due to numerical integration errors of the flow velocity equations. By setting integration tolerances to smaller values the number of grid points with $\lambda_2 < 1$ can be reduced. Nonetheless, some grid points can be so close to singularities of the Cauchy-Green strain tensor that satisfying $\lambda_2 >= 1$ everywhere could be excessively computationally costly. Therefore the function \texttt{eig\_cgStrain} records the number of points at which incompressibility cannot be imposed and this measure can also help to set appropriate integration tolerances.
+At some grid points it may occur that $\lambda_2 < 1$ due to numerical integration errors of the flow velocity equations. By setting integration tolerances to smaller values the number of grid points with $\lambda_2 < 1$ can be reduced. Nonetheless, some grid points can be so close to singularities of the Cauchy-Green strain tensor that satisfying $\lambda_2 >= 1$ everywhere could be excessively computationally costly. Therefore the function \lstinline!eig_cgStrain! records the number of points at which incompressibility cannot be imposed and this measure can also help to set appropriate integration tolerances.
 
 \subsubsection{Special case: data-defined velocity fields}
 
@@ -185,32 +217,68 @@ Beyond the pre-processing needed to obtain the Cauchy-Green strain tensor eigenv
 
 \subsection{Shear LCS}
 
-Shear LCSs, or coherent Lagrangian vortices, are closed orbits in the Lagrangian shear vector fields $\boldsymbol \eta_{\pm}$ defined in Equation~\eqref{e:etafields}. Since $\lambda = 1$, the closed curves are non-stretching and area preserving. We find closed orbits by integrating shearlines starting from a Poincare section and evaluating the first return map. A shearline closing onto itself in the starting point is a shear LCS. 
+Shear LCSs, or coherent Lagrangian vortices, are closed orbits in the Lagrangian shear vector fields $\boldsymbol \eta_{\pm}$ defined in Equation~\eqref{eq:etafields}. Since $\lambda = 1$, the closed curves are non-stretching and area preserving. We find closed orbits by integrating lambda-lines starting from a Poincare section and evaluating the first return map. A lambda-line closing onto itself in the starting point is a shear LCS.
 
-The main steps of the algorithm used to calculate shear LCS are enumerated in Table~\ref{t:Shear LCS algorithm}
+The main steps of the algorithm used to calculate shear LCS are enumerated in Table~\ref{t:Shear LCS algorithm}. The syntax of shear LCS functions in LCS Tool is in Table~\ref{t:Shear LCS functions}.
 
 \begin{table}
+\begin{center}
 \begin{enumerate}
 \item Position Poincare sections in flow domain
 \item Calculate Poincare return map
 \item Find closed orbits in Poincare return map
 \item Identify outermost closed orbit
 \end{enumerate}
-\caption{Algorithm used to calculate Shear LCS.}
+\end{center}
+\caption{Algorithm to calculate Shear LCS}
 \label{t:Shear LCS algorithm}
 \end{table}
 
-The first step is to set the position of Poin\-care sections \texttt{poincare\-Section.endPosition} that are straight lines in regions where closed shearlines are expected. The Poincare section must be oriented in a way that the first endpoint is close to the centre of the expected eddy and the second endpoint is outside the expected eddy region. There is no predetermined procedure for deciding where the Poincare sections should be positioned. Possibilities are an examination of the finite-time Lyapunov exponent field of the flow, or some prior knowledge of where coherent eddies could be expected. Additionally, the number of trajectories launched from the Poincare section \texttt{poincareSection.numPoints} must be defined. A good default value is $100$.
+\begin{table}
+\begin{tabular}{|c|p{.7\textwidth}|}
+\hline \hline
+\multicolumn{2}{|p{\textwidth}|}{\lstinline![shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda)!}\\
+\hline
+\lstinline!cgEigenvector! & array of Cauchy-Green strain eigenvectors\\
+\hline
+\lstinline!cgEigenvalue! & array of Cauchy-Green strain eigenvalues\\
+\hline
+\lstinline!lambda! & scalar lambda value in Equation~\eqref{eq:eta}\\
+\hline \hline
+\multicolumn{2}{|p{\textwidth}|}{\lstinline![closedOrbits,orbits] = poincare_closed_orbit_multi(domain,resolution,shearline,PSList)!}\\
+\hline
+\lstinline!domain! & array to define flow domain\\
+\hline
+\lstinline!resolution! & $1 \times 2$ array to define Cauchy-Green strain main grid resolution\\
+\hline
+\lstinline!shearline! & structure of arrays of $\eta_+$ and $\eta_-$ values on main grid\\
+\hline
+\lstinline!PSList! & structure for Poincare section end-points, number of lambda-lines launched from Poincare section, and maximum closed lambda-line length\\
+\hline
+\lstinline!nBisection! & optional positive integer. Default is 5.\\
+\hline
+\lstinline!dThresh! & optional scalar. Default is $10^{-2}$.\\
+\hline
+\lstinline!odeSolverOptions! & optional \lstinline!odeset! structure to specify lambda-line integration options\\
+\hline
+\lstinline!periodicBc! & optional $1 \times 2$ logical array to specify periodic boundary conditions. Default is \lstinline![false,false]!.\\
+\hline \hline
+\end{tabular}
+\caption{LCS Tool shear LCS functions syntax}
+\label{t:Shear LCS functions}
+\end{table}
 
-The second step is to integrate the shearlines to obtain the Poincare return map. Integration of shearlines is performed with the $\eta_+$ and $\eta_-$ vector fields defined on the main grid. These vector fields are derived from eigenvalues and eigenvectors as described in~\textcite{farazmand12:_comput_lagran}. The eigenvector fields have orientation discontinuities, therefore the vector field must be locally reoriented for the integration. The algorithm used to perform variable step-size integration in vector fields with orientation discontinuities is enumerated in Table~\ref{t:variable step integration} and illustrated in Figure~\ref{f:variable step integration}. Linear interpolation is used when interpolating $\boldsymbol \eta_\pm$ within a grid element, since using higher order interpolation would necessitate verifying that there are no orientation discontinuities at more than only the four nearest grid points. Detection of orientation discontinuities is achieved by checking the inner product of the vector fields at adjacent grid points. Then, rotations exceeding 90\degree\, are classified as orientation discontinuities and are corrected before linear interpolation. Thus when setting the Cauchy-Green strain tensor main grid resolution, a histogram of eigenvector field rotations may be produced to ensure that all rotations are below 90\degree\, or close to 180\degree.
+The first step is to set the position of Poin\-care sections \lstinline!poincareSection.endPosition! that are straight lines in regions where closed lambda-lines are expected. The Poincare section must be oriented in a way that the first endpoint is close to the centre of the expected eddy and the second endpoint is outside the expected eddy region. There is no predetermined procedure for deciding where the Poincare sections should be positioned. Possibilities are an examination of the finite-time Lyapunov exponent field of the flow, or some prior knowledge of where coherent eddies could be expected. Additionally, the number of lambda-lines launched from the Poincare section \lstinline!poincareSection.numPoints! must be defined. A good default value is $100$.
+
+The second step is to integrate the lambda-lines to obtain the Poincare return map. Integration of lambda-lines is performed with the $\eta_+$ and $\eta_-$ vector fields defined on the main grid. These vector fields are derived from eigenvalues and eigenvectors as described in~\textcite{farazmand12:_comput_lagran}. The eigenvector fields have orientation discontinuities, therefore the vector field must be locally reoriented for the integration. The algorithm used to perform variable step-size integration in vector fields with orientation discontinuities is enumerated in Table~\ref{t:variable step integration} and illustrated in Figure~\ref{f:variable step integration}. Linear interpolation is used when interpolating $\boldsymbol \eta_\pm$ within a grid element, since using higher order interpolation would necessitate verifying that there are no orientation discontinuities at more than only the four nearest grid points. Detection of orientation discontinuities is achieved by checking the inner product of the vector fields at adjacent grid points. Then, rotations exceeding 90\degree\, are classified as orientation discontinuities and are corrected before linear interpolation. Thus when setting the Cauchy-Green strain tensor main grid resolution, a histogram of eigenvector field rotations may be produced to ensure that all rotations are below 90\degree\, or close to 180\degree.
 
 \begin{table}
 \begin{enumerate}
 \item Linearly interpolate vector field orientation at initial position
 \item At next position, check whether vector field has rotated by over 90\degree, if yes, flip the vector field orientation by 180\degree.
-\item Stop integration when shearline returns to Poincare section, or maximum integration length has been reached.
+\item Stop integration when lambda-line returns to Poincare section, or maximum integration length has been reached.
 \end{enumerate}
-\caption{Algorithm used for variable time step integration of shearlines.}
+\caption{Algorithm used for variable time step integration of lambda-lines.}
 \label{t:variable step integration}
 \end{table}
 
@@ -218,15 +286,15 @@ The second step is to integrate the shearlines to obtain the Poincare return map
 \begin{center}
 \includegraphics[width=\textwidth]{graphics/variable_step_integration}
 \end{center}
-\caption{Schematic illustration of shearline variable time step integration. At the initial point, there is an orientation discontinuity at the lower right grid point that must be corrected prior to linear interpolation. At point \#1, no orientation discontinuties are present. At point \#2 the interpolated eigenvector field must be rotated by 180\degree\,to match the orientation at the previous point, \#1.}
+\caption{Schematic illustration of lambda-line variable time step integration. At the initial point, there is an orientation discontinuity at the lower right grid point that must be corrected prior to linear interpolation. At point \#1, no orientation discontinuties are present. At point \#2 the interpolated eigenvector field must be rotated by 180\degree\,to match the orientation at the previous point, \#1.}
 \label{f:variable step integration}
 \end{figure}
 
-An example of a Poincare return map produced from integration of the $\boldsymbol \eta_\pm$ field is shown in Figure~\ref{f:Poincare return map}. Well behaved orbits will return to the Poincare section and their integration will be stopped using an ODE event detection function. Some orbits may however deviate far from the Poincare section and their integration could take inordinately long. To prevent this behaviour, a maximum orbit length, \texttt{poincareSection.\-orbit\-MaxLength}, is specified. In practice, viewing the Poincare section as the radius of a circle and setting the maximum shearline integration length to twice the circumference gives acceptable results. In Figure~\ref{f:Poincare return map}, circle markers indicate closed orbit positions. Closed orbits exist where the Poincare return map is zero. The function \texttt{poincare\_closed\_orbit} performs the computations. In Figure~\ref{f:Poincare return map} not all zero crossings have circles. This is because a threshold parameter, \texttt{dThresh} whose default value is 1\% of the length of the Poincare section, is used to discard those zero crossings that appear in regions with high numerical noise. The position of each detected zero crossing is refined by iteratively bisecting the interval of the zero crossing. If after a predetermined number of iterations, \texttt{nBisection} whose default value is five, the two points around the zero crossing have absolute values of more \texttt{dThresh}, the zero crossing is discarded. In the Figure, discarded zero crossings are seen where $0 < s < 0.05$. Once all closed shearline orbits have been located, the outermost orbit of every Poincare section is deemed a shear LCS.
+An example of a Poincare return map produced from integration of the $\boldsymbol \eta_\pm$ field is shown in Figure~\ref{f:Poincare return map}. Well behaved orbits will return to the Poincare section and their integration will be stopped using an ODE event detection function. Some orbits may however deviate far from the Poincare section and their integration could take inordinately long. To prevent this behaviour, a maximum orbit length, \lstinline!poincareSection.orbitMaxLength!, is specified. In practice, viewing the Poincare section as the radius of a circle and setting the maximum lambda-line integration length to twice the circumference gives acceptable results. In Figure~\ref{f:Poincare return map}, circle markers indicate closed orbit positions. Closed orbits exist where the Poincare return map is zero. The function \lstinline!poincare_closed_orbit! performs the computations. In Figure~\ref{f:Poincare return map} not all zero crossings have circles. This is because a threshold parameter, \lstinline!dThresh! whose default value is 1\% of the length of the Poincare section, is used to discard those zero crossings that appear in regions with high numerical noise. The position of each detected zero crossing is refined by iteratively bisecting the interval of the zero crossing. If after a predetermined number of iterations, \lstinline!nBisection! whose default value is five, the two points around the zero crossing have absolute values of more \lstinline!dThresh!, the zero crossing is discarded. In the Figure, discarded zero crossings are seen where $0 < s < 0.05$. Once all closed lambda-line orbits have been located, the outermost orbit of every Poincare section is deemed a shear LCS.
 
 \begin{figure}
 \begin{center}
-%\includegraphics[width=\textwidth]{graphics/double_gyre/poincare_return_map}
+\includegraphics[width=\textwidth]{graphics/double_gyre/poincare_return_map}
 \end{center}
 \caption{Example of a Poincare return map obtained for shear LCS. Circle markers indicate closed orbit positions. The filled circle indicates the outermost closed orbit and shear LCS.}
 \label{f:Poincare return map}
@@ -234,7 +302,7 @@ An example of a Poincare return map produced from integration of the $\boldsymbo
 
 \subsection{Hyperbolic LCS}
 
-The main steps of the algorithm used to calculate hyperbolic LCS are enumerated in Table~\ref{t:Hyperbolic LCS algorithm}
+The main steps of the algorithm used to calculate hyperbolic LCS are enumerated in Table~\ref{t:Hyperbolic LCS algorithm}. The main function to compute hyperbolic LCS in LCS Tool is \lstinline!seed_curves_from_lambda_max! and its syntax is given in Table~\ref{t:seed_curves_from_lambda_max syntax}.
 
 \begin{table}
 \begin{enumerate}
@@ -246,13 +314,43 @@ The main steps of the algorithm used to calculate hyperbolic LCS are enumerated 
 \item Continue integrating strainlines using local maximums of $\lambda_2$ as initial positions until no eligible local maximums of $\lambda_2$ remain.
 \item Remove any strainline segment contained within (closed) shear LCS
 \end{enumerate}
-\caption{Algorithm used to calculate hyperbolic LCS.}
+\caption{Algorithm to calculate hyperbolic LCS}
 \label{t:Hyperbolic LCS algorithm}
 \end{table}
 
-Strainlines are integrated from local maximums of $\lambda_2$ on the main grid. A local maximisation distance is defined. This distance is set between two and five grid points since it represents the number of grid points over which the Cauchy-Green strain tensor is susceptible to numerical noise from integration. Thus the local maximisation distance is expected to be a function of variable time step integration tolerances. A record is made of all grid points where $\lambda_2$ is maximum within a circle whose radius equals the defined maximisation distance. Then the first strainline is integrated from the largest of all the local maximums forward and backward in time. Similarly to shearlines, this integration must take into account eigenvector field orientation discontinuities. Prior to initiating strainline integration, a maximum length is defined. Strainlines are then integrated until reaching the domain boundary or the maximum length. The maximum length may be seen as safety factor to prevent highly sinuous strainlines leading to inordinately long computations; the maximum length should be set such that most strainline stop at the domain boundary. Once a strainline position has been calculated, local maximums of $\lambda_2$ within the minimisation distance are flagged as ineligible initial positions for subsequent strainlines. After the first strainline has been obtained and any ineligible local maximums of $\lambda_2$ have been flagged the next strainline is integrated. The process continues until all eligible local maximums of $\lambda_2$ have been used to initialise strainline integration. Finally any strainline segment contained within (closed) shear LCS are removed. These calculations are performed by the functions \texttt{seed\_curves\_from\_lambda\_max} and \texttt{remove\_strain\_in\_shear}.
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|p{.7\textwidth}|}
+\hline \hline
+\multicolumn{2}{|p{\textwidth}|}{\lstinline![curvePosition,curveInitialPosition] = seed_curves_from_lambda_max(distance,cgEigenvalue,cgEigenvector,flowDomain,flowResolution)!}\\
+\hline
+\lstinline!distance! & threshold distance for placement of lambda maximums\\
+\hline
+\lstinline!cgEigenvalue! & array of Cauchy-Green strain eigenvalues\\
+\hline
+\lstinline!cgEigenvector! & array of Cauchy-Green strain eigenvectors\\
+\hline
+\lstinline!flowDomain! & $2 \times 2$ array to define flow domain\\
+\hline
+\lstinline!flowResolution! & $1 \times 2$ array to define Cauchy-Green strain main grid resolution\\
+\hline
+\lstinline!periodicBc! & optional $1 \times 2$ logical array to specify periodic boundary conditions. Default is \lstinline![false,false]!.\\
+\hline
+\lstinline!nMaxCurves! & optional maximum number of curves (i.e. strainlines of stretchlines) to generate. Default is \lstinline!numel(cgEigenvalue)!.\\
+\hline
+\lstinline!odeSolverOptions! & optional \lstinline!odeset! structure to specify flow map integration options\\
+\hline \hline
+\end{tabular}
+\end{center}
+\caption{Syntax of the function \lstinline!seed_curves_from_lambda_max!}
+\label{t:seed_curves_from_lambda_max syntax}
+\end{table}
+
+Strainlines are integrated from local maximums of $\lambda_2$ on the main grid. A local maximisation distance is defined. This distance is set between two and five grid points since it represents the number of grid points over which the Cauchy-Green strain tensor is susceptible to numerical noise from integration. Thus the local maximisation distance is expected to be a function of variable time step integration tolerances. A record is made of all grid points where $\lambda_2$ is maximum within a circle whose radius equals the defined maximisation distance. Then the first strainline is integrated from the largest of all the local maximums forward and backward in time. Similarly to lambda-lines, this integration must take into account eigenvector field orientation discontinuities. Prior to initiating strainline integration, a maximum length is defined. Strainlines are then integrated until reaching the domain boundary or the maximum length. The maximum length may be seen as safety factor to prevent highly sinuous strainlines leading to inordinately long computations; the maximum length should be set such that most strainline stop at the domain boundary. Once a strainline position has been calculated, local maximums of $\lambda_2$ within the minimisation distance are flagged as ineligible initial positions for subsequent strainlines. After the first strainline has been obtained and any ineligible local maximums of $\lambda_2$ have been flagged the next strainline is integrated. The process continues until all eligible local maximums of $\lambda_2$ have been used to initialise strainline integration. Finally any strainline segment contained within (closed) shear LCS are removed. These calculations are performed by the functions \lstinline!seed_curves_from_lambda_max! and \lstinline!remove_strain_in_shear!.
 
 Note that once a strainline integration has begun, it may progress so as to be within the local minimisation distance of an existing strainline. In other words, the local minimisation distance controls where strainlines begin, but not where they stop.
+
+\clearpage
 
 \section{Examples}
 
@@ -265,11 +363,11 @@ The double gyre is a model for a pattern observed in geophysical flows\parencite
 \dot y = \pi A \cos[\pi f(x,t)] \sin(\pi y) \frac{\partial f(x,t)}{\partial x}\\
 f(x,t) = \epsilon \sin(\omega t) x^2 + [1 - 2 \epsilon \sin(\omega t)] x
 \end{split}
-\label{e:double gyre derivative equations}
+\label{eq:double gyre derivative equations}
 \end{equation}
 The MATLAB function corresponding to these equations is given in Listing~\ref{l:double gyre derivative} and shows how to specify a derivative function that supports vector form integration.
 
-\begin{lstlisting}[caption={Double gyre derivative function corresponding to Equations~\ref{e:double gyre derivative equations}.},label=l:double gyre derivative]
+\begin{lstlisting}[caption={Double gyre derivative function corresponding to Equations~\ref{eq:double gyre derivative equations}.},label=l:double gyre derivative]
 function derivative_ = derivative(t,x,epsilon,amplitude,omega)
 
 idx1 = 1:2:numel(x)-1;
@@ -391,11 +489,11 @@ To calculate strainline and stretchline LCSs we set the timespan to $t \in [0,2L
 
 For the last example, we choose a measured geophysical flow where, in contrast to the previous examples, the two dimensional incompressible velocity field is presented as a dataset with discrete temporal and spatial resolution. Our region of interest is a small domain in the South Atlantic Ocean, where exceptionally coherent eddies, Agulhas rings, were recently found using methods provided by LCS Tool\parencite{haller13:_coher_lagran}. The oceanic velocity field is obtained from altimetric satelite measurements of the sea surface height under the assumption that the flow is geostrophic. Under this assumption the sea surface height $\eta$ serves as a streamfunction and in a longitude-latitude $(\varphi,\theta)$ coordinate system the evolution of a fluid particle is given by
 \begin{eqnarray}
-\dot{\varphi}(\varphi,\theta,t) = -\frac{g}{R^2 f(\theta) \cos\theta}\partial_{\theta}\eta(\varphi,\theta,t)\label{e:dtlon}\\
+\dot{\varphi}(\varphi,\theta,t) = -\frac{g}{R^2 f(\theta) \cos\theta}\partial_{\theta}\eta(\varphi,\theta,t)\label{eq:dtlon}\\
 \dot{\theta}(\varphi,\theta,t) = +\frac{g}{R^2 f(\theta) \cos\theta}\partial_{\varphi}\eta(\varphi,\theta,t)
-\label{e:dtlat}
+\label{eq:dtlat}
 \end{eqnarray}
-where $g$ is the gravitational acceleration, $R$ is the mean radius of Earth, and $f(\theta):=2\Omega\sin\theta$ is the Coriolis parameter with $\Omega$ being the Earth's mean angular velocity. The data is given at a spatial resolution of $1/4\degree$ and temporal resolution of $7\,\mathrm{days}$. Due to the discrete data, defining the right hand side of Eq.\,(\ref{e:dtlon}) and (\ref{e:dtlat}) involves interpolation in space and time with a spline interpolation scheme. An interpolant is generated first, then the function \texttt{flowdata\_derivative} evaluates the interpolant at the needed coordinates. The interpolation time was chosen to be $T=90\,\mathrm{days}$, a multiple of the turn over time of the mesoscale eddies in the domain. The resolution of the grid of initial conditions is set to $400\times400$ which corresponds to a resolution of roughly $0.015^\circ$ and gives good results. With this choice the resolution of the tracer grid is of the order of $15$ times higher than the resolution of the velocity field.
+where $g$ is the gravitational acceleration, $R$ is the mean radius of Earth, and $f(\theta):=2\Omega\sin\theta$ is the Coriolis parameter with $\Omega$ being the Earth's mean angular velocity. The data is given at a spatial resolution of $1/4\degree$ and temporal resolution of $7\,\mathrm{days}$. Due to the discrete data, defining the right hand side of Eq.\,(\ref{eq:dtlon}) and (\ref{eq:dtlat}) involves interpolation in space and time with a spline interpolation scheme. An interpolant is generated first, then the function \lstinline!flowdata_derivative! evaluates the interpolant at the needed coordinates. The interpolation time was chosen to be $T=90\,\mathrm{days}$, a multiple of the turn over time of the mesoscale eddies in the domain. The resolution of the grid of initial conditions is set to $400\times400$ which corresponds to a resolution of roughly $0.015^\circ$ and gives good results. With this choice the resolution of the tracer grid is of the order of $15$ times higher than the resolution of the velocity field.
 Figures~\ref{f:ocean dataset hyperbolic shear lcs strainline} and \ref{f:ocean dataset hyperbolic shear lcs stretchline} show elliptic and hyperbolic LCS on 22 November 2006, i.e., the same time instant shown in~\textcite{haller13:_coher_lagran,beron-vera13:_objec_agulh}. The analysis with LCS Tool reveals a large coherent eddy bounded by a closed lambda-line at $(3,-32)$ and four further smaller coherent eddy cores. 
 
 \begin{itemize}
@@ -453,9 +551,9 @@ Figures~\ref{f:ocean dataset hyperbolic shear lcs strainline} and \ref{f:ocean d
 % Application of the chain rule gives the equation of variation:
 % \begin{align}
 % \frac{\partial}{\partial x_0} \dot{x} &= Dv(x,t) \frac{\partial x}{\partial x_0}\nonumber\\
-% \frac{d}{dt} DF_{t_0}^t &= Dv(x,t) DF_{t_0}^t\label{e:equation of variation}
+% \frac{d}{dt} DF_{t_0}^t &= Dv(x,t) DF_{t_0}^t\label{eq:equation of variation}
 % \end{align}
-% Equation \eqref{e:equation of variation} is the equation of variation and an initial value problem ordinary differential equations system. The initial condition, $DF_{t_0}^{t_0}$, is the identity matrix. 
+% Equation \eqref{eq:equation of variation} is the equation of variation and an initial value problem ordinary differential equations system. The initial condition, $DF_{t_0}^{t_0}$, is the identity matrix. 
 
 % For two dimensional flows,
 % \[
@@ -585,5 +683,4 @@ The altimeter products used in this work are produced by SSALTO/DUACS and distri
 % Local Variables:
 % ispell-dictionary: "en_GB"
 % End:
-% LocalWords:  stretchline stretchlines incompressible gyre eigenvector eigenvectors incompressibility dataset datasets LCS strainline shearline Lyapunov Bickley Rossby timespan variational adaptively vortices parametrise advected
-%  LocalWords:  strainlines
+% LocalWords:  stretchline stretchlines incompressible gyre eigenvector eigenvectors incompressibility dataset datasets LCS strainline Lyapunov Bickley Rossby timespan variational adaptively vortices parametrise advected strainlines

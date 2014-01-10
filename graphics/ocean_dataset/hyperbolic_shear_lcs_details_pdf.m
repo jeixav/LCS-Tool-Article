@@ -1,41 +1,18 @@
 function hyperbolic_shear_lcs_details_pdf
 
-lcs_tool_root = fullfile('..','..','..','..','lcs_toolbox');
-ocean_dataset_demo = fullfile(lcs_tool_root,'demo','ocean_dataset');
+hyperbolic_shear_lcs_details
 
-oldFolder = cd(ocean_dataset_demo);
+hFigure = 1;
+filename = 'hyperbolic_shear_lcs_details_strainline';
+delete_title(hFigure)
+print_pdf(hFigure,filename)
 
-try
-    addpath(fullfile('..','..'))
-    hyperbolic_shear_lcs_details
-    cd(oldFolder)
-    
-    hFigure = 1;
-    filename = 'hyperbolic_shear_lcs_details_strainline';
-    savefig(hFigure,filename)
-    delete_title(hFigure)
-    filenamePDF = [filename,'.pdf'];
-    if exist(filenamePDF,'file')
-        delete(filenamePDF)
-    end
-    print_pdf(hFigure,filename)
-    
-    % FIXME hFigure should not be hard-coded; should probably search for
-    % matching title string
-    hFigure = 12;
-    filename = 'hyperbolic_shear_lcs_details_stretchline';
-    savefig(hFigure,filename)
-    delete_title(hFigure)
-    filenamePDF = [filename,'.pdf'];
-    if exist(filenamePDF,'file')
-        delete(filenamePDF)
-    end
-    print_pdf(hFigure,filename)
-
-catch err
-    cd(oldFolder)
-    rethrow(err)
-end
+% FIXME hFigure should not be hard-coded; should probably search for
+% matching title string
+hFigure = 12;
+filename = 'hyperbolic_shear_lcs_details_stretchline';
+delete_title(hFigure)
+print_pdf(hFigure,filename)
 
 function delete_title(hFigure)
 
