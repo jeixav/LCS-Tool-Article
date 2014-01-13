@@ -110,7 +110,7 @@ where
 - \lambda_1}} \boldsymbol \xi_2.
 \label{eq:eta}
 \end{equation}
-In subsequent sections $\lambda = 1$ always. We call the curves associated with coherent Lagrangian vortices lambda-lines.
+We call the curves associated with coherent Lagrangian vortices lambda-lines.
 
 Hyperbolic LCSs are given by a variational approach based on shear presented in~\textcite{farazmand13:_shearless}. The Lagrangian shear is calculated as:
 \[
@@ -463,6 +463,19 @@ Figure~\ref{fig:Bickley_jet_FTLE} shows the overall appearance of the Bickley je
   \includegraphics[width=.85\textwidth]{graphics/bickley_jet/lambda_lcs_full}
   \caption{Bickley jet lambda-line LCSs}
   \label{fig:Bickley_jet_lambda_LCS_full}
+\end{figure}
+
+The script used to analyse lambda-line LCS is given in Listing~\ref{lst:Bickley jet lambda lcs subdomain}. The script produces the data shown in Figure~\ref{fig:Bickley jet lambda lcs convergence}. Parameter values used may read from the script. It is worth pointing out that in order to obtain closed orbits, $\lambda = 0.995$; with $\lambda = 1$ no closed orbits are found.
+
+\lstinputlisting[caption={Bickley jet script for lambda-line LCSs},label=lst:Bickley jet lambda lcs subdomain]{listings/bickley_jet/lambda_lcs_convergence_subdomain.m}
+
+\begin{figure}[hbt]
+  \centering
+  \includegraphics[width=.7\textwidth]{graphics/bickley_jet/lambda_lcs_convergence_400}
+\includegraphics[width=.7\textwidth]{graphics/bickley_jet/lambda_lcs_convergence_500}
+\includegraphics[width=.7\textwidth]{graphics/bickley_jet/lambda_lcs_convergence_600}
+  \caption{Bickley jet closed lambda-line at varying resolutions}
+  \label{fig:Bickley jet lambda lcs convergence}
 \end{figure}
 
 To calculate strainline and stretchline LCSs we set the timespan to $t \in [0,2L_x/U]$. The script used to detect strainlines is given in Listing~\ref{lst:bickley_jet_strain_lcs} and the results are shown in Figure~\ref{fig:Bickley_jet_strain_lcs}. Stretchline LCSs are shown in Figure~\ref{fig:Bickley_jet_stretch_lcs}.

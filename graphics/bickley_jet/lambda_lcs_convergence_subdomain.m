@@ -25,7 +25,7 @@ incompressible = true;
 cgStrainOdeSolverOptions = odeset('relTol',1e-4);
 
 % Lambda-lines
-lambda = 1;
+lambda = .995;
 lambdaLineOdeSolverOptions = odeset('relTol',1e-6);
 poincareSection.endPosition = [6.5,-1.4;4.5,-3.5]*1e6;
 [poincareSection.numPoints] = deal(100);
@@ -47,6 +47,7 @@ for m = 1:numel(resolutionX)
     disp(['Resolution: ',num2str(resolution)])
     
     hAxes = setup_figure(domain);
+    hFigure = get(hAxes,'parent');
     title(hAxes,['Resolution: ',num2str(resolution(1)),'\times',num2str(resolution(2))])
     
     %% Cauchy-Green strain eigenvalues and eigenvectors
@@ -56,6 +57,7 @@ for m = 1:numel(resolutionX)
     cgEigenvalue2 = reshape(cgEigenvalue(:,2),fliplr(resolution));
     ftle_ = ftle(cgEigenvalue2,diff(timespan));
     plot_ftle(hAxes,domain,resolution,ftle_);
+    delete(findobj(hFigure,'Type','axes','Tag','Colorbar'))
     colormap(hAxes,flipud(gray))
     drawnow
 
@@ -70,12 +72,12 @@ for m = 1:numel(resolutionX)
     drawnow
     
     [shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda);
-    [closedLambdaLine,~,hFigure] = poincare_closed_orbit_multi(domain,resolution,shearline,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions,'dThresh',dThresh,'showGraph',true);
-    delete(hFigure(2))
-    hPoincare = findobj(hFigure(1),'type','axes','Tag',[]);
+    [closedLambdaLine,~,hFigurePoincare] = poincare_closed_orbit_multi(domain,resolution,shearline,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions,'dThresh',dThresh,'showGraph',true);
+    delete(hFigurePoincare(2))
+    hPoincare = findobj(hFigurePoincare(1),'type','axes','Tag',[]);
     title(hPoincare,['Poincare return map, resolution: ',num2str(resolution(1)),'\times',num2str(resolution(2))])
-    set(hPoincare,'ylim',[-2,2]*1e4)
-    hLegend = findobj(hFigure(1),'type','axes','Tag','legend');
+    set(hPoincare,'ylim',[-2,2]*1e5)
+    hLegend = findobj(hFigurePoincare(1),'type','axes','Tag','legend');
     set(hLegend,'Location','SouthWest')
     
     % Plot lambda-line LCSs
@@ -88,8 +90,9 @@ for m = 1:numel(resolutionX)
     % Plot all closed lambda lines
     hClosedLambdaLinePos = cellfun(@(position)plot(hAxes,position(:,1),position(:,2)),closedLambdaLine{1}{1});
     hClosedLambdaLineNeg = cellfun(@(position)plot(hAxes,position(:,1),position(:,2)),closedLambdaLine{1}{2});
-    hClosedLambdaLine = horzcat(hClosedLambdaLinePos,hClosedLambdaLineNeg);
+    hClosedLambdaLine = vertcat(hClosedLambdaLinePos,hClosedLambdaLineNeg);
     set(hClosedLambdaLine,'color',lambdaLineColor)
     uistack(hPoincareSection,'top')
     drawnow
+    print_pdf(hFigure,['lambda_lcs_convergence_',num2str(resolution(1))])
 end
