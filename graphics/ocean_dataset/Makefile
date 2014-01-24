@@ -21,8 +21,4 @@ clean:
 	rm -f hyperbolic_shear_lcs_strainline.pdf \
 	hyperbolic_shear_lcs_stretchline.pdf \
 	hyperbolic_shear_lcs_details_strainline.pdf \
-	hyperbolic_shear_lcs_details_stretchline.pdf \
-	hyperbolic_shear_lcs_strainline.fig \
-	hyperbolic_shear_lcs_stretchline.fig \
-	hyperbolic_shear_lcs_details_strainline.fig \
-	hyperbolic_shear_lcs_details_stretchline.fig
+	hyperbolic_shear_lcs_details_stretchline.pdf
