@@ -32,7 +32,7 @@ poincareSection.endPosition = [6.5,-1.4;4.5,-3.5]*1e6;
 rOrbit = hypot(diff(poincareSection.endPosition(:,1)),diff(poincareSection.endPosition(:,2)));
 poincareSection.orbitMaxLength = 2*(2*pi*rOrbit);
 lambdaLineColor = [0,.6,0];
-dThresh = 1e-4;
+dThresh = 1e-3;
 
 warning('off','eig_cgStrain:unequalDelta')
 warning('off','eig_cgStrain:unequalAuxGridDelta')
@@ -76,7 +76,7 @@ for m = 1:numel(resolutionX)
     delete(hFigurePoincare(2))
     hPoincare = findobj(hFigurePoincare(1),'type','axes','Tag',[]);
     title(hPoincare,['Poincare return map, resolution: ',num2str(resolution(1)),'\times',num2str(resolution(2))])
-    set(hPoincare,'ylim',[-1,1]*1e5)
+    set(hPoincare,'ylim',[-2,2]*1e5)
     hLegend = findobj(hFigurePoincare(1),'type','axes','Tag','legend');
     set(hLegend,'Location','SouthWest')
     

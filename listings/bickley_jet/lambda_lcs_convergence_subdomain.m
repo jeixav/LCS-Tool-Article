@@ -30,7 +30,7 @@ poincareSection.endPosition = [6.5,-1.4;4.5,-3.5]*1e6;
 rOrbit = hypot(diff(poincareSection.endPosition(:,1)),diff(poincareSection.endPosition(:,2)));
 poincareSection.orbitMaxLength = 2*(2*pi*rOrbit);
 lambdaLineColor = [0,.6,0];
-dThresh = 1e-4;
+dThresh = 1e-3;
 
 for m = 1:numel(resolutionX)
     % Make x and y grid spacing as equal as possible
