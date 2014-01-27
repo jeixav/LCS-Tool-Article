@@ -305,11 +305,11 @@ The main steps of the algorithm used to calculate hyperbolic LCS are enumerated 
 \begin{table}
 \begin{enumerate}
 \item Define a local maximisation distance.
-\item Find all local maximums of $\lambda_2$ on the main grid such that they are maximums within a circle with a radius equal to the local minimisation distance.
+\item Find all local maxima of $\lambda_2$ on the main grid such that they are maxima within a circle with a radius equal to the local minimisation distance.
 \item Define a maximum strainline length
 \item Integrate a strainline forward and backward, using the largest $\lambda_2$ local maximum as the initial position. Integrate until the strainline has attained the maximum strainline length, or until it has reached the domain boundary.
-\item Flag any remaining local maximums of $\lambda_2$ within the minimisation distance of the strainline as ineligible initial positions for subsequent strainlines
-\item Continue integrating strainlines using local maximums of $\lambda_2$ as initial positions until no eligible local maximums of $\lambda_2$ remain.
+\item Flag any remaining local maxima of $\lambda_2$ within the minimisation distance of the strainline as ineligible initial positions for subsequent strainlines
+\item Continue integrating strainlines using local maxima of $\lambda_2$ as initial positions until no eligible local maxima of $\lambda_2$ remain.
 \item Remove any strainline segment contained within (closed) shear LCS
 \end{enumerate}
 \caption{Algorithm to calculate hyperbolic LCS}
@@ -322,7 +322,7 @@ The main steps of the algorithm used to calculate hyperbolic LCS are enumerated 
 \hline \hline
 \multicolumn{2}{|p{\textwidth}|}{\lstinline![curvePosition,curveInitialPosition] = seed_curves_from_lambda_max(distance,cgEigenvalue,cgEigenvector,flowDomain,flowResolution)!}\\
 \hline
-\lstinline!distance! & threshold distance for placement of lambda maximums\\
+\lstinline!distance! & threshold distance for placement of lambda maxima\\
 \hline
 \lstinline!cgEigenvalue! & array of Cauchy-Green strain eigenvalues\\
 \hline
@@ -347,7 +347,7 @@ The main steps of the algorithm used to calculate hyperbolic LCS are enumerated 
 Strainlines, trajectories of the $\boldsymbol \xi_1$ vector field, are integrated starting from local maxima of $\lambda_2$ on the main grid. 
 The local maximisation distance \lstinline!distance! is defined. This distance is set to a value between two and five grid points, since it represents the number of grid points over which the Cauchy-Green strain tensor is susceptible to numerical noise from integration. Thus, the local maximisation distance is expected to be a function of variable time step integration tolerances. A record is made of all grid points where $\lambda_2$ is maximal within a circle whose radius equals the defined maximisation distance. 
 Then the first strainline is integrated from the largest of all the local maxima in both directions, i.e., integrating $\boldsymbol \xi_1$ and $-\boldsymbol \xi_1$. Similarly to lambda-lines, this integration must take into account eigenvector field orientation discontinuities. Prior to initiating strainline integration, a maximum length is defined. Strainlines are then integrated until reaching the domain boundary or the maximum length. The maximum length may be seen as safety factor to prevent highly sinuous strainlines leading to inordinately long computations; the maximum length should be set such that most strainline stop at the domain boundary. 
-Once a strainline position has been calculated, local maxima of $\lambda_2$ within the minimisation distance are flagged as ineligible initial positions for subsequent strainlines. After the first strainline has been obtained and any ineligible local maximums of $\lambda_2$ have been flagged, the next strainline is integrated. The process continues until all eligible local maxima of $\lambda_2$ have been used to initialise strainline integration. Finally, any strainline segment contained within (closed) shear LCS are removed. These calculations are performed by the functions \lstinline!seed_curves_from_lambda_max! and \lstinline!remove_strain_in_shear!.
+Once a strainline position has been calculated, local maxima of $\lambda_2$ within the minimisation distance are flagged as ineligible initial positions for subsequent strainlines. After the first strainline has been obtained and any ineligible local maxima of $\lambda_2$ have been flagged, the next strainline is integrated. The process continues until all eligible local maxima of $\lambda_2$ have been used to initialise strainline integration. Finally, any strainline segment contained within (closed) shear LCS are removed. These calculations are performed by the functions \lstinline!seed_curves_from_lambda_max! and \lstinline!remove_strain_in_shear!.
 
 Note that once a strainline integration has begun, it may progress so as to be within the local minimisation distance of an existing strainline. In other words, the local minimisation distance controls where strainlines begin, but not where they stop.
 
@@ -411,7 +411,7 @@ In Figure~\ref{fig:double_gyre_lambda_lcs_convergence} the resolution of the  Ca
   \label{fig:double_gyre_lambda_lcs_convergence}
 \end{figure}
 
-We continue the example by adding the calculation of hyperbolic strainline and stretchline LCSs. Figures~\ref{fig:double_gyre_lambda_strain_lcs} and~\ref{fig:double_gyre_lambda_stretch_lcs} show the results and Listing~\ref{lst:double_gyre_lambda_strain_stretch_lcs} gives the LCS Tool commands. The local maximisation distance is set larger for stretchlines than for strainlines usually. This is because strainlines follow ridges of $\lambda_2$ maximums whereas stretchlines do not follow ridges of $\lambda_1$ minimums.
+We continue the example by adding the calculation of hyperbolic strainline and stretchline LCSs. Figures~\ref{fig:double_gyre_lambda_strain_lcs} and~\ref{fig:double_gyre_lambda_stretch_lcs} show the results and Listing~\ref{lst:double_gyre_lambda_strain_stretch_lcs} gives the LCS Tool commands. The local maximisation distance is set larger for stretchlines than for strainlines usually. This is because strainlines follow ridges of $\lambda_2$ maxima whereas stretchlines do not follow ridges of $\lambda_1$ minima.
 
 \begin{figure}
   \centering
@@ -542,7 +542,7 @@ For the ocean data, the integration time was chosen to be $T=30\,\mathrm{days}$,
 \begin{center}
 \includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_details_strainline}
 \end{center}
-\caption{Same LCS as in Figure~\ref{f:ocean dataset hyperbolic shear lcs strainline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines with thick green curves being outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_2$ local maximums used for strainline integration initial positions.}
+\caption{Same LCS as in Figure~\ref{f:ocean dataset hyperbolic shear lcs strainline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines with thick green curves being outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_2$ local maxima used for strainline integration initial positions.}
 \label{f:ocean dataset hyperbolic shear lcs details strainline}
 \end{figure}
 
@@ -550,7 +550,7 @@ For the ocean data, the integration time was chosen to be $T=30\,\mathrm{days}$,
 \begin{center}
 \includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_details_stretchline}
 \end{center}
-\caption{Same LCS as in Figure~\ref{f:ocean dataset hyperbolic shear lcs stretchline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines and thick green curves are outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_1$ local minimums used for stretchline integration intial positions.}
+\caption{Same LCS as in Figure~\ref{f:ocean dataset hyperbolic shear lcs stretchline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines and thick green curves are outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_1$ local minima used for stretchline integration intial positions.}
 \label{f:ocean dataset hyperbolic shear lcs details stretchline}
 \end{figure}
 
@@ -576,4 +576,4 @@ The altimeter products used in this work are produced by SSALTO/DUACS and distri
 % Local Variables:
 % ispell-dictionary: "en_GB"
 % End:
-% LocalWords:  stretchline stretchlines incompressible gyre eigenvector eigenvectors incompressibility dataset datasets LCS strainline Lyapunov Bickley Rossby timespan variational adaptively vortices parametrise advected strainlines
+% LocalWords:  stretchline stretchlines incompressible gyre eigenvector eigenvectors incompressibility dataset datasets LCS strainline Lyapunov Bickley Rossby timespan variational adaptively vortices parametrise advected strainlines minima
