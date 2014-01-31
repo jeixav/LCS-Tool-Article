@@ -390,15 +390,7 @@ derivative_(idx1) = -pi*amplitude*sin(pi*forcing).*cos(pi*x(idx2));
 derivative_(idx2) = pi*amplitude*cos(pi*forcing).*sin(pi*x(idx2)).*(2*a*x(idx1) + b);
 \end{lstlisting}
 
-In what follows, the parameter values are: $A = 0.1$, $\epsilon = 0.1$, $\omega = \pi/5$. The flow timespan is $t \in [0,5]$ and the domain is $x \in [0,2]$, $y \in [0,1]$. In Figure~\ref{f:double gyre FTLE}, we show the FTLE at a resolution of $500\times250$.
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{graphics/double_gyre/ftle}
-\end{center}
-\caption{Double gyre FTLE.}
-\label{f:double gyre FTLE}
-\end{figure}
+In what follows, the parameter values are: $A = 0.1$, $\epsilon = 0.1$, $\omega = \pi/5$. The flow timespan is $t \in [0,5]$ and the domain is $x \in [0,2]$, $y \in [0,1]$.
 
 By examining the FTLE, we can position Poincare sections to detect lambda-line LCSs. An LCS Tool script to perform this operation is given in Listing~\ref{l:double gyre lambda-line LCS} where two Poincare sections are defined. In the script we have set error tolerances for integration of the Cauchy-Green strain tensor and lambda lines. These numerical parameters help achieve convergence.
 
@@ -411,7 +403,7 @@ In Figure~\ref{fig:double_gyre_lambda_lcs_convergence} the resolution of the  Ca
   \includegraphics[width=.8\textwidth]{graphics/double_gyre/lambda_lcs_convergence_500}
 \includegraphics[width=.8\textwidth]{graphics/double_gyre/lambda_lcs_convergence_750}
 \includegraphics[width=.8\textwidth]{graphics/double_gyre/lambda_lcs_convergence_1000}
-  \caption{Double gyre closed lambda-line at varying resolutions}
+  \caption{Double gyre closed lambda-lines at varying resolutions with FTLE background}
   \label{fig:double_gyre_lambda_lcs_convergence}
 \end{figure}
 

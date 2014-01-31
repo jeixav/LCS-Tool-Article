@@ -1,6 +1,6 @@
 function lambda_lcs_convergence
 
-%% Input parameters
+% Input parameters
 epsilon = .1;
 amplitude = .1;
 omega = pi/5;
@@ -8,11 +8,11 @@ domain = [0,2;0,1];
 resolutionX = 500:250:1000;
 timespan = [0,5];
 
-%% Velocity definition
+% Velocity definition
 lDerivative = @(t,x,~)derivative(t,x,false,epsilon,amplitude,omega);
 incompressible = true;
 
-%% LCS parameters
+% LCS parameters
 cgStrainOdeSolverOptions = odeset('relTol',1e-5);
 
 % Lambda-lines
@@ -41,17 +41,25 @@ for m = 1:numel(resolutionX)
     gridSpace = diff(domain(1,:))/(double(lResolutionX)-1);
     resolutionY = round(diff(domain(2,:))/gridSpace);
     resolution = [lResolutionX,resolutionY];
-    disp(['Resolution: ',num2str(resolution)])
     
     hAxes = setup_figure(domain);
+    hFigure = get(hAxes,'parent');
     title(hAxes,['Resolution: ',num2str(resolution(1)),'\times',num2str(resolution(2))])
     
-    %% Cauchy-Green strain eigenvalues and eigenvectors
+    % Cauchy-Green strain eigenvalues and eigenvectors
     s = warning('off','eig_cgStrain:unequalDelta');
     [cgEigenvector,cgEigenvalue] = eig_cgStrain(lDerivative,domain,resolution,timespan,'incompressible',incompressible,'odeSolverOptions',cgStrainOdeSolverOptions);
     warning(s)
     
-    %% Lambda-line LCSs
+    % Plot finite-time Lyapunov exponent
+    cgEigenvalue2 = reshape(cgEigenvalue(:,2),fliplr(resolution));
+    ftle_ = ftle(cgEigenvalue2,diff(timespan));
+    plot_ftle(hAxes,domain,resolution,ftle_);
+    colormap(hAxes,flipud(gray))
+    delete(findobj(hFigure,'Type','axes','Tag','Colorbar'))
+    drawnow
+    
+    % Lambda-line LCSs
     [shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda);
     warnState = warning('off','integrate_line:isDiscontinuousLargeAngle');
     closedLambdaLine = poincare_closed_orbit_multi(domain,resolution,shearline,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions);
@@ -71,9 +79,8 @@ for m = 1:numel(resolutionX)
         hClosedLambdaLinePos{j} = cellfun(@(position)plot(hAxes,position(:,1),position(:,2)),closedLambdaLine{j}{1});
         hClosedLambdaLineNeg{j} = cellfun(@(position)plot(hAxes,position(:,1),position(:,2)),closedLambdaLine{j}{2});
     end
-    hClosedLambdaLine = horzcat(hClosedLambdaLinePos{:},hClosedLambdaLineNeg{:});
+    hClosedLambdaLine = vertcat(hClosedLambdaLinePos{:},hClosedLambdaLineNeg{:});
     set(hClosedLambdaLine,'color',lambdaLineColor)
     drawnow
-    hFigure = get(hAxes,'parent');
     print_pdf(hFigure,['lambda_lcs_convergence_',num2str(resolution(1))])
 end
