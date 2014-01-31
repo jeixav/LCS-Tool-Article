@@ -31,7 +31,7 @@ lambda_stretch_lcs.pdf: lambda_stretch_lcs.m
 .PHONY: clean
 clean:
 	rm -f poincare_return_map.pdf \
-	ftle_pdf \
+	ftle.pdf \
 	lambda_lcs_convergence_500.pdf \
 	lambda_lcs_convergence_750.pdf \
 	lambda_lcs_convergence_1000.pdf \
