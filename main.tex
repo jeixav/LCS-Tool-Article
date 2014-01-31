@@ -10,6 +10,7 @@
 \usepackage{listings}
 \usepackage[numbered,framed]{mcode}
 \usepackage[space]{grffile}
+\usepackage{lineno}
 %% hyperref manual advises loading this package last
 \usepackage{hyperref}
 \hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,breaklinks=true}
@@ -22,6 +23,8 @@
 \newcommand{\reals}{\mathbf R}
 
 \newcommand{\FIXME}[1]{\\\fbox{FIXME: #1}\\}
+
+\linenumbers
 
 \title{An Algorithmic Introduction to Lagrangian Coherent Structures}
 
@@ -264,7 +267,9 @@ The main steps of the algorithm used to calculate shear LCS are enumerated in Ta
 
 The first step is to set the position of Poincare sections \lstinline!poincareSection.endPosition! that are straight lines in regions where closed lambda-lines are expected. The Poincare section must be oriented in a way that the first endpoint is close to the centre of the expected eddy and the second endpoint is outside the expected eddy region. There is no predetermined procedure for deciding where the Poincare sections should be positioned. Possibilities are an examination of the finite-time Lyapunov exponent field of the flow, or some prior knowledge of where coherent eddies could be expected. Additionally, the number of lambda-lines launched from the Poincare section \lstinline!poincareSection.numPoints! must be defined. A good default value is $100$.
 
-The second step is to integrate the lambda-lines to obtain the Poincare return map. Integration of lambda-lines is performed with the $\eta_+$ and $\eta_-$ vector fields defined on the main grid. These vector fields are derived from eigenvalues and eigenvectors as described in~\textcite{farazmand12:_comput_lagran}. The eigenvector fields have orientation discontinuities, therefore the vector field must be locally reoriented for the integration. The algorithm used to perform variable step-size integration in vector fields with orientation discontinuities is enumerated in Table~\ref{t:variable step integration} and illustrated in Figure~\ref{f:variable step integration}. Linear interpolation is used when interpolating $\boldsymbol \eta_\pm$ within a grid element, since using higher order interpolation would necessitate verifying that there are no orientation discontinuities at more than only the four nearest grid points. Detection of orientation discontinuities is achieved by checking the inner product of the vector fields at adjacent grid points. Then, rotations exceeding 90\degree\, are classified as orientation discontinuities and are corrected before linear interpolation. Thus when setting the Cauchy-Green strain tensor main grid resolution, a histogram of eigenvector field rotations may be produced to ensure that all rotations are below 90\degree\, or close to 180\degree.
+The second step is to integrate the lambda-lines to obtain the Poincare return map. Integration of lambda-lines is performed with the $\eta_+$ and $\eta_-$ vector fields defined on the main grid. 
+%These vector fields are derived from eigenvalues and eigenvectors as described in~\textcite{farazmand12:_comput_lagran}.
+0The eigenvector fields have orientation discontinuities, therefore the vector field must be locally reoriented for the integration. The algorithm used to perform variable step-size integration in vector fields with orientation discontinuities is enumerated in Table~\ref{t:variable step integration} and illustrated in Figure~\ref{f:variable step integration}. Linear interpolation is used when interpolating $\boldsymbol \eta_\pm$ within a grid element, since using higher order interpolation would necessitate verifying that there are no orientation discontinuities at more than only the four nearest grid points. Detection of orientation discontinuities is achieved by checking the inner product of the vector fields at adjacent grid points. Then, rotations exceeding 90\degree\, are classified as orientation discontinuities and are corrected before linear interpolation. Thus when setting the Cauchy-Green strain tensor main grid resolution, a histogram of eigenvector field rotations may be produced to ensure that all rotations are below 90\degree\, or close to 180\degree.
 
 \begin{table}
 \begin{enumerate}
@@ -588,7 +593,7 @@ stretchlineLcs = seed_curves_from_lambda_max(stretchlineLocalMaxDistance,stretch
 For the ocean data, the integration time was chosen to be $T=30\,\mathrm{days}$ (Listing \ref{l:griddedInterp}, line 4), a time larger than the turn over time of the mesoscale eddies in the domain. The resolution of the grid of initial conditions is set to $400\times400$ (line 3) which corresponds to a resolution of roughly 0.015\degree and gives good results. With this choice the resolution of the tracer grid is of the order of $15$ times higher than the resolution of the velocity field. The flow is integrated and the Cauchy-Green strain tensor is computed by the function \lstinline!eig_cgStrain! (line 35). Incompressibility of the flow is enforced (line 12), the auxiliary grid distance is set to $1$\% of the main grid distance (line 17), and eigenvalues are computed from the auxiliary grid (line 16). Lambda-line LCS are computed in line 54, after the Poincar\'e section have been set (line 41-42) and the $\eta_\pm$ fields have been defined (line 53). Hyperbolic LCS, strainlines and strechlines, are computed in lines 57 and 59, respectively.
 
 Figures~\ref{f:ocean dataset hyperbolic shear lcs details strainline} and \ref{f:ocean dataset hyperbolic shear lcs details stretchline} show elliptic and hyperbolic LCS on 22 November 2006, i.e., the same time instant shown in~\textcite{haller13:_coher_lagran,beron-vera13:_objec_agulh}. Note that here the integration time is $T=30\,\mathrm{days}$, as opposed to $90$\,days in their analysis. Since for $90$\,days the hyperbolic LCS would be a confusing entanglement of lines, we choose a shorter integration time here, to be able to show hyperbolic LCS along with elliptic LCS. 
-For the shorter integration time, the analysis with LCS Tool reveals a large coherent eddy bounded by a closed lambda-line at $(3,-32)$ which corresponds to eddy \#2 in Fig.\,3 of \textcite{beron-vera13:_objec_agulh}. Additionally, a further smaller coherent eddy core at $\sim(1,-31)$ is found that does not stay coherent over a time of $90$\, days. Strainlines (red) and stretchlines (blue) mark the core lines of strong normal attraction and repulsion.
+For the shorter integration time, the analysis with LCS Tool reveals a large coherent eddy bounded by a closed lambda-line at $(3,-32)$ which corresponds to eddy \#2 in Fig.\,3 of \textcite{beron-vera13:_objec_agulh}. Additionally, a further smaller coherent eddy core at $\sim(1,-31)$ is found that does not stay coherent over a time of $90$\, days. Both closed orbits are stable if the resolution for the Cauchy-Green strain tensor field is increased. Strainlines (red) and stretchlines (blue) mark the core lines of strong normal attraction and repulsion.
 
 %\begin{figure}
 %\begin{center}
