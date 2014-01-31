@@ -1,4 +1,4 @@
-%% Input parameters
+% Input parameters
 u = 62.66;
 lengthX = pi*earthRadius;
 lengthY = 1.77e6;
@@ -7,7 +7,7 @@ domain = [2e6,.55*lengthX;[-1,.25]*2.25*lengthY];
 resolutionX = 500;
 timespan = [0,2*lengthX/u];
 
-%% Velocity definition
+% Velocity definition
 perturbationCase = 3;
 phiTimespan = [0,25];
 phiInitial = [0,0];
@@ -18,7 +18,7 @@ phi1Max = max(phi1);
 lDerivative = @(t,x,~)derivative(t,x,false,u,lengthX,lengthY,epsilon,perturbationCase,phiSol,phi1Max);
 incompressible = true;
 
-%% LCS parameters
+% LCS parameters
 % Cauchy-Green strain
 cgStrainOdeSolverOptions = odeset('relTol',1e-4);
 
@@ -33,8 +33,8 @@ resolution = [resolutionX,resolutionY];
 
 strainlineLocalMaxDistance = 4*gridSpace;
 
-%% Cauchy-Green strain eigenvalues and eigenvectors
+% Cauchy-Green strain eigenvalues and eigenvectors
 [cgEigenvector,cgEigenvalue] = eig_cgStrain(lDerivative,domain,resolution,timespan,'incompressible',incompressible,'odeSolverOptions',cgStrainOdeSolverOptions);
 
-%% Strainline LCSs
+% Strainline LCSs
 strainlineLcs = seed_curves_from_lambda_max(strainlineLocalMaxDistance,strainlineMaxLength,cgEigenvalue(:,2),cgEigenvector(:,1:2),domain,resolution,'odeSolverOptions',strainlineOdeSolverOptions);

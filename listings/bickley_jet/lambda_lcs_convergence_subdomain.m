@@ -1,4 +1,4 @@
-%% Input parameters
+% Input parameters
 u = 62.66;
 lengthX = pi*earthRadius;
 lengthY = 1.77e6;
@@ -7,7 +7,7 @@ domain = [2e6,lengthX/2;[-1,.25]*2.25*lengthY];
 resolutionX = 400:100:600;
 timespan = [0,2*lengthX/u];
 
-%% Velocity definition
+% Velocity definition
 perturbationCase = 3;
 phiTimespan = [0,25];
 phiInitial = [0,0];
@@ -18,7 +18,7 @@ phi1Max = max(phi1);
 lDerivative = @(t,x,~)derivative(t,x,false,u,lengthX,lengthY,epsilon,perturbationCase,phiSol,phi1Max);
 incompressible = true;
 
-%% LCS parameters
+% LCS parameters
 % Cauchy-Green strain
 cgStrainOdeSolverOptions = odeset('relTol',1e-4);
 
@@ -39,10 +39,10 @@ for m = 1:numel(resolutionX)
     resolutionY = round(diff(domain(2,:))/gridSpace) + 1;
     resolution = [lResolutionX,resolutionY];
    
-    %% Cauchy-Green strain eigenvalues and eigenvectors
+    % Cauchy-Green strain eigenvalues and eigenvectors
     [cgEigenvector,cgEigenvalue] = eig_cgStrain(lDerivative,domain,resolution,timespan,'incompressible',incompressible,'odeSolverOptions',cgStrainOdeSolverOptions);
     
-    %% Lambda-line LCSs
+    % Lambda-line LCSs
     [shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda);
     [closedLambdaLine,~,hFigure] = poincare_closed_orbit_multi(domain,resolution,shearline,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions,'dThresh',dThresh,'showGraph',true);
 end

@@ -1,4 +1,4 @@
-%% Input parameters
+% Input parameters
 epsilon = .1;
 amplitude = .1;
 omega = pi/5;
@@ -6,11 +6,11 @@ domain = [0,2;0,1];
 resolution = [500,250];
 timespan = [0,5];
 
-%% Velocity definition
+% Velocity definition
 lDerivative = @(t,x,~)derivative(t,x,false,epsilon,amplitude,omega);
 incompressible = true;
 
-%% LCS parameters
+% LCS parameters
 cgStrainOdeSolverOptions = odeset('relTol',1e-5);
 
 % Lambda-lines
@@ -30,9 +30,9 @@ for i = 1:nPoincareSection
     poincareSection(i).orbitMaxLength = 2*(2*pi*rOrbit);
 end
 
-%% Cauchy-Green strain eigenvalues and eigenvectors
+% Cauchy-Green strain eigenvalues and eigenvectors
 [cgEigenvector,cgEigenvalue] = eig_cgStrain(lDerivative,domain,resolution,timespan,'incompressible',incompressible,'odeSolverOptions',cgStrainOdeSolverOptions);
 
-%% Lambda-line LCSs
+% Lambda-line LCSs
 [shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda);
 closedLambdaLine = poincare_closed_orbit_multi(domain,resolution,shearline,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions);
