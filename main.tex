@@ -41,27 +41,23 @@
 \tableofcontents
 
 \abstract{
-We give an applied introduction to Lagrangian coherent structures (LCSs.) We review recent results in variational LCS theory, present algorithms based on the theory and implement the algorithms in a computational engine called LCS Tool. We use LCS Tool to analyse flow examples.
+We give an applied introduction to Lagrangian coherent structure (LCS) detection. We review LCS theory that is based on variational calculus, present algorithms conceived in accordance with the variational theory and present a MATLAB computational engine called LCS Tool that enables variational LCS calculations and detection. We use LCS Tool to analyse three flow examples: a double gyre, a Bickley jet and an ocean dataset.
 }
 
 \section{Introduction}
 
-LCSs are used in fluid dynamics to capture essential flow features and thereby simplify the description of fluid flows. More specifically, LCSs have been particularly well adapted to analyze two dimensional finite time turbulent flows. LCSs capture dominant transport barriers, repelling and attracting structures and LCSs are used to identify vortex boundaries.
+LCSs are used in fluid dynamics to capture essential flow features and thereby simplify the description of complex fluid flows. More specifically, LCSs are particularly well adapted to analyze two dimensional finite time turbulent flows. LCSs identify transport barriers, repelling and attracting structures and vortex boundaries. Application areas for LCSs are oceanic and atmospheric flows, biological applications\parencite{wilson09:_lagran_reynol,tallapragada11:_lagran}, aeronautics\parencite{tang10:_accur_lagran_hong_kong_inter_airpor} and mechanical systems\parencite{hadjighasem13:_detec_kam}.
 
-LCSs have been used to analyse oceanic and atmospheric flows, biological applications\parencite{wilson09:_lagran_reynol,tallapragada11:_lagran}, aeronautics\parencite{tang10:_accur_lagran_hong_kong_inter_airpor} and mechanical systems\parencite{hadjighasem13:_detec_kam}.
+The finite-time Lyapunov exponent (FTLE) gives one widely-used mathematical definition for LCSs. Although the FTLE is popular, it is possible to find examples where it fails to identify LCSs correctly\parencite{haller11:_lagran_coher_struc,norgard12:_secon_lagran_coher_struc}. To remedy these problems, variational calculus principles applied to material curves in a fluid present new approaches to identifying LCSs\parencite{haller11:_lagran_coher_struc,farazmand12:_comput_lagran,haller12:_geodes_theor_trans_barrier_two_dimen_flows,farazmand13:_attrac_lagran,haller13:_coher_lagran}. This article presents an algorithmic introduction to variational LCSs using a computational engine called LCS Tool\footnote{LCS Tool is free MATLAB software available for download at: \url{https://github.com/jeixav/LCS-Tool}}.
 
-The finite-time Lyapunov exponent (FTLE) gives a mathematical definition for LCSs. Although the FTLE has been applied to a variety a situations, it is possible to find examples where it fails to identify LCSs correctly, giving false positives and false negatives\parencite{haller11:_lagran_coher_struc,norgard12:_secon_lagran_coher_struc}. To remedy these problems, variational principles have been used to present new approaches to identifying LCSs\parencite{haller11:_lagran_coher_struc,farazmand12:_comput_lagran,haller12:_geodes_theor_trans_barrier_two_dimen_flows,farazmand13:_attrac_lagran,haller13:_coher_lagran}.
-
-This article presents an algorithmic introduction LCSs using a computational engine for LCSs called LCS Tool\footnote{LCS Tool is free MATLAB software available for download at: \url{https://github.com/jeixav/LCS-Tool}}.
-
-LCS Tool is a library of functions that perform the computations to identify LCSs in two dimensional finite time flows. LCS Tool aims to initiate scientists to LCSs. Existing LCS software programs are:
+LCS Tool is a library of MATLAB functions that perform the computations to identify LCSs in two dimensional finite time flows. LCS Tool aims to initiate scientists to LCSs. Existing LCS software programs are:
 \begin{itemize}
 \item \emph{MANGEN}\parencite{lekien03:_time}, calculates stability manifolds adaptively in two dimensional finite time velocity fields. Includes a graphical user interface and uses MPI for parallel calculations.
 \item \emph{LCS MATLAB Kit}\parencite{dabiri09:_lmk} calculates the FTLE from velocity datasets. Includes a graphical user interface.
 \item \emph{Newman}\parencite{toit10:_trans} calculates the FTLE in $N$ dimensions. Assists ridge extraction of FTLE fields. Supports analytic and dataset defined velocity definitions.
 \item \emph{FlowVC}\parencite{shadden10:_flowvc} is a general purpose LCS platform for two and three dimensional datasets. Parallel calculations are supported with Open\-MP, CUDA and OpenCL.
 \end{itemize}
-These packages are based on the FTLE; the objective of this article and LCS Tool is to replace FTLE methods.
+These packages are based on the FTLE; the objective of LCS Tool and this article is to encourage and facilitate variational LCS analysis.
 
 \section{Theory}
 
