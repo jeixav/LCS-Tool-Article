@@ -346,12 +346,26 @@ The main steps of the algorithm used to calculate hyperbolic LCS are enumerated 
 
 Strainlines, trajectories of the $\boldsymbol \xi_1$ vector field, are integrated starting from local maxima of $\lambda_2$ on the main grid. 
 The local maximisation distance \lstinline!distance! is defined. This distance is set to a value between two and five grid points, since it represents the number of grid points over which the Cauchy-Green strain tensor is susceptible to numerical noise from integration. Thus, the local maximisation distance is expected to be a function of variable time step integration tolerances. A record is made of all grid points where $\lambda_2$ is maximal within a circle whose radius equals the defined maximisation distance. 
-Then the first strainline is integrated from the largest of all the local maxima in both directions, i.e., integrating $\boldsymbol \xi_1$ and $-\boldsymbol \xi_1$. Similarly to lambda-lines, this integration must take into account eigenvector field orientation discontinuities. Prior to initiating strainline integration, a maximum length is defined. Strainlines are then integrated until reaching the domain boundary or the maximum length. The maximum length may be seen as safety factor to prevent highly sinuous strainlines leading to inordinately long computations; the maximum length should be set such that most strainline stop at the domain boundary. 
-Once a strainline position has been calculated, local maxima of $\lambda_2$ within the minimisation distance are flagged as ineligible initial positions for subsequent strainlines. After the first strainline has been obtained and any ineligible local maxima of $\lambda_2$ have been flagged, the next strainline is integrated. The process continues until all eligible local maxima of $\lambda_2$ have been used to initialise strainline integration. Finally, any strainline segment contained within (closed) shear LCS are removed. These calculations are performed by the functions \lstinline!seed_curves_from_lambda_max! and \lstinline!remove_strain_in_shear!.
-
+Then the first strainline is integrated from the largest of all the local maxima in both directions, i.e., integrating $\boldsymbol \xi_1$ and $-\boldsymbol \xi_1$. Similarly to lambda-lines, this integration must take into account eigenvector field orientation discontinuities. Prior to initiating strainline integration, a maximum length is defined. Strainlines are then integrated until reaching the domain boundary or the maximum length. The maximum length may be seen as safety factor to prevent highly sinuous strainlines leading to inordinately long computations; the maximum length should be set such that most strainlines stop at the domain boundary. 
+Once a strainline position has been calculated, local maxima of $\lambda_2$ within the minimisation distance are flagged as ineligible initial positions for subsequent strainlines. After the first strainline has been obtained and any ineligible local maxima of $\lambda_2$ have been flagged, the next strainline is integrated starting form the highest eligible maximum of $\lambda_2$. The process continues until all eligible local maxima of $\lambda_2$ have been used to initialise strainline integration. 
+%Finally, any strainline segment contained within (closed) shear LCS are removed. 
+These calculations are performed by the function \lstinline!seed_curves_from_lambda_max!.
 Note that once a strainline integration has begun, it may progress so as to be within the local minimisation distance of an existing strainline. In other words, the local minimisation distance controls where strainlines begin, but not where they stop.
 
-The example we present show hyperbolic LCS inside elliptic LCS. This appears contradictory at first glance because LCS should not cross, however numerical experimentation with LCS calculations overlaid with colour tracer advection reveals that hyperbolic LCS can cross elliptic barriers. 
+A further point important to note is the coexistence of hyperbolic and elliptic LCS. 
+The examples we present along this paper show hyperbolic LCS inside elliptic LCS. This appears contradictory at first glance because LCS should not cross, however, numerical experimentation with LCS calculations overlaid with colour tracer advection reveals that hyperbolic LCS can cross elliptic barriers and have an impact on the tracer pattern inside elliptic regions.
+%The crossing of elliptic and hyperbolic LCS is not a contradiction. 
+In the crossing point, a line segment of the elliptic LCS, oriented along $\boldsymbol \eta_\lambda^{\pm}$, would not stretch at all, while a segment of the strainline, oriented along $\boldsymbol \xi_1$, would repel fluid normally at a maximal rate and it would shrink itself at a maximal rate.
+Figure\,\ref{fig:ocean_dataset_colortracer} illustrates the effect of strainlines on tracer particles also inside elliptic regions. Colorcoded final positions show large gradients along strainlines, directly showing that particles are strongly repelled by the LCS and end up in different locations.  
+
+
+\begin{figure}[hbt]
+\centering
+\includegraphics[width=0.49\textwidth]{graphics/ocean_dataset/LCS_fwd_coherent_eddy}
+\includegraphics[width=0.49\textwidth]{graphics/ocean_dataset/LCS_fwd_colortracer}
+\caption{(Left) Elliptic LCS (green) with hyperbolic normally repelling LCS (red) inside. (Right) Final positions $\boldsymbol x_t = F_{t_0}^t(\boldsymbol x_0)$ of tracer particles are plotted with the x-position encoded in red and y-position encoded in green color. The impact of the repulsive property of hyperbolic LCS on the tracer particles can not only be observed outside, but also inside the elliptic region. Hyperbolic LCS mark lines of high color gradients, corresponding to tracer particles that start on both sides of the LCS, are repelled, and end up in distinct locations.}
+\label{fig:ocean_dataset_colortracer}
+\end{figure}
 
 \clearpage
 
@@ -504,7 +518,7 @@ To calculate strainline and stretchline LCSs we set the timespan to $t \in [0,2L
 \subsection{Ocean dataset}
 \label{sec:oceandataset}
 
-For the last example, we choose a measured geophysical flow where, in contrast to the previous analytical examples, the two dimensional incompressible velocity field is presented as a dataset with discrete temporal and spatial resolution. Our region of interest is a small domain in the South Atlantic Ocean, where exceptionally coherent eddies, Agulhas rings, were recently found using methods provided by LCS Tool \parencite{haller13:_coher_lagran}. The oceanic velocity field is obtained from altimetric satelite measurements of the sea surface height under the assumption that the flow is geostrophic. Under this assumption the sea surface height $\eta$ serves as a streamfunction and in a longitude-latitude $(\varphi,\theta)$ coordinate system the evolution of a fluid particle is given by
+For the last example, corresponding to the ocean dataset demo files in LCS Tool, we choose a measured geophysical flow. In contrast to the previous analytical examples, the two dimensional incompressible velocity field is presented as a dataset with discrete temporal and spatial resolution. Our region of interest is a small domain in the South Atlantic Ocean, where exceptionally coherent eddies, Agulhas rings, were recently found using methods provided by LCS Tool \parencite{haller13:_coher_lagran}. The oceanic velocity field is obtained from altimetric satelite measurements of the sea surface height under the assumption that the flow is geostrophic. Under this assumption the sea surface height $\eta$ serves as a streamfunction and in a longitude-latitude $(\varphi,\theta)$ coordinate system the evolution of a fluid particle is given by
 \begin{eqnarray}
 \dot{\varphi}(\varphi,\theta,t) = -\frac{g}{R^2 f(\theta) \cos\theta}\partial_{\theta}\eta(\varphi,\theta,t)\label{eq:dtlon}\\
 \dot{\theta}(\varphi,\theta,t) = +\frac{g}{R^2 f(\theta) \cos\theta}\partial_{\varphi}\eta(\varphi,\theta,t)
@@ -512,45 +526,103 @@ For the last example, we choose a measured geophysical flow where, in contrast t
 \end{eqnarray}
 where $g$ is the gravitational acceleration, $R$ is the mean radius of Earth, and $f(\theta):=2\Omega\sin\theta$ is the Coriolis parameter with $\Omega$ being the Earth's mean angular velocity. 
 
-The data is given at a spatial resolution of $1/4\degree$ and temporal resolution of $7\,\mathrm{days}$. Due to the discrete data, defining the right hand side of Eq.\,(\ref{eq:dtlon}) and (\ref{eq:dtlat}) involves interpolation in space and time with a spline interpolation scheme. An interpolant is generated first, then the function \lstinline!flowdata_derivative! evaluates the interpolants for the zonal and meridional velocity at the needed coordinates. Listing \ref{l:griddedInterp} shows the corresponding commands.
-\begin{lstlisting}[caption={Generate interpolant of ocean velocity data set.},label=l:griddedInterp]
-% Define right hand side of ODE, ocean.flow.derivative
+The data is given at a spatial resolution of $1/4\degree$ and a temporal resolution of $7\,\mathrm{days}$. Due to the discrete data, defining the right hand side of Eq.\,(\ref{eq:dtlon}) and (\ref{eq:dtlat}) involves interpolation in space and time with a spline interpolation scheme. An interpolant is generated first, then the function \lstinline!flowdata_derivative! evaluates the interpolants for the zonal and meridional velocity at the needed coordinates. Listing \ref{l:griddedInterp} shows large parts of the code in LCS Tool's ocean demo file \lstinline!hyperbolic_shear_lcs.m!. In lines 8-11 the commands for the interpolation are given.
+\begin{lstlisting}[caption={LCS ocean demo: Parts of the demo script included in LCS Tool to compute LCS from an ocean data set},label=l:griddedInterp]
+%% Input parameters
+domain = [0,6;-34,-28];
+resolution = [400,400];
+timespan = [100,130];
+
+%% Velocity definition
+...
 interpMethod = 'spline';
 vlon_interpolant = griddedInterpolant({time,lat,lon},vlon,interpMethod);
 vlat_interpolant = griddedInterpolant({time,lat,lon},vlat,interpMethod);
-ocean.flow.derivative = @(t,y,~)flowdata_derivative(t,y,vlon_interpolant,vlat_interpolant);
+lDerivative = @(t,x,~)flowdata_derivative(t,x,vlon_interpolant,vlat_interpolant);
+incompressible = true;
+
+%% LCS parameters
+% Cauchy-Green strain
+cgEigenvalueFromMainGrid = false;
+cgAuxGridRelDelta = 0.01;
+
+% Lambda-lines
+lambda = 1;
+lambdaLineOdeSolverOptions = odeset('relTol',1e-6);
+
+% Strainlines
+strainlineMaxLength = 20;
+gridSpace = diff(domain(1,:))/(double(resolution(1))-1);
+strainlineLocalMaxDistance = 2*gridSpace;
+strainlineOdeSolverOptions = odeset('relTol',1e-4);
+
+% Stretchlines
+stretchlineMaxLength = 20;
+stretchlineLocalMaxDistance = 4*gridSpace;
+stretchlineOdeSolverOptions = odeset('relTol',1e-4);
+...
+%% Cauchy-Green strain eigenvalues and eigenvectors
+[cgEigenvector,cgEigenvalue] = eig_cgStrain(lDerivative,domain,resolution,timespan,'incompressible',incompressible,'eigenvalueFromMainGrid',cgEigenvalueFromMainGrid,'auxGridRelDelta',cgAuxGridRelDelta);
+
+%% Lambda-line LCSs
+% Define Poincare sections; ...
+poincareSection = struct('endPosition',{},'numPoints',{},'orbitMaxLength',{});
+...
+poincareSection(1).endPosition = [3.3,-32.1;3.7,-31.6];
+poincareSection(2).endPosition = [1.3,-30.9;1.9,-31.1];
+
+% Number of orbit seed points along each Poincare section
+[poincareSection.numPoints] = deal(100);
+
+% Set maximum orbit length to twice the expected circumference
+nPoincareSection = numel(poincareSection);
+for i = 1:nPoincareSection
+    rOrbit = hypot(diff(poincareSection(i).endPosition(:,1)),diff(poincareSection(i).endPosition(:,2)));
+    poincareSection(i).orbitMaxLength = 2*(2*pi*rOrbit);
+end
+[shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda);
+closedLambdaLine = poincare_closed_orbit_multi(domain,resolution,shearline,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions);
+...
+%% Hyperbolic strainline LCSs
+strainlineLcs = seed_curves_from_lambda_max(strainlineLocalMaxDistance,strainlineMaxLength,cgEigenvalue(:,2),cgEigenvector(:,1:2),domain,resolution,'odeSolverOptions',strainlineOdeSolverOptions);
+...
+stretchlineLcs = seed_curves_from_lambda_max(stretchlineLocalMaxDistance,stretchlineMaxLength,-cgEigenvalue(:,1),cgEigenvector(:,3:4),domain,resolution,'odeSolverOptions',stretchlineOdeSolverOptions);
+
 \end{lstlisting}
-For the ocean data, the integration time was chosen to be $T=30\,\mathrm{days}$, a time larger than the turn over time of the mesoscale eddies in the domain. The resolution of the grid of initial conditions is set to $400\times400$ which corresponds to a resolution of roughly 0.015\degree and gives good results. With this choice the resolution of the tracer grid is of the order of $15$ times higher than the resolution of the velocity field. Figures~\ref{f:ocean dataset hyperbolic shear lcs strainline} and \ref{f:ocean dataset hyperbolic shear lcs stretchline} show elliptic and hyperbolic LCS on 22 November 2006, i.e., the same time instant shown in~\textcite{haller13:_coher_lagran,beron-vera13:_objec_agulh}. The analysis with LCS Tool reveals a large coherent eddy bounded by a closed lambda-line at $(3,-32)$ and four further smaller coherent eddy cores.
+For the ocean data, the integration time was chosen to be $T=30\,\mathrm{days}$ (Listing \ref{l:griddedInterp}, line 4), a time larger than the turn over time of the mesoscale eddies in the domain. The resolution of the grid of initial conditions is set to $400\times400$ (line 3) which corresponds to a resolution of roughly 0.015\degree and gives good results. With this choice the resolution of the tracer grid is of the order of $15$ times higher than the resolution of the velocity field. The flow is integrated and the Cauchy-Green strain tensor is computed by the function \lstinline!eig_cgStrain! (line 35). Incompressibility of the flow is enforced (line 12), the auxiliary grid distance is set to $1$\% of the main grid distance (line 17), and eigenvalues are computed from the auxiliary grid (line 16). Lambda-line LCS are computed in line 54, after the Poincar\'e section have been set (line 41-42) and the $\eta_\pm$ fields have been defined (line 53). Hyperbolic LCS, strainlines and strechlines, are computed in lines 57 and 59, respectively.
+
+Figures~\ref{f:ocean dataset hyperbolic shear lcs details strainline} and \ref{f:ocean dataset hyperbolic shear lcs details stretchline} show elliptic and hyperbolic LCS on 22 November 2006, i.e., the same time instant shown in~\textcite{haller13:_coher_lagran,beron-vera13:_objec_agulh}. Note that here the integration time is $T=30\,\mathrm{days}$, as opposed to $90$\,days in their analysis. Since for $90$\,days the hyperbolic LCS would be a confusing entanglement of lines, we choose a shorter integration time here, to be able to show hyperbolic LCS along with elliptic LCS. 
+For the shorter integration time, the analysis with LCS Tool reveals a large coherent eddy bounded by a closed lambda-line at $(3,-32)$ which corresponds to eddy \#2 in Fig.\,3 of \textcite{beron-vera13:_objec_agulh}. Additionally, a further smaller coherent eddy core at $\sim(1,-31)$ is found that does not stay coherent over a time of $90$\, days. Strainlines (red) and stretchlines (blue) mark the core lines of strong normal attraction and repulsion.
+
+%\begin{figure}
+%\begin{center}
+%\includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_strainline}
+%\end{center}
+%\caption{Ocean dataset lambda-line (green) and strainline (red) LCS.}
+%\label{f:ocean dataset hyperbolic shear lcs strainline}
+%\end{figure}
+
+%\begin{figure}
+%\begin{center}
+%\includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_stretchline}
+%\end{center}
+%\caption{Ocean dataset lambda-line (green) and stretchline (blue) LCSs.}
+%\label{f:ocean dataset hyperbolic shear lcs stretchline}
+%\end{figure}
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_strainline}
+\includegraphics[width=0.8\textwidth]{graphics/ocean_dataset/hyperbolic_shearline_lcs_details_strainline}
 \end{center}
-\caption{Ocean dataset lambda-line (green) and strainline (red) LCS.}
-\label{f:ocean dataset hyperbolic shear lcs strainline}
-\end{figure}
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_stretchline}
-\end{center}
-\caption{Ocean dataset lambda-line (green) and stretchline (blue) LCSs.}
-\label{f:ocean dataset hyperbolic shear lcs stretchline}
-\end{figure}
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_details_strainline}
-\end{center}
-\caption{Same LCS as in Figure~\ref{f:ocean dataset hyperbolic shear lcs strainline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines with thick green curves being outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_2$ local maxima used for strainline integration initial positions.}
+\caption{Lambda-line LCS (green) and strainline LCS (red) of the ocean data set. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. White dots indicate $\lambda_2$ local maxima used for strainline integration initial positions.}
 \label{f:ocean dataset hyperbolic shear lcs details strainline}
 \end{figure}
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_details_stretchline}
+\includegraphics[width=0.8\textwidth]{graphics/ocean_dataset/hyperbolic_shearline_lcs_details_stretchline.eps}
 \end{center}
-\caption{Same LCS as in Figure~\ref{f:ocean dataset hyperbolic shear lcs stretchline}, but with additional details. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. Green curves are closed lambda-lines and thick green curves are outermost closed lambda-lines, i.e. lambda-line LCSs. White dots indicate $\lambda_1$ local minima used for stretchline integration intial positions.}
+\caption{Lambda-line LCS (green) and stretchline LCS (blue) of the ocean data set. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. White dots indicate $\lambda_1$ local minima used for stretchline integration initial positions.}
 \label{f:ocean dataset hyperbolic shear lcs details stretchline}
 \end{figure}
 
