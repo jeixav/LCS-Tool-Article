@@ -26,7 +26,8 @@
 
 \linenumbers
 
-\title{An Algorithmic Introduction to Lagrangian Coherent Structures}
+\title{LCS Tool — An Algorithmic Introduction to Lagrangian Coherent 
+Structures}
 
 \author{Kristjan Onu \and Florian Huhn \and George Haller}
 
@@ -44,16 +45,18 @@
 \tableofcontents
 
 \abstract{
-We give an applied introduction to Lagrangian coherent structure (LCS) detection. We review LCS theory that is based on variational calculus, present algorithms conceived in accordance with the variational theory and present a MATLAB computational engine called LCS Tool that enables variational LCS calculations and detection. We use LCS Tool to analyse three flow examples: a double gyre, a Bickley jet and an ocean dataset.
+We give an applied introduction to Lagrangian coherent structures (LCSs) using a computational engine we have programmed called LCS Tool. First, we review LCS theory that is based on variational calculus; this introduces elliptic and hyperbolic variational LCSs. Then we turn our attention to algorithms for computations conceived in accordance with the variational LCS theory. These algorithms are the foundation of LCS Tool. We conclude by explaining, with demonstration scripts, how to use LCS Tool to analyse three flow examples: a double gyre, a Bickley jet and an ocean dataset.
 }
 
 \section{Introduction}
 
-LCSs are used in fluid dynamics to capture essential flow features and thereby simplify the description of complex fluid flows. More specifically, we analyze two dimensional finite time turbulent flows to detect LCSs. LCSs identify transport barriers, repelling and attracting structures and vortex boundaries. Application areas for LCSs are oceanic and atmospheric flows, biological applications\parencite{wilson09:_lagran_reynol,tallapragada11:_lagran}, aeronautics\parencite{tang10:_accur_lagran_hong_kong_inter_airpor} and mechanical systems\parencite{hadjighasem13:_detec_kam}.
+LCSs are used in fluid dynamics to capture essential flow features and thereby simplify the description of complex fluid flows. Here we focus on analysing two dimensional finite time turbulent flows. LCSs identify transport barriers, repelling and attracting structures and vortex boundaries. Application areas for LCSs include oceanic and atmospheric flows, biological applications\parencite{wilson09:_lagran_reynol,tallapragada11:_lagran}, aeronautics\parencite{tang10:_accur_lagran_hong_kong_inter_airpor} and mechanical systems\parencite{hadjighasem13:_detec_kam}.
 
-The finite-time Lyapunov exponent (FTLE) gives one widely-used mathematical definition for LCSs. Although the FTLE is widely used, it is possible to find examples where it fails to identify LCSs correctly\parencite{haller11:_lagran_coher_struc,norgard12:_secon_lagran_coher_struc}. To remedy these problems, variational calculus applied to material curves in a fluid provides a rigorous approach for LCS detection\parencite{haller11:_lagran_coher_struc,farazmand12:_comput_lagran,haller12:_geodes_theor_trans_barrier_two_dimen_flows,farazmand13:_attrac_lagran,haller13:_coher_lagran}. This article presents an algorithmic introduction to variational LCSs supported by a computational engine called LCS Tool\footnote{LCS Tool is available at: \url{https://github.com/jeixav/LCS-Tool}.}.
+The finite time Lyapunov exponent (FTLE) is one widely-used mathematical definition for LCSs. Despite its widespread use, examples where the FTLE fails to identify LCSs correctly are known\parencite{haller11:_lagran_coher_struc,norgard12:_secon_lagran_coher_struc}. To remedy these problems, variational calculus has been applied to material curve properties in the context of fluid mechanics. Thus we obtain a rigorous approach to LCS detection\parencite{haller11:_lagran_coher_struc,farazmand12:_comput_lagran,haller12:_geodes_theor_trans_barrier_two_dimen_flows,farazmand13:_attrac_lagran,haller13:_coher_lagran}. This article presents an algorithmic introduction to variational LCSs supported by a computational engine called LCS Tool\footnote{LCS Tool is available at: \url{https://github.com/jeixav/LCS-Tool}.}.
 
-LCS Tool is a library of MATLAB functions that perform computations to identify LCSs in two dimensional finite time flows. LCS Tool aims to help scientists perform variational LCS calculations. Other LCS software has been developed before; the list includes:
+LCS Tool is a library of MATLAB functions that perform computations to identify LCSs in two dimensional finite time flows. LCS Tool aims to help scientists perform variational LCS calculations. The examples we present have been programmed into demonstration scripts. We encourage readers to download and execute these scripts after reading this article.
+
+Other LCS software has been developed before; the list includes:
 \begin{itemize}
 \item \emph{MANGEN}\parencite{lekien03:_time}, calculates stability manifolds adaptively in two dimensional finite time velocity fields. Includes a graphical user interface and uses MPI for parallel calculations.
 \item \emph{LCS MATLAB Kit}\parencite{dabiri09:_lmk} calculates the FTLE from velocity datasets. Includes a graphical user interface.
@@ -265,7 +268,7 @@ Shear LCSs, or coherent Lagrangian vortices, are closed orbits in the Lagrangian
 \label{t:Shear LCS functions}
 \end{table}
 
-The first step is to set the position of Poincare sections as straight lines in regions where closed lambda-lines are expected. The Poincare section must be oriented such that the first endpoint is close to the centre of the expected eddy and the second endpoint is outside the expected eddy. There is no definite procedure for deciding the position of Poincare sections. Possibilities include an examination of the finite-time Lyapunov exponent field of the flow, or some prior knowledge of where coherent eddies are be expected. Additionally, the number of lambda-lines launched from the Poincare section, \lstinline!poincareSection.numPoints!, must be defined. A good default is 100.
+The first step is to set the position of Poincare sections as straight lines in regions where closed lambda-lines are expected. The Poincare section must be oriented such that the first endpoint is close to the centre of the expected eddy and the second endpoint is outside the expected eddy. There is no definite procedure for deciding the position of Poincare sections. Possibilities include an examination of the finite time Lyapunov exponent field of the flow, or some prior knowledge of where coherent eddies are be expected. Additionally, the number of lambda-lines launched from the Poincare section, \lstinline!poincareSection.numPoints!, must be defined. A good default is 100.
 
 The second step is to integrate the lambda-lines to obtain the Poincare return map. Integration of lambda-lines is performed with the $\boldsymbol \eta_+$ and $\boldsymbol \eta_-$ vector fields defined on the main grid. These vector fields are derived from eigenvalues and eigenvectors as described in~\textcite{farazmand12:_comput_lagran}. The eigenvector fields have orientation discontinuities, therefore the vector field must be locally reoriented for the integration. The algorithm used to perform variable step-size integration in vector fields with orientation discontinuities is enumerated in Table~\ref{t:variable step integration} and illustrated in Figure~\ref{f:variable step integration}. Linear interpolation is used when interpolating $\boldsymbol \eta_\pm$ within a grid element, since using higher order interpolation would necessitate verifying that there are no orientation discontinuities at more than only the four nearest grid points. Detection of orientation discontinuities is achieved by checking the inner product of the vector fields at adjacent grid points. Then, rotations exceeding 90\degree\, are classified as orientation discontinuities and are corrected before linear interpolation. Thus when setting the Cauchy-Green strain tensor main grid resolution, a histogram of eigenvector field rotations may be calculated to ensure all rotations are well below 90\degree\, or almost 180\degree.
 
@@ -357,7 +360,7 @@ A further point important to note is the coexistence of hyperbolic and elliptic 
 \clearpage
 
 \section{Examples}
-In this section we present examples showing how to use LCS Tool to obtain LCSs in different flows, namely a double gyre, a jet, and an oceanic geostrophic flow. All three examples are available as demo files in the demo folder of LCS Tool and the user can follow the computation of LCS step by step.
+In this section we present examples showing how to use LCS Tool to obtain LCSs in different flows, namely a double gyre, a jet, and an oceanic geostrophic flow. All three examples are available as demonstration files in the demo folder of LCS Tool. By executing these scripts, readers can follow LCS Tool computations stepwise.
 
 \subsection{The double gyre}
 The double gyre is a model for a time-dependent two gyre system observed in geophysical flows \parencite{shadden05:_defin_lagran_lyapun}. It consists of two counterrotating sinusoidal vortices with a harmonically oscillating line in-between. The velocity equations are:
@@ -420,7 +423,7 @@ We continue the example by adding the calculation of hyperbolic strainline and s
   \label{fig:double_gyre_lambda_stretch_lcs}
 \end{figure}
 
-\lstinputlisting[caption={LCS Tool commands for strainline and stretchline LCSs},label=lst:double_gyre_lambda_strain_stretch_lcs]{listings/double_gyre/lambda_strain_stretch_lcs.m}
+\lstinputlisting[caption={LCS Tool commands for double gyre strainline and stretchline LCSs. Condensed version of the LCS Tool script \lstinline!demo/double_gyre/hyperbolic_shear_lcs.m! },label=lst:double_gyre_lambda_strain_stretch_lcs]{listings/double_gyre/lambda_strain_stretch_lcs.m}
 
 \clearpage
 
@@ -445,14 +448,7 @@ f_{1,2}(t) = 2.625 \times 10^{-2} \phi_1(t/6.238 \times 10^5)
 \end{gather*}
 The parameter values we use are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$.
 
-Figure~\ref{fig:Bickley_jet_FTLE} shows the overall appearance of the Bickley jet and in Figure~\ref{fig:Bickley_jet_lambda_LCS_full} lambda-line LCSs are shown. The latter figure demonstrates a poor result since the LCSs change shape significantly from one eddy to the next. To address this problem we could try to adjust numerical parameters such as the resolution, but with our computer hardware memory availability was reached before achieving convergence. To circumvent this problem, we analyse lambda-line closed orbits of one vortex for a short timespan.
-
-\begin{figure}
-  \centering
-  \includegraphics[width=.85\textwidth]{graphics/bickley_jet/ftle_overview}
-  \caption{Bickley jet FTLE}
-  \label{fig:Bickley_jet_FTLE}
-\end{figure}
+Figure~\ref{fig:Bickley_jet_lambda_LCS_full} shows lambda-line LCS of the Bickley jet with the FTLE in the background. The figure demonstrates a poor result since the LCSs change shape significantly between eddies. To address this problem we could adjust numerical parameters such as the resolution, but instead we will analyse lambda-line closed orbits of one vortex for a short timespan.
 
 \begin{figure}
   \centering
@@ -461,9 +457,9 @@ Figure~\ref{fig:Bickley_jet_FTLE} shows the overall appearance of the Bickley je
   \label{fig:Bickley_jet_lambda_LCS_full}
 \end{figure}
 
-The script used to analyse lambda-line LCS is given in Listing~\ref{lst:Bickley jet lambda lcs subdomain}. The script produces the data shown in Figure~\ref{fig:Bickley jet lambda lcs convergence}. Parameter values used may be read from the script. It is worth pointing out that in order to obtain closed orbits, $\lambda = 0.995$; with $\lambda = 1$ no closed orbits are found.
+Figure ~\ref{fig:Bickley jet lambda lcs convergence} shows convergence of the lambda-line elliptic LCSs. The LCS Tool script used to produce that figure are based on the script \lstinline!demo/bickley_jet/hyperbolic_shear_lcs.m! which is given in  Listing~\ref{lst:Bickley jet hyperbolic_shear_lcs subset}. It is worth pointing out that in order to obtain closed orbits, $\lambda = 0.995$; with $\lambda = 1$ no closed orbits exist.
 
-\lstinputlisting[caption={Bickley jet script for lambda-line LCSs},label=lst:Bickley jet lambda lcs subdomain]{listings/bickley_jet/lambda_lcs_convergence_subdomain.m}
+\lstinputlisting[caption={Bickley jet script for hyperbolic and shear LCSs. Subset of \lstinline!demo/bickley_jet/hyperbolic_shear_lcs.m!},label=lst:Bickley jet hyperbolic_shear_lcs subset]{listings/bickley_jet/hyperbolic_shear_lcs_subset.m}
 
 \begin{figure}[hbt]
   \centering
@@ -474,9 +470,7 @@ The script used to analyse lambda-line LCS is given in Listing~\ref{lst:Bickley 
   \label{fig:Bickley jet lambda lcs convergence}
 \end{figure}
 
-To calculate strainline and stretchline LCSs we set the timespan to $t \in [0,2L_x/U]$. The script used to detect strainlines is given in Listing~\ref{lst:bickley_jet_strain_lcs} and the results are shown in Figure~\ref{fig:Bickley_jet_strain_lcs}. Stretchline LCSs are shown in Figure~\ref{fig:Bickley_jet_stretch_lcs}.
-
-\lstinputlisting[caption={LCS Tool commands for Bickley jet strainline LCSs},label=lst:bickley_jet_strain_lcs]{listings/bickley_jet/strain_lcs.m}
+Strainline LCSs are shown in Figure~\ref{fig:Bickley_jet_strain_lcs} and stretchline LCSs are shown in Figure~\ref{fig:Bickley_jet_stretch_lcs}.
 
 \begin{figure}
   \centering
@@ -577,7 +571,7 @@ Figures~\ref{f:ocean dataset hyperbolic shear lcs details strainline} and \ref{f
 \begin{center}
 \includegraphics[width=0.8\textwidth]{graphics/ocean_dataset/hyperbolic_shearline_lcs_details_strainline}
 \end{center}
-\caption{Lambda-line LCS (green) and strainline LCS (red) of the ocean data set. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. White dots indicate $\lambda_2$ local maxima used for strainline integration initial positions.}
+\caption{Lambda-line LCSs (green) and strainline LCSs (red) of the ocean data set. Background gray-scale is the finite time Lyapunov exponent. Dashed green lines are Poincare sections. White dots indicate $\lambda_2$ local maxima used for strainline integration initial positions.}
 \label{f:ocean dataset hyperbolic shear lcs details strainline}
 \end{figure}
 
@@ -585,7 +579,7 @@ Figures~\ref{f:ocean dataset hyperbolic shear lcs details strainline} and \ref{f
 \begin{center}
 \includegraphics[width=0.8\textwidth]{graphics/ocean_dataset/hyperbolic_shearline_lcs_details_stretchline}
 \end{center}
-\caption{Lambda-line LCS (green) and stretchline LCS (blue) of the ocean data set. Background gray-scale is the finite-time Lyapunov exponent. Dashed green lines are Poincare sections. White dots indicate $\lambda_1$ local minima used for stretchline integration initial positions.}
+\caption{Lambda-line LCSs (green) and stretchline LCSs (blue) of the ocean data set. Background gray-scale is the finite time Lyapunov exponent. Dashed green lines are Poincare sections. White dots indicate $\lambda_1$ local minima used for stretchline integration initial positions.}
 \label{f:ocean dataset hyperbolic shear lcs details stretchline}
 \end{figure}
 
@@ -593,14 +587,11 @@ Figures~\ref{f:ocean dataset hyperbolic shear lcs details strainline} and \ref{f
 
 \section{Conclusions}
 
-Algorithms to identify LCSs using variational principles have been presented, and a software library, LCS Tool, that implements these algorithms has been demonstrated on geophysical flow models and a dataset. The software library provides functions to enable exploring variational LCS methods without requiring detailed knowledge of variational LCS theory. These functions make it possible to write compact programs to identify and visualise LCSs.
+Algorithms to identify LCSs using variational principles have been presented, and a software library, LCS Tool, that implements these algorithms has been introduced and demonstrated on analytic flow models and a geophysical dataset. The software library provides functions to enable exploring variational LCS methods without requiring detailed knowledge of variational LCS theory. These functions make it possible to write compact programs to identify and visualise LCSs. Since LCS Tool is programmed in MATLAB, testing new methods and visualising their results can be done quite quickly.
 
 LCS Tool is built atop MATLAB and leverages that software's capabilities extensively. With FTLE-based LCSs, computational performance has received considerable attention\parencite{conti12:_gpu_apu_finit_time_lyapun_expon,miron12:_anisot_lagran_coher_struc}. LCS Tool is free software and we hope it will evolve to incorporate similar advances. Optimising computational performance will likely help apply variational LCS methods to large-scale real-time forecasting applications, for example to allow tracking environmental contaminants.
 
-% Reduce number of user inputs, for example, automated closed orbit detection, which is especially important for flows with a large number of vortices possible.
-
-In addition to improving computational performance, we hope LCS Tool will be the foundation to integrate new theoretical advances, for example the variational LCS jet core identification method\parencite{farazmand13:_shearless} and the 
-analysis of LCSs in higher dimensions\parencite{blazevski:_hyper_ellip_trans_barrier_three}.
+In addition to improving computational performance, we hope LCS Tool will be the foundation to integrate new theoretical advances, for example the variational LCS jet core identification method\parencite{farazmand13:_shearless} and the analysis of LCSs in higher dimensions\parencite{blazevski:_hyper_ellip_trans_barrier_three}.
 
 \subsection*{Acknowledgements}
 
