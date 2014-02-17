@@ -92,6 +92,18 @@ drawnow
 % minimums
 [stretchlineLcs,stretchlineLcsInitialPosition] = seed_curves_from_lambda_max(stretchlineLocalMaxDistance,stretchlineMaxLength,-cgEigenvalue(:,1),cgEigenvector(:,3:4),domain,resolution);
 
+% Remove stretchlines inside elliptic regions
+for i = 1:nPoincareSection
+    % Remove strainlines inside elliptic regions
+    stretchlineLcs = remove_strain_in_shear(stretchlineLcs,closedLambdaLine{i}{1}{1});
+    stretchlineLcs = remove_strain_in_shear(stretchlineLcs,closedLambdaLine{i}{2}{1});   
+    % Remove initial positions inside elliptic regions
+    idx = inpolygon(stretchlineLcsInitialPosition(1,:),stretchlineLcsInitialPosition(2,:),closedLambdaLine{i}{1}{1}(:,1),closedLambdaLine{i}{1}{1}(:,2));
+    stretchlineLcsInitialPosition = stretchlineLcsInitialPosition(:,~idx);
+    idx = inpolygon(stretchlineLcsInitialPosition(1,:),stretchlineLcsInitialPosition(2,:),closedLambdaLine{i}{1}{1}(:,1),closedLambdaLine{i}{1}{1}(:,2));
+    stretchlineLcsInitialPosition = stretchlineLcsInitialPosition(:,~idx);
+end
+
 % Plot hyperbolic stretchline LCSs
 hStretchlineLcs = cellfun(@(position)plot(hAxes,position(:,1),position(:,2)),stretchlineLcs);
 set(hStretchlineLcs,'color',stretchlineColor)
