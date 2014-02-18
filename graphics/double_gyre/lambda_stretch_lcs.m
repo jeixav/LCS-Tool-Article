@@ -1,4 +1,4 @@
-function lambda_stretch_lcs
+% function lambda_stretch_lcs
 
 %% Input parameters
 epsilon = .1;
@@ -32,6 +32,7 @@ lambdaLineOdeSolverOptions = odeset('relTol',1e-6);
 stretchlineMaxLength = 20;
 gridSpace = diff(domain(1,:))/(double(resolution(1))-1);
 stretchlineLocalMaxDistance = 10*gridSpace;
+stretchlineOdeSolverOptions = odeset('relTol',1e-6);
 
 % Graphics properties
 stretchlineColor = 'b';
@@ -81,8 +82,11 @@ hClosedLambdaLineNeg = cell(nPoincareSection,1);
 for j = 1:nPoincareSection
     hClosedLambdaLinePos{j} = cellfun(@(position)plot(hAxes,position(:,1),position(:,2)),closedLambdaLine{j}{1});
     hClosedLambdaLineNeg{j} = cellfun(@(position)plot(hAxes,position(:,1),position(:,2)),closedLambdaLine{j}{2});
+    if hClosedLambdaLinePos{j}
+    end
 end
-hClosedLambdaLine = horzcat(hClosedLambdaLinePos{:},hClosedLambdaLineNeg{:});
+
+hClosedLambdaLine = vertcat(hClosedLambdaLinePos{:},hClosedLambdaLineNeg{:});
 set(hClosedLambdaLine,'color',lambdaLineColor)
 drawnow
 
@@ -90,17 +94,17 @@ drawnow
 % FIXME Part of calculations in seed_curves_from_lambda_max are
 % unsuitable/unecessary for stretchlines do not follow ridges of λ₁
 % minimums
-[stretchlineLcs,stretchlineLcsInitialPosition] = seed_curves_from_lambda_max(stretchlineLocalMaxDistance,stretchlineMaxLength,-cgEigenvalue(:,1),cgEigenvector(:,3:4),domain,resolution);
+[stretchlineLcs,stretchlineLcsInitialPosition] = seed_curves_from_lambda_max(stretchlineLocalMaxDistance,stretchlineMaxLength,-cgEigenvalue(:,1),cgEigenvector(:,3:4),domain,resolution,'odeSolverOptions',strainlineOdeSolverOptions);
 
 % Remove stretchlines inside elliptic regions
 for i = 1:nPoincareSection
     % Remove strainlines inside elliptic regions
-    stretchlineLcs = remove_strain_in_shear(stretchlineLcs,closedLambdaLine{i}{1}{1});
-    stretchlineLcs = remove_strain_in_shear(stretchlineLcs,closedLambdaLine{i}{2}{1});   
+    stretchlineLcs = remove_strain_in_shear(stretchlineLcs,closedLambdaLine{i}{1}{end});
+    stretchlineLcs = remove_strain_in_shear(stretchlineLcs,closedLambdaLine{i}{2}{end});   
     % Remove initial positions inside elliptic regions
-    idx = inpolygon(stretchlineLcsInitialPosition(1,:),stretchlineLcsInitialPosition(2,:),closedLambdaLine{i}{1}{1}(:,1),closedLambdaLine{i}{1}{1}(:,2));
+    idx = inpolygon(stretchlineLcsInitialPosition(1,:),stretchlineLcsInitialPosition(2,:),closedLambdaLine{i}{1}{end}(:,1),closedLambdaLine{i}{1}{end}(:,2));
     stretchlineLcsInitialPosition = stretchlineLcsInitialPosition(:,~idx);
-    idx = inpolygon(stretchlineLcsInitialPosition(1,:),stretchlineLcsInitialPosition(2,:),closedLambdaLine{i}{1}{1}(:,1),closedLambdaLine{i}{1}{1}(:,2));
+    idx = inpolygon(stretchlineLcsInitialPosition(1,:),stretchlineLcsInitialPosition(2,:),closedLambdaLine{i}{2}{end}(:,1),closedLambdaLine{i}{2}{end}(:,2));
     stretchlineLcsInitialPosition = stretchlineLcsInitialPosition(:,~idx);
 end
 

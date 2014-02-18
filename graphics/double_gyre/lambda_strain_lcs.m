@@ -17,8 +17,8 @@ cgStrainOdeSolverOptions = odeset('relTol',1e-5);
 
 % Lambda-lines
 poincareSection = struct('endPosition',{},'numPoints',{},'orbitMaxLength',{});
-poincareSection(1).endPosition = [.55,.55;.2,.5];
-poincareSection(2).endPosition = [1.53,.45;1.9,.5];
+poincareSection(1).endPosition = [0.55,0.55;0.2,0.5];
+poincareSection(2).endPosition = [1.53,0.45;1.9,0.5];
 [poincareSection.numPoints] = deal(100);
 nPoincareSection = numel(poincareSection);
 for i = 1:nPoincareSection
@@ -31,7 +31,9 @@ lambdaLineOdeSolverOptions = odeset('relTol',1e-6);
 % Strainlines
 strainlineMaxLength = 20;
 gridSpace = diff(domain(1,:))/(double(resolution(1))-1);
+
 strainlineLocalMaxDistance = 2*gridSpace;
+strainlineOdeSolverOptions = odeset('relTol',1e-6);
 
 % Graphics properties
 strainlineColor = 'r';
@@ -61,19 +63,16 @@ set(hLambdaLineLcs,'linewidth',2)
 %% Hyperbolic strainline LCSs
 s = warning('off','integrate_line:isDiscontinuousLargeAngle');
 warning('off','seed_curves_from_lambda_max:unequalDelta')
-strainlineLcs = seed_curves_from_lambda_max(strainlineLocalMaxDistance,strainlineMaxLength,cgEigenvalue(:,2),cgEigenvector(:,1:2),domain,resolution);
+strainlineLcs = seed_curves_from_lambda_max(strainlineLocalMaxDistance,strainlineMaxLength,cgEigenvalue(:,2),cgEigenvector(:,1:2),domain,resolution,'odeSolverOptions',strainlineOdeSolverOptions);
 warning(s)
 
 % Remove strainlines inside elliptic regions
-for i = 1:nPoincareSection
-    % Remove strainlines inside elliptic regions
-    strainlineLcs = remove_strain_in_shear(strainlineLcs,closedLambdaLine{i}{1}{1});
-    strainlineLcs = remove_strain_in_shear(strainlineLcs,closedLambdaLine{i}{2}{1});   
-end
+strainlineLcs = remove_strain_in_shear(strainlineLcs,closedLambdaLine{1}{1}{end});
+strainlineLcs = remove_strain_in_shear(strainlineLcs,closedLambdaLine{2}{2}{end});
 
 % Plot hyperbolic strainline LCSs
 hStrainlineLcs = cellfun(@(position)plot(hAxes,position(:,1),position(:,2)),strainlineLcs);
 set(hStrainlineLcs,'color',strainlineColor)
 
 filename = 'lambda_strain_lcs';
-print_pdf(hFigure,filename)
+print_pdf(hFigure,filename);
