@@ -31,7 +31,6 @@ lambdaLineOdeSolverOptions = odeset('relTol',1e-6);
 % Strainlines
 strainlineMaxLength = 20;
 gridSpace = diff(domain(1,:))/(double(resolution(1))-1);
-
 strainlineLocalMaxDistance = 2*gridSpace;
 strainlineOdeSolverOptions = odeset('relTol',1e-6);
 
@@ -75,4 +74,4 @@ hStrainlineLcs = cellfun(@(position)plot(hAxes,position(:,1),position(:,2)),stra
 set(hStrainlineLcs,'color',strainlineColor)
 
 filename = 'lambda_strain_lcs';
-print_pdf(hFigure,filename);
+print_pdf(hFigure,filename)

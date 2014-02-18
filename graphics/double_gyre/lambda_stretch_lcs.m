@@ -1,4 +1,4 @@
-% function lambda_stretch_lcs
+function lambda_stretch_lcs
 
 %% Input parameters
 epsilon = .1;
@@ -82,10 +82,7 @@ hClosedLambdaLineNeg = cell(nPoincareSection,1);
 for j = 1:nPoincareSection
     hClosedLambdaLinePos{j} = cellfun(@(position)plot(hAxes,position(:,1),position(:,2)),closedLambdaLine{j}{1});
     hClosedLambdaLineNeg{j} = cellfun(@(position)plot(hAxes,position(:,1),position(:,2)),closedLambdaLine{j}{2});
-    if hClosedLambdaLinePos{j}
-    end
 end
-
 hClosedLambdaLine = vertcat(hClosedLambdaLinePos{:},hClosedLambdaLineNeg{:});
 set(hClosedLambdaLine,'color',lambdaLineColor)
 drawnow
