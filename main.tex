@@ -307,6 +307,7 @@ The main steps of the algorithm used to calculate hyperbolic LCSs are enumerated
 \item Integrate a strainline forward and backward according to Equation~\eqref{eq:strainline} and using the largest $\lambda_2$ local maximum as the initial position. Integrate until the strainline has attained the maximum strainline length, or until it has reached the domain boundary.
 \item Flag any remaining local maxima of $\lambda_2$ within the minimization distance of the strainline as ineligible initial positions for subsequent strainlines
 \item Continue integrating strainlines using local maxima of $\lambda_2$ as initial positions until no eligible local maxima of $\lambda_2$ remain.
+\item Remove all strainline segments within elliptic LCSs.
 \end{enumerate}
 \caption{Algorithm to calculate strainline hyperbolic LCSs. Algorithm for stretchline hyperbolic LCSs is similar.}
 \label{t:Hyperbolic LCS algorithm}
