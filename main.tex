@@ -211,9 +211,9 @@ Velocity fields defined by datasets require pre-processing prior to performing t
 
 Beyond the pre-processing needed to obtain the Cauchy-Green strain tensor eigenvalues and eigenvectors, no special manipulations are needed to treat data-defined flow. It may be however, that parameter values giving good results with analytically defined flows need adjustment prior to processing data-defined velocity fields.
 
-\subsection{Shear LCS}
+\subsection{Elliptic LCS}
 
-Shear LCSs, or coherent Lagrangian vortices, are closed orbits in the Lagrangian shear vector fields $\boldsymbol \eta_{\pm}$ defined in Equation~\eqref{eq:etafields}. We find closed orbits by integrating lambda-lines starting from a Poincare section and evaluating the return map. A lambda-line returning to its starting point is a shear LCS. The main steps of the algorithm used to calculate shear LCS are enumerated in Table~\ref{t:Shear LCS algorithm} and described in detail below. The syntax of shear LCS functions in LCS Tool is in Table~\ref{t:Shear LCS functions}.
+Elliptic LCSs, or coherent Lagrangian vortices, are closed orbits in the Lagrangian shear vector fields $\boldsymbol \eta_{\pm}$ defined in Equation~\eqref{eq:etafields}. We find closed orbits by integrating lambda-lines starting from a Poincare section and evaluating the return map. A lambda-line returning to its starting point is an elliptic LCS. The main steps of the algorithm used to calculate elliptic LCSs are enumerated in Table~\ref{t:Elliptic LCS algorithm} and described in detail below. The syntax of elliptic LCS functions in LCS Tool is in Table~\ref{t:Elliptic LCS functions}.
 
 \begin{table}
 \begin{center}
@@ -225,8 +225,8 @@ Shear LCSs, or coherent Lagrangian vortices, are closed orbits in the Lagrangian
 \item Identify outermost closed orbit
 \end{enumerate}
 \end{center}
-\caption{Algorithm to calculate Shear LCS}
-\label{t:Shear LCS algorithm}
+\caption{Algorithm to calculate elliptic LCSs}
+\label{t:Elliptic LCS algorithm}
 \end{table}
 
 \begin{table}
@@ -259,8 +259,8 @@ Shear LCSs, or coherent Lagrangian vortices, are closed orbits in the Lagrangian
 \lstinline!periodicBc! & optional $1 \times 2$ logical array to specify periodic boundary conditions. Default is \lstinline![false,false]!.\\
 \hline \hline
 \end{tabular}
-\caption{LCS Tool shear LCS functions syntax}
-\label{t:Shear LCS functions}
+\caption{LCS Tool elliptic LCS functions syntax}
+\label{t:Elliptic LCS functions}
 \end{table}
 
 The first step is to set the position of Poincare sections as straight lines in regions where closed lambda-lines are expected. The Poincare section must be oriented such that the first endpoint is close to the center of the expected eddy and the second endpoint is outside the expected eddy. There is no definite procedure for deciding the position of Poincare sections. Possibilities include an examination of the finite time Lyapunov exponent field of the flow, or some prior knowledge of where coherent eddies are be expected. Additionally, the number of lambda-lines launched from the Poincare section, \lstinline!poincareSection.numPoints!, must be defined. A good default is 100.
@@ -285,13 +285,13 @@ The second step is to integrate the lambda-lines to obtain the Poincare return m
 \label{f:variable step integration}
 \end{figure}
 
-An example of a Poincare return map produced from integration of the $\boldsymbol \eta_\pm$ field is shown in Figure~\ref{f:Poincare return map}. Well behaved orbits will return to the Poincare section and their integration will be stopped using ODE event detection. Some orbits may however deviate far from the Poincare section and their integration could take inordinately long. To limit this behavior, a maximum orbit length, \lstinline!poincareSection.orbitMaxLength!, is specified. In practice, viewing the Poincare section as the radius of a circle and setting the maximum lambda-line integration length to twice the circumference gives good results. In Figure~\ref{f:Poincare return map}, circle markers indicate closed orbit positions. Closed orbits exist where the Poincare return map, the distance between the final and the initial point of the orbit $P(s)-s$, is zero. The function \lstinline!poincare_closed_orbit_multi! performs the computations. In Figure~\ref{f:Poincare return map} not all zero crossings have circles. This is because a threshold parameter \lstinline!dThresh! is used to discard those zero crossings that appear in regions with high numerical noise. Its default value is 1\% of the length of the Poincare section. The position of each detected zero crossing is refined by iteratively bisecting the interval of the zero crossing. If after a predetermined number of iterations, \lstinline!nBisection! whose default value is five, the two points around the zero crossing have absolute values above \lstinline!dThresh!, the zero crossing is discarded. Once all valid closed lambda-line orbits have been located, the outermost orbit of every Poincare section is identified as a shear LCS.
+An example of a Poincare return map produced from integration of the $\boldsymbol \eta_\pm$ field is shown in Figure~\ref{f:Poincare return map}. Well behaved orbits will return to the Poincare section and their integration will be stopped using ODE event detection. Some orbits may however deviate far from the Poincare section and their integration could take inordinately long. To limit this behavior, a maximum orbit length, \lstinline!poincareSection.orbitMaxLength!, is specified. In practice, viewing the Poincare section as the radius of a circle and setting the maximum lambda-line integration length to twice the circumference gives good results. In Figure~\ref{f:Poincare return map}, circle markers indicate closed orbit positions. Closed orbits exist where the Poincare return map, the distance between the final and the initial point of the orbit $P(s)-s$, is zero. The function \lstinline!poincare_closed_orbit_multi! performs the computations. In Figure~\ref{f:Poincare return map} not all zero crossings have circles. This is because a threshold parameter \lstinline!dThresh! is used to discard those zero crossings that appear in regions with high numerical noise. Its default value is 1\% of the length of the Poincare section. The position of each detected zero crossing is refined by iteratively bisecting the interval of the zero crossing. If after a predetermined number of iterations, \lstinline!nBisection! whose default value is five, the two points around the zero crossing have absolute values above \lstinline!dThresh!, the zero crossing is discarded. Once all valid closed lambda-line orbits have been located, the outermost orbit of every Poincare section is identified as an elliptic LCS.
 
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.8\textwidth]{graphics/double_gyre/poincare_return_map}
 \end{center}
-\caption{Example of a Poincare return map obtained for shear LCS. Circle markers indicate closed orbit positions. The filled circle indicates the outermost closed orbit and shear LCS.}
+\caption{Example of a Poincare return map obtained for an elliptic LCS. Circle markers indicate closed orbit positions. The filled circle indicates the outermost closed orbit and elliptic LCS.}
 \label{f:Poincare return map}
 \end{figure}
 
@@ -455,7 +455,7 @@ Figure~\ref{fig:Bickley_jet_lambda_LCS_full} shows lambda-line LCS of the Bickle
 
 Figure ~\ref{fig:Bickley jet lambda lcs convergence} shows convergence of the lambda-line elliptic LCSs. The LCS Tool script used to produce that figure are based on the script \lstinline!demo/bickley_jet/hyperbolic_shear_lcs.m! which is given in  Listing~\ref{lst:Bickley jet hyperbolic_shear_lcs subset}. It is worth pointing out that in order to obtain closed orbits, $\lambda = 0.995$; with $\lambda = 1$ no closed orbits exist.
 
-\lstinputlisting[caption={Bickley jet script for hyperbolic and shear LCSs. Subset of \lstinline!demo/bickley_jet/hyperbolic_shear_lcs.m!},label=lst:Bickley jet hyperbolic_shear_lcs subset]{listings/bickley_jet/hyperbolic_shear_lcs_subset.m}
+\lstinputlisting[caption={Bickley jet script for hyperbolic and elliptic LCSs. Subset of \lstinline!demo/bickley_jet/hyperbolic_shear_lcs.m!},label=lst:Bickley jet hyperbolic_shear_lcs subset]{listings/bickley_jet/hyperbolic_shear_lcs_subset.m}
 
 \begin{figure}[hbt]
   \centering
