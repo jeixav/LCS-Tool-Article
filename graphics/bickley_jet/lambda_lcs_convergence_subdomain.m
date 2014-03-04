@@ -32,11 +32,7 @@ poincareSection.endPosition = [6.5,-1.4;4.5,-3.5]*1e6;
 rOrbit = hypot(diff(poincareSection.endPosition(:,1)),diff(poincareSection.endPosition(:,2)));
 poincareSection.orbitMaxLength = 2*(2*pi*rOrbit);
 lambdaLineColor = [0,.6,0];
-dThresh = 1e-4;
-
-warning('off','eig_cgStrain:unequalDelta')
-warning('off','eig_cgStrain:unequalAuxGridDelta')
-warning('off','integrate_line:isDiscontinuousLargeAngle')
+dThresh = [1e-3,1e-3,1e-4];
 
 for m = 1:numel(resolutionX)
     % Make x and y grid spacing as equal as possible
@@ -44,7 +40,6 @@ for m = 1:numel(resolutionX)
     gridSpace = diff(domain(1,:))/(double(lResolutionX)-1);
     resolutionY = round(diff(domain(2,:))/gridSpace) + 1;
     resolution = [lResolutionX,resolutionY];
-    disp(['Resolution: ',num2str(resolution)])
     
     hAxes = setup_figure(domain);
     hFigure = get(hAxes,'parent');
@@ -72,14 +67,8 @@ for m = 1:numel(resolutionX)
     drawnow
     
     [shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda);
-    [closedLambdaLine,~,hFigurePoincare] = poincare_closed_orbit_multi(domain,resolution,shearline,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions,'dThresh',dThresh,'showGraph',true);
-    delete(hFigurePoincare(2))
-    hPoincare = findobj(hFigurePoincare(1),'type','axes','Tag',[]);
-    title(hPoincare,['Poincare return map, resolution: ',num2str(resolution(1)),'\times',num2str(resolution(2))])
-    set(hPoincare,'ylim',[-1,1]*1e5)
-    hLegend = findobj(hFigurePoincare(1),'type','axes','Tag','legend');
-    set(hLegend,'Location','SouthWest')
-    
+    closedLambdaLine = poincare_closed_orbit_multi(domain,resolution,shearline,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions,'dThresh',dThresh(m));
+        
     % Plot lambda-line LCSs
     hLambdaLineLcsPos = arrayfun(@(i)plot(hAxes,closedLambdaLine{i}{1}{end}(:,1),closedLambdaLine{i}{1}{end}(:,2)),1:size(closedLambdaLine,2));
     hLambdaLineLcsNeg = arrayfun(@(i)plot(hAxes,closedLambdaLine{i}{2}{end}(:,1),closedLambdaLine{i}{2}{end}(:,2)),1:size(closedLambdaLine,2));
