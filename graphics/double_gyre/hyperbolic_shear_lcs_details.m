@@ -1,30 +1,31 @@
 %% Input parameters
-domain = [0,6;-34,-28];
-resolution = [400,400];
-timespan = [100,130];
+epsilon = .1;
+amplitude = .1;
+omega = pi/5;
+domain = [0,2;0,1];
+resolution = [500,250];
+timespan = [0,10];
 
 %% Velocity definition
-load('ocean_geostrophic_velocity.mat')
-% Set velocity to zero at boundaries
-vlon(:,[1,end],:) = 0;
-vlon(:,:,[1,end]) = 0;
-vlat(:,[1,end],:) = 0;
-vlat(:,:,[1,end]) = 0;
-interpMethod = 'spline';
-vlon_interpolant = griddedInterpolant({time,lat,lon},vlon,interpMethod);
-vlat_interpolant = griddedInterpolant({time,lat,lon},vlat,interpMethod);
-lDerivative = @(t,x,~)flowdata_derivative(t,x,vlon_interpolant,vlat_interpolant);
+lDerivative = @(t,x,~)derivative(t,x,false,epsilon,amplitude,omega);
 incompressible = true;
 
 %% LCS parameters
-% Cauchy-Green strain
-cgEigenvalueFromMainGrid = false;
-cgAuxGridRelDelta = 0.01;
+cgStrainOdeSolverOptions = odeset('relTol',1e-5);
 
 % Lambda-lines
-lambdaLineOdeSolverOptions = odeset('relTol',1e-6,'initialStep',1e-2);
-lambdaStep = 0.02;
-lambdaRange = 0.90:lambdaStep:1.10;
+poincareSection = struct('endPosition',{},'numPoints',{},'orbitMaxLength',{});
+poincareSection(1).endPosition = [0.55,0.55;0.2,0.2];
+poincareSection(2).endPosition = [1.53,.45;1.95,0.1];
+[poincareSection.numPoints] = deal(100);
+nPoincareSection = numel(poincareSection);
+for i = 1:nPoincareSection
+    rOrbit = hypot(diff(poincareSection(i).endPosition(:,1)),diff(poincareSection(i).endPosition(:,2)));
+    poincareSection(i).orbitMaxLength = 2*(2*pi*rOrbit);
+end
+lambdaLineOdeSolverOptions = odeset('relTol',1e-6);
+lambdaStep = 0.01;
+lambdaRange = 0.95:lambdaStep:1.05;
 % set flag to true to show Poincare return maps in closed orbit detection
 showGraph = false;
 
@@ -36,7 +37,7 @@ strainlineOdeSolverOptions = odeset('relTol',1e-6);
 
 % Stretchlines
 stretchlineMaxLength = 20;
-stretchlineLocalMaxDistance = 4*gridSpace;
+stretchlineLocalMaxDistance = 10*gridSpace;
 stretchlineOdeSolverOptions = odeset('relTol',1e-6);
 
 % Graphics properties
@@ -46,35 +47,19 @@ lambdaLineColor = [0,.6,0];
 lcsInitialPositionMarkerSize = 2;
 
 hAxes = setup_figure(domain);
-title(hAxes,'Strainline and \lambda-line LCSs')
-xlabel(hAxes,'Longitude (\circ)')
-ylabel(hAxes,'Latitude (\circ)')
+title(hAxes,'Strainline and \lambda-line LCSs');
 
 %% Cauchy-Green strain eigenvalues and eigenvectors
-[cgEigenvector,cgEigenvalue] = eig_cgStrain(lDerivative,domain,resolution,timespan,'incompressible',incompressible,'eigenvalueFromMainGrid',cgEigenvalueFromMainGrid,'auxGridRelDelta',cgAuxGridRelDelta);
+[cgEigenvector,cgEigenvalue] = eig_cgStrain(lDerivative,domain,resolution,timespan,'incompressible',incompressible,'odeSolverOptions',cgStrainOdeSolverOptions);
 
 % Plot finite-time Lyapunov exponent
 cgEigenvalue2 = reshape(cgEigenvalue(:,2),fliplr(resolution));
 ftle_ = ftle(cgEigenvalue2,diff(timespan));
-ftle_(isnan(ftle_)) = max(ftle_(:));
 plot_ftle(hAxes,domain,resolution,ftle_);
 colormap(hAxes,flipud(gray))
 drawnow
 
-save data.mat
-% load data.mat
-
 %% Lambda-line LCSs
-% Define Poincare sections; first point in center of elliptic region and
-% second point outside elliptic region
-poincareSection = struct('endPosition',{},'numPoints',{},'orbitMaxLength',{});
-
-poincareSection(1).endPosition = [3.3,-32.1; 3.7,-31.6];
-poincareSection(2).endPosition = [1.3,-30.9; 2.0,-31.2];
-poincareSection(3).endPosition = [4.9,-29.6; 5.7,-29.6];
-poincareSection(4).endPosition = [4.9,-31.4; 5.3,-31.4];
-poincareSection(5).endPosition = [3.0,-29.3; 3.5,-29.3];
-
 % Plot Poincare sections
 hPoincareSection = arrayfun(@(input)plot(hAxes,input.endPosition(:,1),input.endPosition(:,2)),poincareSection);
 set(hPoincareSection,'color',lambdaLineColor)
@@ -82,20 +67,7 @@ set(hPoincareSection,'LineStyle','--')
 set(hPoincareSection,'marker','o')
 set(hPoincareSection,'MarkerFaceColor',lambdaLineColor)
 set(hPoincareSection,'MarkerEdgeColor','w')
-hNo = arrayfun(@(i)text(poincareSection(i).endPosition(1,1)-0.3,poincareSection(i).endPosition(1,2),num2str(i),'color','k','FontSize',16, 'fontname','lucida'),1:5);
 drawnow
-
-% Number of orbit seed points along each Poincare section
-[poincareSection.numPoints] = deal(100);
-
-% Set maximum orbit length to twice the expected circumference
-nPoincareSection = numel(poincareSection);
-for i = 1:nPoincareSection
-    % FIXME Poincare section end point is not always close to vortex
-    % centre, therefore rOrbit is not a good approximation of radius
-    rOrbit = hypot(diff(poincareSection(i).endPosition(:,1)),diff(poincareSection(i).endPosition(:,2)));
-    poincareSection(i).orbitMaxLength = 4*(2*pi*rOrbit);
-end
 
 % find closed orbits for range of lambda values
 closedLambdaLineArea = zeros(1,nPoincareSection);
@@ -119,7 +91,7 @@ for lambda = lambdaRange
             closedLambdaLineArea(i) = max(orbitArea);
             closedLambdaLine{i}{1}{1} = closedLambdaLineCandidate{i}{1}{1};
             closedLambdaLine{i}{2}{1} = closedLambdaLineCandidate{i}{2}{1};
-            % keep lambda values associated to closed orbits
+            % keep lambda values associated to closed orbits            
             lambda0(i) = lambda;
         end        
     end    
@@ -169,14 +141,11 @@ set(hStrainlineLcsInitialPosition,'MarkerFaceColor',strainlineColor)
 uistack(hLambdaLineLcs,'top')
 uistack(hClosedLambdaLine,'top')
 uistack(hPoincareSection,'top')
-uistack(hNo,'top');
 drawnow
 
 %% Hyperbolic stretchline LCSs
 hAxes = setup_figure(domain);
 title(hAxes,'Stretchline and \lambda-line LCSs')
-xlabel(hAxes,'Longitude (\circ)')
-ylabel(hAxes,'Latitude (\circ)')
 
 % Plot finite-time Lyapunov exponent
 plot_ftle(hAxes,domain,resolution,ftle_);
@@ -189,7 +158,6 @@ set(hPoincareSection,'LineStyle','--')
 set(hPoincareSection,'marker','o')
 set(hPoincareSection,'MarkerFaceColor',lambdaLineColor)
 set(hPoincareSection,'MarkerEdgeColor','w')
-hNo = arrayfun(@(i)text(poincareSection(i).endPosition(1,1)-0.3,poincareSection(i).endPosition(1,2),num2str(i),'color','k','FontSize',16, 'fontname','lucida'),1:5);
 
 % Plot lambda-line LCSs
 hLambdaLineLcsPos = arrayfun(@(i)plot(hAxes,closedLambdaLine{i}{1}{end}(:,1),closedLambdaLine{i}{1}{end}(:,2)),1:size(closedLambdaLine,2));
@@ -234,11 +202,9 @@ set(hStretchlineLcsInitialPosition,'MarkerSize',lcsInitialPositionMarkerSize)
 set(hStretchlineLcsInitialPosition,'marker','o')
 set(hStretchlineLcsInitialPosition,'MarkerEdgeColor','w')
 set(hStretchlineLcsInitialPosition,'MarkerFaceColor',stretchlineColor)
-
 uistack(hLambdaLineLcs,'top')
 uistack(hClosedLambdaLine,'top')
 uistack(hPoincareSection,'top')
-uistack(hNo,'top');
 
 print_eps(1,'LCS_strain');
 print_eps(2,'LCS_stretch');
