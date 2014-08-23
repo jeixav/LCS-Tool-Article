@@ -428,7 +428,7 @@ derivative_(idx2) = pi*amplitude*cos(pi*forcing).*sin(pi*x(idx2)).*(2*a*x(idx1) 
 In what follows, the parameter values are: $A = 0.1$, $\epsilon = 0.1$, $\omega = \pi/5$. The flow timespan is $t \in [0,10]$ and the domain is $x \in [0,2]$, $y \in [0,1]$. By examining the FTLE field (which
 is optionally provided by LCS Tool), we position Poincare sections to capture elliptic LCSs. An LCS Tool demo script to perform this operation is given in \cref{l:double gyre lambda-line LCS} where two Poincare sections are defined. The free stretching parameter $\lambda$ (\cref{eq:etafields}) is varied over the range $[0.93,1.07]$ with increments of $0.01$. In a loop , closed orbits for all predefined $\lambda$ values are computed and the outermost closed orbit is kept as the Lagrangian vortex boundary. In this script, we have chosen small values for the error tolerances of the integration of the Cauchy-Green strain tensor and $\lambda$-lines to facilitate convergence.
 
-\lstinputlisting[caption={Double gyre script for elliptic lambda-line LCSs},label=l:double gyre lambda-line LCS]{listings/double_gyre/lambda_lcs.m}
+\lstinputlisting[caption={Double gyre script for elliptic LCSs},label=l:double gyre lambda-line LCS]{listings/double_gyre/lambda_lcs.m}
 
 In \cref{fig:double_gyre_lambda_lcs_convergence}, the resolution of the  Cauchy-Green strain tensor is varied from $500 \times 250$ to $1000 \times 500$. The location of the outermost closed lambda-line changes little, demonstrating convergence. For all tested resolutions the $\lambda$ values of the outermost closed orbits are constant. This is also suggests that the lowest tested resolution of $500 \times 250$ is sufficient to identify the elliptic LCSs in this example.
 
@@ -450,14 +450,14 @@ As usual, the local maximization distance is set larger for stretchlines than fo
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{graphics/double_gyre/lambda_strain_lcs}
-\caption{Double gyre lambda-line and shrinkline LCSs}
+\caption{Double gyre elliptic and shrinkline LCSs}
 \label{fig:double_gyre_lambda_strain_lcs}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{graphics/double_gyre/lambda_stretch_lcs}
-\caption{Double gyre lambda-line and stretchline LCSs}
+\caption{Double gyre elliptic and stretchline LCSs}
 \label{fig:double_gyre_lambda_stretch_lcs}
 \end{figure}
 
@@ -483,16 +483,16 @@ f_{1,2}(t) = 2.625 \times 10^{-2} \phi_1(t/6.238 \times 10^5)
 The parameter values we use are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$.
 
 The integration time is $T=4L_x/U$, a multiple of a the eddy turnover
-time in the flow. \Cref{fig:Bickley_jet_lambda_LCS_full} shows lambda-line LCS of the Bickley jet with the FTLE in the background. The figure demonstrates a poor result since the LCSs change shape significantly between eddies. To address this problem we could adjust numerical parameters such as the resolution, but instead we will analyze lambda-line closed orbits of one vortex for a short timespan.
+time in the flow. \Cref{fig:Bickley_jet_lambda_LCS_full} shows elliptic LCSs of the Bickley jet with the FTLE in the background. The figure demonstrates a poor result since the LCSs change shape significantly between eddies. To address this problem we could adjust numerical parameters such as the resolution, but instead we will analyze lambda-line closed orbits of one vortex for a short timespan.
 
 \begin{figure}
 \centering
 \includegraphics[width=.85\textwidth]{graphics/bickley_jet/lambda_lcs_full}
-\caption{Bickley jet lambda-line LCSs}
+\caption{Bickley jet elliptic LCSs}
 \label{fig:Bickley_jet_lambda_LCS_full}
 \end{figure}
 
-\Cref{fig:Bickley jet lambda lcs convergence} shows convergence of the lambda-line elliptic LCSs. The LCS Tool script used to produce that figure are based on the script \lstinline!demo/bickley_jet/hyperbolic_shear_lcs.m! which is given in \cref{lst:Bickley jet hyperbolic_shear_lcs subset}. It is worth pointing out that in order to obtain closed orbits, $\lambda = 0.995$; with $\lambda = 1$ no closed orbits exist.
+\Cref{fig:Bickley jet lambda lcs convergence} shows convergence of the elliptic LCSs. The LCS Tool script used to produce that figure are based on the script \lstinline!demo/bickley_jet/hyperbolic_shear_lcs.m! which is given in \cref{lst:Bickley jet hyperbolic_shear_lcs subset}. It is worth pointing out that in order to obtain closed orbits, $\lambda = 0.995$; with $\lambda = 1$ no closed orbits exist.
 
 \lstinputlisting[caption={Bickley jet script for hyperbolic and elliptic LCSs. Subset of \lstinline!demo/bickley_jet/hyperbolic_shear_lcs.m!},label=lst:Bickley jet hyperbolic_shear_lcs subset]{listings/bickley_jet/hyperbolic_shear_lcs_subset.m}
 
@@ -501,7 +501,7 @@ time in the flow. \Cref{fig:Bickley_jet_lambda_LCS_full} shows lambda-line LCS o
 \includegraphics[width=.7\textwidth]{graphics/bickley_jet/lambda_lcs_convergence_400}
 \includegraphics[width=.7\textwidth]{graphics/bickley_jet/lambda_lcs_convergence_500}
 \includegraphics[width=.7\textwidth]{graphics/bickley_jet/lambda_lcs_convergence_600}
-\caption{Bickley jet closed lambda-line at varying resolutions}
+\caption{Bickley jet closed lambda-lines at varying resolutions}
 \label{fig:Bickley jet lambda lcs convergence}
 \end{figure}
 
@@ -575,7 +575,7 @@ stretchlineOdeSolverOptions = odeset('relTol',1e-4);
 % Cauchy-Green strain eigenvalues and eigenvectors
 [cgEigenvector,cgEigenvalue] = eig_cgStrain(lDerivative,domain,resolution,timespan,'incompressible',incompressible,'eigenvalueFromMainGrid',cgEigenvalueFromMainGrid,'auxGridRelDelta',cgAuxGridRelDelta);
 
-% Lambda-line LCSs
+% Elliptic LCSs
 % Define Poincare sections; ...
 poincareSection = struct('endPosition',{},'numPoints',{},'orbitMaxLength',{});
 ...
