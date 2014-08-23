@@ -1,18 +1,19 @@
 \documentclass{article}
 
-\usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage[uniquename=init,firstinits,backend=bibtex,sorting=none]{biblatex}
 \usepackage{calc}
 \usepackage{color}
+\usepackage{commath}
+\usepackage{fontspec}
 \usepackage{gensymb}
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage[numbered,framed]{mcode}
 \usepackage[space]{grffile}
-%% hyperref manual advises loading this package last
-\usepackage{hyperref}
-\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,breaklinks=true}
+\usepackage[hidelinks]{hyperref}
+
+\hypersetup{breaklinks=true}
 
 \definecolor{gray}{rgb}{0.9,0.9,0.9}
 
@@ -40,6 +41,8 @@ Structures}
 \abstract{
 We give an applied introduction to Lagrangian coherent structures (LCSs) using a computational engine we have programmed called LCS Tool. First, we review LCS theory that is based on variational calculus; this introduces elliptic and hyperbolic variational LCSs. Then we turn our attention to algorithms for computations conceived in accordance with the variational LCS theory. These algorithms are the foundation of LCS Tool. We conclude by explaining, with demonstration scripts, how to use LCS Tool to analyze three flow examples: a double gyre, a Bickley jet and an ocean dataset.
 }
+
+\tableofcontents
 
 \section{Introduction}
 
@@ -360,8 +363,8 @@ In this section we present examples showing how to use LCS Tool to obtain LCSs i
 The double gyre is a model for a time-dependent two gyre system observed in geophysical flows \parencite{shadden05:_defin_lagran_lyapun}. It consists of two counter rotating sinusoidal vortices with a harmonically oscillating line in-between. The velocity equations are:
 \begin{equation}
 \begin{split}
-\dot x = -\pi A \sin[\pi f(x,t)] \cos(\pi y)\\
-\dot y = \pi A \cos[\pi f(x,t)] \sin(\pi y) \frac{\partial f(x,t)}{\partial x}\\
+\od{x}{t} = -\pi A \sin[\pi f(x,t)] \cos(\pi y),\\
+\od{y}{t} = \pi A \cos[\pi f(x,t)] \sin(\pi y) \pd{f(x,t)}{x},\\
 f(x,t) = \epsilon \sin(\omega t) x^2 + [1 - 2 \epsilon \sin(\omega t)] x.
 \end{split}
 \label{eq:double gyre derivative equations}
@@ -436,8 +439,8 @@ The velocity is given by $\boldsymbol{v}(x,y,t) = (-\partial_y \psi, \partial_x 
 \end{gather*}
 As a forcing function we choose a chaotic solution of the Duffing oscillator, specifically
 \begin{gather*}
-\frac{d \phi_1}{dt} = \phi_2,\\
-\frac{d \phi_1}{dt} = -0.1 \phi_2 - \phi_1^3 + 11 \cos(t),\\
+\od{\phi_1}{t} = \phi_2,\\
+\od{\phi_1}{t} = -0.1 \phi_2 - \phi_1^3 + 11 \cos(t),\\
 f_{1,2}(t) = 2.625 \times 10^{-2} \phi_1(t/6.238 \times 10^5)
 \end{gather*}
 The parameter values we use are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$.
@@ -487,8 +490,8 @@ Strainline LCSs are shown in Figure~\ref{fig:Bickley_jet_strain_lcs} and stretch
 
 For the last example, corresponding to the ocean dataset demo files in LCS Tool, we choose a measured geophysical flow. In contrast to the previous analytic examples, the two dimensional incompressible velocity field is presented as a dataset with discrete temporal and spatial resolution. Our region of interest is a small domain in the South Atlantic Ocean, where exceptionally coherent eddies, Agulhas rings, were recently found using methods provided by LCS Tool \parencite{haller13:_coher_lagran}. The oceanic velocity field is obtained from altimetric satellite measurements of the sea surface height under the assumption that the flow is geostrophic. Under this assumption the sea surface height $\eta$ serves as a stream-function and in a longitude-latitude $(\varphi,\theta)$ coordinate system the evolution of a fluid particle is given by
 \begin{eqnarray}
-\dot{\varphi}(\varphi,\theta,t) = -\frac{g}{R^2 f(\theta) \cos\theta}\partial_{\theta}\eta(\varphi,\theta,t)\label{eq:dtlon}\\
-\dot{\theta}(\varphi,\theta,t) = +\frac{g}{R^2 f(\theta) \cos\theta}\partial_{\varphi}\eta(\varphi,\theta,t)
+\pd{\varphi(\varphi,\theta,t)}{t} = -\frac{g}{R^2 f(\theta) \cos\theta} \pd{\eta(\varphi,\theta,t)}{\theta}\label{eq:dtlon}\\
+\pd{\theta(\varphi,\theta,t)}{t} = \frac{g}{R^2 f(\theta) \cos\theta}\pd{\eta(\varphi,\theta,t)}{\varphi}
 \label{eq:dtlat}
 \end{eqnarray}
 where $g$ is the gravitational acceleration, $R$ is the mean radius of Earth, and $f(\theta) \equiv 2\Omega\sin\theta$ is the Coriolis parameter with $\Omega$ being the Earth's mean angular velocity. 
