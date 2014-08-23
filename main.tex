@@ -20,10 +20,7 @@
 \lstloadlanguages{Matlab}
 \lstset{basicstyle=\small,breaklines=true,frame=single,float,columns=fullflexible,numbers=left,stepnumber=2,backgroundcolor=\color{gray}}
 
-\newcommand{\reals}{\mathbf R}
-
-\title{LCS Tool — An Algorithmic Introduction to Lagrangian Coherent 
-Structures}
+\title{LCS Tool : A Computational Platform for Lagrangian Coherent Structures}
 
 \author{Kristjan Onu \and Florian Huhn \and George Haller}
 
@@ -39,328 +36,358 @@ Structures}
 \maketitle
 
 \abstract{
-We give an applied introduction to Lagrangian coherent structures (LCSs) using a computational engine we have programmed called LCS Tool. First, we review LCS theory that is based on variational calculus; this introduces elliptic and hyperbolic variational LCSs. Then we turn our attention to algorithms for computations conceived in accordance with the variational LCS theory. These algorithms are the foundation of LCS Tool. We conclude by explaining, with demonstration scripts, how to use LCS Tool to analyze three flow examples: a double gyre, a Bickley jet and an ocean dataset.
+We give an algorithmic introduction to Lagrangian coherent structures (LCSs) using a newly developed computational engine, LCS Tool. LCSs are most repelling, attracting and shearing material lines that form the centerpieces of observed tracer patterns in two-dimensional unsteady dynamical systems. LCS Tool implements the latest geodesic theory of LCSs for two-dimensional flows, uncovering key transport barriers in unsteady flow velocity data as explicit solutions of differential equations. After a review of the underlying theory, we explain the steps and numerical methods used by LCS Tool, and illustrate its capabilities on three unsteady fluid flow examples.
 }
 
 \tableofcontents
 
 \section{Introduction}
 
-LCSs are used in fluid dynamics to capture essential flow features and thereby simplify the description of complex fluid flows. Here we focus on analyzing two dimensional finite time turbulent flows. LCSs identify transport barriers, repelling and attracting structures and vortex boundaries. Application areas for LCSs include oceanic and atmospheric flows, biological applications\parencite{wilson09:_lagran_reynol,tallapragada11:_lagran}, aeronautics\parencite{tang10:_accur_lagran_hong_kong_inter_airpor} and mechanical systems\parencite{hadjighasem13:_detec_kam}.
+Lagrangian Coherent Structures (LCSs) are evolving organizing centers of trajectory patterns in non-autonomous dynamical systems\parencite{haller00:_lagran,peacock13:_lagran,Haller2014}. Applications of LCSs include oceanic and atmospheric flows\parencite{beron-vera13:_objec_agulh,koh02:_hyper}, biological transport problems\parencite{wilson09:_lagran_reynol,tallapragada11:_lagran,huhn12:_south_indian_ocean_count_madag}, aeronautics\parencite{tang10:_accur_lagran_hong_kong_inter_airpor}, celestial mechanics\parencite{gawlik09:_lagran}, crowd dynamics\parencite{ali07:_lagran_partic_dynam_approac_crowd}, and aperiodically forced mechanical oscillators\parencite{hadjighasem13:_detec_kam}.
 
-The finite time Lyapunov exponent (FTLE) is one widely-used mathematical definition for LCSs. Despite its widespread use, examples where the FTLE fails to identify LCSs correctly are known\parencite{haller11:_lagran_coher_struc,norgard12:_secon_lagran_coher_struc}. To remedy these problems, variational calculus has been applied to material curve properties in the context of fluid mechanics. Thus we obtain a rigorous approach to LCS detection\parencite{haller11:_lagran_coher_struc,farazmand12:_comput_lagran,haller12:_geodes_theor_trans_barrier_two_dimen_flows,farazmand13:_attrac_lagran,haller13:_coher_lagran}. This article presents an algorithmic introduction to variational LCSs supported by a computational engine called LCS Tool\footnote{LCS Tool is available at: \url{https://github.com/jeixav/LCS-Tool}.}.
+\textcite{haller01:_distin} proposed that ridges of the Finite-Time Lyapunov exponent (FTLE) are heuristic indicators of hyperbolic (i.e., repelling- and attracting-type) LCSs. A number of examples indeed support this principle\parencite{peacock13:_lagran}. Equating FTLE ridges with LCSs, however, would create theoretical inconsistencies, as well as false positives and negatives in hyperbolic LCS detection\parencite{haller11:_lagran_coher_struc,norgard12:_secon_lagran_coher_struc}. In addition, the role of the FTLE field in the accurate detection of elliptic (vortex-type) and parabolic (jet-core type) LCSs has remained an open question (but see \parencite{beron-vera10:_invar_lagran}).
 
-LCS Tool is a library of MATLAB functions that perform computations to identify LCSs in two dimensional finite time flows. LCS Tool aims to help scientists perform variational LCS calculations. The examples we present have been programmed into demonstration scripts. We encourage readers to download and execute these scripts after reading this article.
+More recent work has focused on an exact mathematical formulation of the properties defining LCSs\parencite{haller11:_lagran_coher_struc,farazmand12:_comput_lagran,haller12:_geodes_theor_trans_barrier_two_dimen_flows,haller13:_coher_lagran,blazevski14:_hyper_ellip_trans_barrier_three}. In two-dimensional flows, hyperbolic and parabolic LCSs turn out to be stationary curves of the averaged material shear\parencite{farazmand14:_shearless}, whereas elliptic LCSs are stationary curves of the averaged
+strain\parencite{haller13:_coher_lagran}. These variational formulations lead to explicit solutions for LCSs as null-geodesics of appropriate Lorentzian metrics.
 
-Other LCS software has been developed before; the list includes:
+Here we present a simple algorithmic introduction to geodesic LCS detection without details on the the underlying mathematics. We then review the implementation of this approach in a computational engine called LCS Tool\footnote{LCS Tool is publicly available at: \emph{\url{https://github.com/jeixav/LCS-Tool}}.}. This engine is a library of MATLAB functions that extract LCSs from two-dimensional unsteady flows. The examples we present here have been programmed into demonstration scripts.
+
+The list of publicly available software for LCS detection further
+includes the following packages:
 \begin{itemize}
-\item \emph{MANGEN}\parencite{lekien03:_time}, calculates stability manifolds adaptively in two dimensional finite time velocity fields. Includes a graphical user interface and uses MPI for parallel calculations.
+\item \emph{MANGEN}\parencite{lekien03:_time} calculates FTLE and advects material curves in two dimensional velocity fields. It also includes a graphical user interface and uses MPI for parallel calculations.
 \item \emph{LCS MATLAB Kit}\parencite{dabiri09:_lmk} calculates the FTLE from velocity datasets. Includes a graphical user interface.
-\item \emph{Newman}\parencite{toit10:_trans} calculates the FTLE in $N$ dimensions. Assists ridge extraction of FTLE fields. Supports analytic and dataset defined velocity definitions.
+\item \emph{Newman}\parencite{toit10:_trans} calculates the FTLE in $N$ dimensions. Assists ridge extraction of FTLE fields. Supports analytic  and dataset based velocity definitions.
 \item \emph{FlowVC}\parencite{shadden10:_flowvc} is a general purpose LCS platform for two and three dimensional datasets. Parallel calculations are supported with Open\-MP, CUDA and OpenCL.
 \end{itemize}
-These packages are based on the FTLE; the focus of LCS Tool and this article is to encourage and facilitate variational LCS analysis.
+These packages primarily target the automated generation of FTLE plots to aid the visual assessment of hyperbolic LCSs in the flow. The purpose of LCS Tool and this article is to provide an all-purpose numerical engine for the geodesic extraction of LCSs as parametrized material curves in unsteady two-dimensional flows, and extend the scope of such extraction to elliptic LCSs.
 
 \section{Theory}
 
-The fluid flows considered are defined in two dimensions by a velocity field:
-\begin{align*}
-\dot{\boldsymbol x} = \boldsymbol v(\boldsymbol x,t), && \boldsymbol x \in U \subset \reals^2, && t \in [t_-,t_+].
-\end{align*}
-Integration yields the flow map, defined between an initial time $t_0$ and a final time $t$ within $[t_-,t_+]$:
+We consider two-dimensional, finite-time, unsteady velocity fields of the form
+\begin{align}
+\od{x}{t} = v(x,t), && x \in U \subset \mathbf R^2, && t \in [t_-,t_+].
+\label{eq:v(x,t)}
+\end{align}
+Trajectories of \eqref{eq:v(x,t)} are denoted $x(t;t_0,x_0)$, with $x_0 \in U$ denoting their initial position in the open set $U$ at an initial time $t_0 \in [t_-,t_+]$. The flow map is then defined as
 \[
-F_{t_0}^t(\boldsymbol x_0) \equiv \boldsymbol x(t,t_0,\boldsymbol x_0).
+F_{t_0}^t(x_0) \equiv x(t;t,x_0),
 \]
-The time interval used to detect LCSs is arbitrary; it can be the complete interval for which the flow is defined, or data is available, or it can be a sub-interval.
+mapping initial positions to current positions at time $t$. The time interval $[t_-,t_+]$ is part of the definition of the finite-time dynamical system \eqref{eq:v(x,t)}. This interval may be a time scale of interest or the maximum interval over which velocity data is available from simulations or observations.
 
-The right Cauchy-Green strain tensor measures Lagrangian strain in the velocity field and is defined:
-\[
-C_{t_0}^t(\boldsymbol x_0) = \left[D F_{t_0}^t(\boldsymbol x_0)\right]^T D F_{t_0}^t(\boldsymbol x_0).
-\]
-The eigenvalues of the Cauchy-Green strain tensor are denoted by $\lambda_{1,2}$ and the eigenvectors by $\boldsymbol \xi_{1,2}$. The eigenvalues satisfy $0 < \lambda_1 \leq \lambda_2$ and the eigenvectors satisfy $\boldsymbol \xi_1 \perp \boldsymbol \xi_2$.
-
-\subsection{Elliptic LCS}
-We find coherent Lagrangian vortices as closed orbits of one of the two vector fields
+The right Cauchy-Green strain tensor associated with the flow map is defined as
 \begin{equation}
-\boldsymbol \eta^{\lambda}_\pm = \sqrt{\frac{\lambda_2 - \lambda^2}{\lambda_2 - \lambda_1}} \boldsymbol \xi_1 \pm \sqrt{\frac{\lambda^2 - \lambda_1}{\lambda_2 - \lambda_1}} \boldsymbol \xi_2,
+C_{t_0}^t(x_0) = \left[\nabla F_{t_0}^t(x_0)\right]^T \nabla F_{t_0}^t(x_0),
+\label{eq:CG}
+\end{equation}
+measuring Lagrangian strain in the velocity field. This tensor is symmetric and positive definite\parencite{truesdell04}. We label the eigenvalues and eigenvectors of $C_{t_0}^t(\boldsymbol x_0)$ as follows:
+\[
+C_{t_0}^t \xi_i = \lambda_i \xi_i, \qquad 0 < \lambda_1 \leq \lambda_2, \quad i = 1,2;
+\]
+\begin{equation}
+\left|\xi_i\right| = 1, \quad \xi_2 = \Omega \xi_1, \quad \Omega = \left(
+\begin{array}{rr}
+0 & -1\\
+1 & 0
+\end{array}
+\right).
+\label{eq:CG_invariants}
+\end{equation}
+
+\subsection{Elliptic LCSs}
+\label{sub:Elliptic-LCSs}
+
+We seek positions of closed material lines at time $t_0$ that prevail as coherent Lagrangian vortex boundaries (or \emph{elliptic LCSs}) over a time interval $[t_0,t]\subset[t_-,t_+]$. \textcite{haller13:_coher_lagran} argue that such initial material line positions are closed stationary curves of the averaged strain functional
+\[
+Q(\gamma) = \frac{1}{\sigma} \int_0^{\sigma} \frac{\sqrt{\langle r'(s),C_{t_0}^t(r(s))r'(s)\rangle}}{\sqrt{\langle r'(s),r'(s)\rangle}} \dif s,
+\]
+obtained by averaging the tangential strain arising over $[t_0,t]$ along closed material lines parametrized as $r(s)$ with $s \in [0,\sigma].$
+Solutions to this variational problem turn out to be closed orbits of one of two parametrized vector-field families
+\begin{equation}
+\eta_\pm^\lambda = \sqrt{\frac{\lambda_2 - \lambda^2}{\lambda_2 - \lambda_1}} \xi_1 \pm \sqrt{\frac{\lambda^2 - \lambda_1}{\lambda_2 - \lambda_1}}\xi_2,
 \label{eq:eta}
 \end{equation}
-which are a function of the eigenvalues and eigenvectors of $C_{t_0}^t(\boldsymbol x_0)$. Curves $\gamma$ that are trajectories of $\boldsymbol \eta^{\lambda}_\pm$ can be parametrized as $\boldsymbol r(s)$ with their arc length $s \in [0,\sigma]$. They are given by integrating
+with $\lambda > 0$ playing the role of a parameter. Such closed orbits satisfy the differential equation
 \begin{equation}
-\boldsymbol r' \equiv \frac{d \boldsymbol r}{ds} = \boldsymbol \eta^{\lambda}_\pm(\boldsymbol r).
+r' = \eta_\pm^\lambda(r),
 \label{eq:etafields}
 \end{equation}
+which coincide with null-geodesics of the Lorentzian metric family $e_\lambda(u,v) = \left\langle u,\left[D_{t_0}^t(r) - \lambda^2 I\right] v \right\rangle$. For this reason, we refer to the computation of elliptic LCSs as limit cycles of \eqref{eq:etafields} as \emph{geodesic detection of elliptic LCSs}.
 
-$\lambda$ is a free parameter close to unity that indicates the uniform stretching of the curve $\gamma$, i.e., each tangent vector $\boldsymbol r'(s)$ with length $l_{t_0}$ stretches by a factor $\lambda$ to length $l_{t}$ under the flow map:
+Any orbit of \eqref{eq:etafields} turns out to stretch uniformly under the flow map $F_{t_0}^t$. Specifically, any subset of an orbit of \eqref{eq:etafields} increases its arclength precisely by a factor of $\lambda$. For this reason, we refer to trajectories of \eqref{eq:etafields} as $\lambda$-lines. Following \parencite{haller13:_coher_lagran}, we call the outermost member of a closed family of $\lambda$-lines a coherent Lagrangian vortex boundary.
+
+\subsection{Hyperbolic LCSs}
+\label{sub:Hyperbolic-LCSs}
+
+Next we consider positions of material lines at time $t_0$ that prevail as most repelling or attracting material lines (or \emph{hyperbolic LCSs}) over a time interval $[t_0,t] \subset [t_-,t_+]$. \textcite{farazmand14:_shearless} argue that hyperbolic LCSs are stationary curves of the averaged shear functional
 \begin{gather*}
-l_{t_0}(s) = \sqrt{\langle \boldsymbol r'(s), \boldsymbol r'(s) \rangle},\\
-l_t(s) = \sqrt{\langle \boldsymbol r'(s), C_{t_0}^t(\boldsymbol r(s)) \boldsymbol r'(s) \rangle},\\
-l_t(s) = \lambda\, l_{t_0}(s).
+Q(\gamma) = \frac{1}{\sigma} \int_0^\sigma \frac{\langle r'(s),D_{t_0}^t(r(s)) r'(s)\rangle}{\sqrt{\langle r'(s),C_{t_0}^t(r(s)) r'(s)\rangle\langle r'(s),r'(s)\rangle}}\dif s,\\
+D_{t_0}^t = \frac12 [C_{t_0}^t \Omega - \Omega C_{t_0}^t],
 \end{gather*}
-For $\lambda=1$, $\boldsymbol \eta^{\lambda}_\pm$ points in the direction of maximal Lagrangian shear and we obtain uniformly non-stretching curves over the finite time interval $[t_0, t]$. In summary, the boundaries of coherent Lagrangian vortices are closed curves that uniformly stretch by a factor $\lambda$ when advected by the flow. We refer to these curves as lambda-lines. The outermost lambda-line is the physically observable boundary of an eddy, generating the tracer pattern of an isolated rotating fluid region.
+obtained by averaging the Lagrangian shear arising over $[t_0,t]$ along closed material lines parametrized as $r(s)$ with $s \in [0,\sigma]$. More precisely, hyperbolic LCSs are stationary curves of $Q(\gamma)$ with respect to fixed-endpoint perturbations. We note that parabolic LCSs (Lagrangian jet cores) are also stationary curves of $Q(\gamma)$, but under variable endpoint perturbations (cf. \textcite{farazmand14:_shearless}.)
 
-Note that the equation for $\boldsymbol \eta^{\lambda}_\pm$ follows from the variational principle that the first variation of the averaged Lagrangian strain along the sought extremal closed curve vanishes (see \parencite{haller13:_coher_lagran} for full derivations):
-\begin{eqnarray*}
-Q(\gamma) &=& \frac{1}{\sigma} \int_0^\sigma \frac{l_t(s)}{l_{t_0}(s)}\text{d}s\\
-\delta Q(\gamma) &=& 0.
-\end{eqnarray*}
-This coherence principle means the sought curve $\gamma$, the coherent eddy boundary, is a stationary point of the averaged Lagrangian strain functional and therefore nearby fluid elements cannot separate from $\gamma$.
-
-\subsection{Hyperbolic LCS}
-Hyperbolic LCSs are trajectories of the eigenvector fields $\boldsymbol \xi_{1,2}$. Repelling hyperbolic LCSs, denoted strainlines, are obtained as solutions of the differential equation
+Solutions to this variational problem turn out to be orbits of the $\xi_1$ or $\xi_2$ eigenvector field. Repelling LCSs (\emph{shrinklines}) are obtained as trajectories of the differential equation
 \begin{equation}
-\boldsymbol r' = \boldsymbol \xi_1(\boldsymbol r),
+r' = \xi_1(r),
 \label{eq:strainline}
 \end{equation}
-and attracting hyperbolic LCSs, denoted stretchlines, are obtained as a solution of the differential equation
-\[
-\boldsymbol r' = \boldsymbol \xi_2(\boldsymbol r).
-\]
-A normal perturbation a strainline segment grows under the flow map by a factor $\lambda_2$, i.e., fluid elements are repelled at that rate in the normal direction. Equivalently, a normal perturbation a stretchline segment shrinks by a factor $\lambda_1$ and fluid elements are attracted.
+and attracting LCSs (\emph{stretchlines}) are obtained as trajectories of the differential equation
+\begin{equation}
+r' = \xi_2(r).
+\label{eq:stretchline}
+\end{equation}
 
-Similarly to elliptic LCS, hyperbolic LCS are also based on a variational principle, in this case for the Lagrangian shear
-\[
-p(s) = \frac{\langle \boldsymbol r'(s), D(\boldsymbol r(s)) \boldsymbol r'(s)\rangle}{\sqrt{\langle \boldsymbol r'(s), C(\boldsymbol r(s)) \boldsymbol r'(s)\rangle \langle \boldsymbol r'(s), \boldsymbol r'(s)\rangle}}
-\]
-where
-\[
-D(\boldsymbol x_0) = \frac12[C(\boldsymbol x_0) \Omega - \Omega C(\boldsymbol x_0)], \quad \Omega = \begin{pmatrix}0&-1\\1&0\end{pmatrix}.
-\]
-The first variation of the average Lagrangian shear along a hyperbolic LCS vanishes
-\[
-P(\gamma) = \frac{1}{\sigma} \int_0^\sigma p(s) \text{d}s,
-\]
-\[
-\delta P(\gamma) = 0.
-\]
-They are one type of shearless LCS. For details of the derivation of hyperbolic LCS, see \cite{farazmand13:_shearless}.
+Shrinklines and stretchlines coincide with the null-geodesics of the Lorentzian metric $h(u,v) = \left\langle u,D_{t_0}^t(r) v \right\rangle$. For this reason, we refer to the computation of hyperbolic LCSs as strongest normally-repelling or normally-attracting orbits of \eqref{eq:etafields} as \emph{geodesic detection of hyperbolic LCSs}.
+
+To compute the normal repulsion of shrinklines, we note that an infinitesimal
+normal perturbation to a shrinkline $\gamma$ at its point $r$ grows under the flow map $F_{t_{0}}^{t}$ by a factor of $\lambda_{2}(r)$ in the direction normal to $F_{t_{0}}^{t}(\gamma).$ Similarly, small normal perturbations to a stretchline decay by a factor $\lambda_{1}(r)$ in the direction normal to the evolving stretchline. 
 
 \clearpage
 
-\section{Methods}
+\section{Numerical methods}
 
-This section presents the numerical methods used to compute LCSs and explains them step-wise. In other words, the algorithms that constitute LCS Tool are presented.
+Here we describe a step-by-step numerical implementation of the geodesic detection of elliptic and hyperbolic LCSs through the differential equations \eqref{eq:etafields}, \eqref{eq:strainline}, and \eqref{eq:stretchline}.
 
-\subsection{The Cauchy-Green strain tensor}
+\subsection{Computing the invariants of the Cauchy-Green strain tensor}
 
-To obtain Lagrangian coherent structures the Cauchy-Green strain tensor must be calculated. More specifically, the eigenvalues and eigenvectors of the Cauchy-Green strain tensor are needed. The function associated with this calculation in LCS Tool is \lstinline!eig_cgStrain!. The main steps of this function are enumerated in Table~\ref{t:Cauchy-Green algorithm} and are described in detail below. Table~\ref{t:eig_cgStrain syntax} summarizes the syntax of \lstinline!eig_cgStrain!.
+The common first step in calculating elliptic and hyperbolic LCSs is the computation of the Cauchy-Green strain tensor field $C_{t_0}^t(x_0)$, as defined in \eqref{eq:CG}. The function performing this calculation in LCS Tool is \lstinline!eig_cgStrain!. The main steps executed by this function are enumerated in Table~\ref{t:Cauchy-Green algorithm}, while Table~\ref{t:eig_cgStrain syntax} summarizes the syntax of \lstinline!eig_cgStrain!.
 
 \begin{table}
 \begin{enumerate}
-\item Setup a Cartesian grid and auxiliary grid in the (rectangular) domain of the flow.
-\item Integrate the flow velocity equations at each grid point and auxiliary grid point. This yields the flow map, $F_{t_0}^t(\boldsymbol x_0)$.
-\item Use finite differences to approximate the derivative of the flow map, $D F_{t_0}^t(\boldsymbol x_0)$.
-\item Compute the Cauchy-Green strain tensor, $C_{t_0}^t = \left(D F_{t_0}^t\right)^T D F_{t_0}^t$ and its eigenvalues, $\lambda_{1,2}$ and eigenvectors, $\xi_{1,2}$.
+\item Define a Cartesian grid for initial conditions of trajectories. Define
+an auxiliary grid for differentiating with respect to initial conditions.
+\item Solve \eqref{eq:v(x,t)} starting from each grid point and auxiliary grid point over the time interval $[t_0,t]$. This gives a discrete approximation to the flow map $F_{t_0}^t(x_0)$.
+\item Use finite differencing over the auxiliary grid to compute numerically the derivative of the flow map $DF_{t_0}^t(x_0)$.
+\item Compute the Cauchy-Green strain tensor field $C_{t_0}^t(x_0) = \left(DF_{t_0}^t(x_0)\right)^T DF_{t_0}^t(x_{0})$, its eigenvalue field $\lambda_{1,2}(x_0)$, and eigenvector fields $\xi_{1,2}(x_0)$ over the initial condition grid.
 \end{enumerate}
-\caption{Algorithm to calculate the Cauchy-Green strain tensor eigenvalues and eigenvectors}
+\caption{Algorithm to calculate the invariants of the Cauchy-Green strain tensor field.}
 \label{t:Cauchy-Green algorithm}
 \end{table}
 
 \begin{table}
 \begin{center}
 \begin{tabular}{|c|p{.7\textwidth}|}
-\hline \hline
-\multicolumn{2}{|p{\textwidth}|}{\lstinline![cgEigenvector,cgEigenvalue] = eig_cgStrain(derivative,domain,timespan,resolution)!}\\
 \hline
-\lstinline!derivative! & function handle for flow velocity equations\\
+\multicolumn{2}{|p{\textwidth}|}{\lstinline![cgEigenvector,cgEigenvalue] = eig_cgStrain(derivative,domain,timespan,resolution)!}\tabularnewline
 \hline
-\lstinline!domain! & $2 \times 2$ array to define flow domain\\
+\lstinline!derivative! & function handle for flow velocity equations\tabularnewline
 \hline
-\lstinline!timespan! & $1 \times 2$ array to define flow timespan\\
+\lstinline!domain! & $2 \times 2$ array to define flow domain\tabularnewline
 \hline
-\lstinline!resolution! & $1 \times 2$ array to define Cauchy-Green strain main grid resolution\\
+\lstinline!timespan! & $1 \times 2$ array to define flow timespan\tabularnewline
 \hline
-\lstinline!auxGridRelDelta! & optional scalar between 0 and 0.5 to specify auxiliary grid spacing. Default is $10^{-2}$.\\
+\lstinline!resolution! & $1 \times 2$ array to define Cauchy-Green strain main grid resolution\tabularnewline
 \hline
-\lstinline!eigenvalueFromMainGrid! & optional logical to control whether eigenvalues of Cauchy-Green strain are calculated from main or auxiliary grid. Default is \lstinline!true!.\\
+\lstinline!auxGridRelDelta! & optional scalar between 0 and 0.5 to specify auxiliary grid spacing. Default is $10^{-2}$.\tabularnewline
 \hline
-\lstinline!incompressible! & optional logical to specify if incompressibility is imposed. Default is \lstinline!false!.\\
+\lstinline!eigenvalueFromMainGrid! & optional logical to control whether eigenvalues of Cauchy-Green strain are calculated from main or auxiliary grid. Default is \lstinline!true!.\tabularnewline
 \hline
-\lstinline!odeSolverOptions! & optional \lstinline!odeset! structure to specify flow map integration parameters\\
-\hline \hline
+\lstinline!incompressible! & optional logical to specify if incompressibility is imposed. Default is \lstinline!false!.\tabularnewline
+\hline
+\lstinline!odeSolverOptions! & optional \lstinline!odeset! structure to specify flow map integration parameters\tabularnewline
+\hline
 \end{tabular}
 \caption{Syntax of the function \lstinline!eig_cgStrain!}
 \label{t:eig_cgStrain syntax}
 \end{center}
 \end{table}
 
-We setup a Cartesian grid according to user-defined resolutions. We can find the optimal resolution by an iterative procedure in which we start with a low resolution and double it until convergence of LCSs is observed visually. If the chosen domain only comprises a few expected LCSs, e.g., one vortex, a resolution of about 500 grid point along the longest axis usually gives good results. Otherwise, for larger domains, a higher resolution must be chosen. Furthermore an auxiliary grid is setup. This is illustrated in Figure~\ref{f:main and auxiliary grids}. The improvements the auxiliary grid yields compared to using only the main grid were reported in \textcite{farazmand12:_comput_lagran}. Experience indicates that optimal results are obtained when the auxiliary grid spacing is 1\% to 10\% of the main grid spacing.
+
+The Cartesian grid of initial conditions mentioned in Table~\ref{t:Cauchy-Green algorithm} is rectangular, with user-defined vertical and horizontal ranges and resolutions. The optimal resolution may be determined by a successive doubling of the initial resolution until convergence of the extracted LCSs is observed visually. If the domain of interest comprises only a few expected LCSs, e.g., one vortex, then a resolution of about 500 grid point along the longest axis usually gives good results. Otherwise, a higher resolution must be chosen.
+
+The auxiliary grid (cf. Table~\ref{t:Cauchy-Green algorithm}) comprises four points placed symmetrically around each point of the Cartesian grid (Figure~\ref{f:main and auxiliary grids}.) These points are used to achieve increased accuracy in the finite-difference approximation
+\[
+\nabla F_{t_0}^t(x_0) \approx
+\left(\begin{array}{cc}
+\frac{x_1(t;t_0,x_0 + \delta x_1) - x_1(t;t_0,x_0 - \delta x_1)}{2\vert\delta x_1\vert} & \frac{x_1(t;t_0,x_0+\delta x_2) - x_1(t;t_0,x_0-\delta x_2)}{2\vert\delta x_2\vert}\\
+\frac{x_2(t;t_0,x_0+\delta x_1) - x^2(t;t_0,x_0 - \delta x_1)}{2\vert\delta x_1\vert} & \frac{x_2(t;t_0,x_0 + \delta x_2) - x_2(t;t_0,x_0 - \delta x_2)}{2\vert\delta x_2\vert}
+\end{array}\right)
+\]
+of $\nabla F_{t_0}^t$ at a point $x_0$ of the Cartesian grid. Here $\delta x_i$ is a vector of length $\vert\delta x_i\vert > 0$ that points from the Cartesian grid-point $x_0$ in the $i^{th}$ coordinate direction (Figure~\ref{f:main and auxiliary grids}). Computational improvements arising from the use of the auxiliary grid over simply using the nearest points of the main grid were reported in Ref.\,\parencite{farazmand12:_comput_lagran}. Experience suggests an auxiliary grid spacing of 1-10\% of the main grid spacing.
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.5\textwidth]{graphics/main_aux_grids}
+\includegraphics[width=.5\textwidth]{graphics/main_aux_grids}
 \end{center}
-\caption{Illustration of main grid (filled circles) and auxiliary grid (empty circles) used to compute the Cauchy-Green strain. The variable \lstinline!auxGridRelDelta! specifies the grid spacing of the auxiliary grid relative to the main grid spacing.}
+\caption{Illustration of the main grid (filled circles) and the auxiliary grid (empty circles) used in the computation of the derivative of the flow map in the definition \eqref{eq:CG} of the Cauchy--Green stain tensor. The variable \lstinline!auxGridRelDelta! specifies the grid spacing of the auxiliary grid relative to the main grid spacing.}
 \label{f:main and auxiliary grids}
 \end{figure}
 
-The function \lstinline!eig_cgStrain! provides the option to calculate eigenvectors from the auxiliary grid, but eigenvalues from the main grid. We have found that for flows defined analytically the eigenvalues should be calculated from the main grid whereas for the flows defined by datasets, using the auxiliary grid gives better results.
+The function \lstinline!eig_cgStrain! of LCS Tool provides the option to calculate Cauchy--Green eigenvectors from the auxiliary grid using eigenvalues calculated from the main grid. We have found that for flows defined analytically, the eigenvalues can reliably be calculated from the main grid. For the flows defined by datasets, using the auxiliary grid for eigenvalue calculations gives better results.
 
-As stated, typically we set the main grid resolution of the Cauchy-Green strain tensor to around 500 grid points. For a square domain, this implies the velocity equations must be integrated, after including 4 auxiliary grid points around every main grid point, at 1.25 million grid points. The natural way to perform these integration calculations would be to solve a two dimensional first-order ODE system at every grid point and iterate over every grid point in a for-loop. With 1.25 million grid points this calculation can take an excessively long time. To alleviate this problem, we solve the flow equations in a vector form where the equations at all grid points are combined into a single system of equations, even though the system is composed of independent blocks of two dimensional first-order ODE systems. MATLAB's \lstinline!ode45! function is used to perform the integration and the flow integration typically takes five to ten minutes with default error tolerances. The drawback of vector form integration is that memory requirements can become excessive at high resolutions. Furthermore, writing the velocity function in vector form is more error-prone than the simpler two dimensional form.
+As mentioned above, a typical main grid for the Cauchy-Green strain tensor comprises $500 \times 500$. This means that after the addition of 4 auxiliary grid points around each main grid points, eq. \eqref{eq:v(x,t)} must be integrated over 1.25 million initial conditions.
 
-The Cauchy-Green strain tensor can have singularities, i.e., $C_{t_0}^t(\boldsymbol x_0) = I$. Such points are isolated in general\parencite{delmarcelle94}, therefore no special accommodations are made in computations for singularities of the Cauchy-Green strain tensor.
+To avoid excessive computational times in MATLAB, we vectorize \eqref{eq:v(x,t)}, i.e., combine its right-hand-side evaluated over each initial points into a single system of equations. The resulting system is composed of independent blocks of two-dimensional first-order ODEs. We then use MATLAB's \lstinline!ode45! to perform trajectory integration from all grid points simultaneously. This process typically takes five to ten minutes with default error tolerances. A potential drawback of vector form integration is that memory requirements may become excessive at high resolutions. Furthermore, writing the velocity function in vector form is more error-prone than the simpler two-dimensional form.
+
+The Cauchy-Green strain tensor generically admits points singularities, i.e., points where $C_{t_0}^t(x_0)$ has repeated eigenvalues. At these points the eigenvectors $\xi_1(x_0)$ and $\xi_2(x_0)$ are no longer well-defined. This generically arises at a finite set of isolated points within the computational domain\parencite{delmarcelle94}, and hence lie off the computational grid with probability one.
 
 \subsubsection{Special case: incompressible velocity fields}
 
-Flows that are incompressible, meaning $D \cdot \boldsymbol v = 0$, satisfy the relation $\lambda_1(\boldsymbol x_0) \lambda_2(\boldsymbol x_0) = 1, \forall \: \boldsymbol x_0 \: \in \: U$\parencite{arnold78:_mathem}. This gives the possibility of imposing incompressibility when calculating the eigenvalues of the Cauchy-Green strain tensor by first calculating $\lambda_2$ and then setting $\lambda_1(\boldsymbol x_0) = 1/\lambda_2(\boldsymbol x_0)$. This procedure should be applied carefully since by changing $\lambda_1$ but not $\boldsymbol \xi_1$, the error in satisfying the eigenvalue equation for the Cauchy-Green strain tensor may increase.
+Incompressible flows (i.e. those satisfying $\nabla \cdot v=0$) admit the relationship $\lambda_1(x_0) \lambda_2(x_0) = 1$ at all points of the computational domain \parencite{arnold78:_mathem}. Incompressibility can be computationally imposed by first calculating $\lambda_2(x_0)$, then setting $\lambda_1(x_0) = 1/\lambda_2(x_0)$ and calculating the strain eigenvectors $\xi_2$ from $\lambda_2$, then $\xi_1$ from the relationship in \eqref{eq:CG_invariants}. Experience shows that computing $\lambda_i$ in this order gives higher accuracy than in the reverse order \parencite{farazmand12:_comput_lagran}.
 
-At some grid points it may occur that $\lambda_2 < 1$ due to numerical integration errors of the flow velocity equations. By setting integration tolerances to smaller values the number of grid points with $\lambda_2 < 1$ can be reduced. Nonetheless, some grid points can be so close to singularities of the Cauchy-Green strain tensor that satisfying $\lambda_2 \geq 1$ everywhere could be excessively computationally costly. Therefore the function \lstinline!eig_cgStrain! records the number of points at which incompressibility cannot be imposed and this measure can guide setting appropriate integration tolerances.
+At some grid points, $\lambda_2 < 1$ may occur due to numerical integration errors. By setting the integration tolerances to smaller values, the number of such grid points is reduced. Enforcing $\lambda_2 \geq 1$ everywhere, however, can incur excessive computational cost. To this end, the function \lstinline!eig_cgStrain! records the number of points with $\lambda_2 < 1$, providing a measure for setting feasible integration tolerances.
 
-\subsubsection{Special case: data-defined velocity fields}
+\subsubsection{Special case: dataset velocity fields}
 
-Velocity fields defined by datasets require pre-processing prior to performing the integration that yields the flow map. An interpolation function must be written to enable evaluating the velocity function at arbitrary points in $U$ and at arbitrary times between $t_-$ and $t_+$. MATLAB's interpolation functions can be used in the velocity function. In section \ref{sec:oceandataset} we present an example for LCSs computed for an ocean dataset and details of the interpolation function are given.
+Velocity fields defined by datasets require pre-processing before
+they are used in the numerical integration of \eqref{eq:v(x,t)}. This requires spatial and temporal interpolation that enables the evaluation of the velocity function at arbitrary points in $U$ and at arbitrary times between $t_-$ and $t_+$. In section \ref{sec:oceandataset}, we present an ocean dataset example with details of possible interpolation functions.
 
-Beyond the pre-processing needed to obtain the Cauchy-Green strain tensor eigenvalues and eigenvectors, no special manipulations are needed to treat data-defined flow. It may be however, that parameter values giving good results with analytically defined flows need adjustment prior to processing data-defined velocity fields.
+\subsection{Computing elliptic LCSs}
 
-\subsection{Elliptic LCS}
+As discussed in section \eqref{sub:Elliptic-LCSs}, positions of elliptic LCSs at time $t_0$ are found as closed orbits of the $\eta_\pm^\lambda$ vector fields defined in \eqref{eq:eta}. We find such orbits by integrating \eqref{eq:etafields} from points of an appropriately chosen section (Poincare section), and evaluating the first return map (Poincaré map) onto this section. A $\lambda$-line returning to its starting point is then an elliptic LCS. The outermost member of a family of closed $\lambda$-lines (obtained by varying $\lambda$) is a coherent Lagrangian vortex boundary\parencite{haller13:_coher_lagran}.
 
-Elliptic LCSs, or coherent Lagrangian vortices, are closed orbits in the Lagrangian shear vector fields $\boldsymbol \eta_{\pm}$ defined in Equation~\eqref{eq:etafields}. We find closed orbits by integrating lambda-lines starting from a Poincare section and evaluating the return map. A lambda-line returning to its starting point is an elliptic LCS. The main steps of the algorithm used to calculate elliptic LCSs are enumerated in Table~\ref{t:Elliptic LCS algorithm} and described in detail below. The syntax of elliptic LCS functions in LCS Tool is in Table~\ref{t:Elliptic LCS functions}.
+The main steps in calculating elliptic LCSs are enumerated in Table~\ref{t:Elliptic LCS algorithm} and described in further detail below. The syntax of elliptic LCS functions in LCS Tool is shown in Table~\ref{t:Elliptic LCS functions}.
 
 \begin{table}
 \begin{center}
 \begin{enumerate}
 \item Position Poincare sections in flow domain to specify initial positions of lambda-lines
-\item Integrate lambda-lines tangent to $\boldsymbol \eta_{\pm}$ (see Equation~\eqref{eq:etafields}.)
-\item Calculate Poincare return map
-\item Find closed orbits positions from Poincare return map
-\item Identify outermost closed orbit
+\item Integrate $\lambda$-lines tangent to $\eta_\pm^\lambda$ (see ~\eqref{eq:etafields}.)
+\item Calculate Poincare map
+\item Find closed orbits for fixed points of the Poincare map
+\item Identify outermost closed orbit on each Poincare section
 \end{enumerate}
 \end{center}
-\caption{Algorithm to calculate elliptic LCSs}
+\caption{Algorithm to calculate elliptic LCSs and coherent Lagrangian vortex boundaries.}
 \label{t:Elliptic LCS algorithm}
 \end{table}
 
 \begin{table}
 \begin{tabular}{|c|p{.7\textwidth}|}
+\hline
+\multicolumn{2}{|p{\textwidth}|}
+{\lstinline![shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda)!}\tabularnewline
+\hline
+\lstinline!cgEigenvector! & array of Cauchy-Green strain eigenvectors\tabularnewline
+\hline
+\lstinline!cgEigenvalue! & array of Cauchy-Green strain eigenvalues\tabularnewline
+\hline
+\lstinline!lambda! & scalar lambda value in Equation~\eqref{eq:eta}\tabularnewline
 \hline \hline
-\multicolumn{2}{|p{\textwidth}|}{\lstinline![shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda)!}\\
+\multicolumn{2}{|p{\textwidth}|}{\lstinline![closedOrbits,orbits] = poincare_closed_orbit_multi(domain,resolution,shearline,PSList)!}\tabularnewline
 \hline
-\lstinline!cgEigenvector! & array of Cauchy-Green strain eigenvectors\\
+\lstinline!domain! & array to define flow domain\tabularnewline
 \hline
-\lstinline!cgEigenvalue! & array of Cauchy-Green strain eigenvalues\\
+\lstinline!resolution! & $1 \times 2$ array to define main grid resolution for Cauchy-Green strain tensor\tabularnewline
 \hline
-\lstinline!lambda! & scalar lambda value in Equation~\eqref{eq:eta}\\
-\hline \hline
-\multicolumn{2}{|p{\textwidth}|}{\lstinline![closedOrbits,orbits] = poincare_closed_orbit_multi(domain,resolution,shearline,PSList)!}\\
+\lstinline!shearline! & structure of arrays of $\eta_+$ and $\eta_-$ values on main grid\tabularnewline
 \hline
-\lstinline!domain! & array to define flow domain\\
+\lstinline!PSList! & user-defined structure for Poincare section end-points, number of $\lambda$-lines launched from Poincare section, and maximum closed $\lambda$-line length\tabularnewline
 \hline
-\lstinline!resolution! & $1 \times 2$ array to define Cauchy-Green strain main grid resolution\\
+\lstinline!nBisection! & optional number of bisection steps to refine zero crossings of Poincare map. Default values: 5.\tabularnewline
 \hline
-\lstinline!shearline! & structure of arrays of $\eta_+$ and $\eta_-$ values on main grid\\
+\lstinline!dThresh! & optional threshold to discard discontinuous zero crossings of Poincare map. Default value: $10^{-2}$.\tabularnewline
 \hline
-\lstinline!PSList! & structure for Poincare section end-points, number of lambda-lines launched from Poincare section, and maximum closed lambda-line length\\
+\lstinline!odeSolverOptions! & optional \lstinline!odeset! structure to specify $\lambda$-line integration parameters\tabularnewline
 \hline
-\lstinline!nBisection! & optional number of bisection steps to refine zero crossings of Poincare return map. Default is 5.\\
+\lstinline!periodicBc! & optional $1 \times 2$ logical array to specify periodic boundary conditions. Default is \lstinline![false,false]!.\tabularnewline
 \hline
-\lstinline!dThresh! & optional threshold to discard discontinuous zero crossings of Poincare return map. Default is $10^{-2}$.\\
-\hline
-\lstinline!odeSolverOptions! & optional \lstinline!odeset! structure to specify lambda-line integration parameters\\
-\hline
-\lstinline!periodicBc! & optional $1 \times 2$ logical array to specify periodic boundary conditions. Default is \lstinline![false,false]!.\\
-\hline \hline
 \end{tabular}
-\caption{LCS Tool elliptic LCS functions syntax}
+\caption{Syntax of LCS Tool's elliptic LCS functions.}
 \label{t:Elliptic LCS functions}
 \end{table}
 
-The first step is to set the position of Poincare sections as straight lines in regions where closed lambda-lines are expected. The Poincare section must be oriented such that the first endpoint is close to the center of the expected eddy and the second endpoint is outside the expected eddy. There is no definite procedure for deciding the position of Poincare sections. Possibilities include an examination of the finite time Lyapunov exponent field of the flow, or some prior knowledge of where coherent eddies are be expected. Additionally, the number of lambda-lines launched from the Poincare section, \lstinline!poincareSection.numPoints!, must be defined. A good default is 100.
+The first step is to define the position of Poincare sections in regions where closed $\lambda$-lines are expected based on a visual analysis of the orbit structure of the $\eta_\pm^\lambda$ vector field. The Poincare section is to be oriented such that the first endpoint is close to the center of the expected Lagrangian vortex, and the second endpoint is outside this vortex. There is no automated procedure procedure implemented yet in LCS Tool for the positioning of Poincare sections (see, however, \parencite{karrasch14:_autom_lagran} for a recently developed algorithm). Additionally, the number of lambda-lines launched from the Poincaré section, \lstinline!poincareSection.numPoints!, must be defined. A reasonable default value is 100.
 
-The second step is to integrate the lambda-lines to obtain the Poincare return map. Integration of lambda-lines is performed with the $\boldsymbol \eta_+$ and $\boldsymbol \eta_-$ vector fields defined on the main grid. These vector fields are derived from eigenvalues and eigenvectors as described in~\textcite{farazmand12:_comput_lagran}. The eigenvector fields have orientation discontinuities, therefore the vector field must be locally reoriented for the integration. The algorithm used to perform variable step-size integration in vector fields with orientation discontinuities is enumerated in Table~\ref{t:variable step integration} and illustrated in Figure~\ref{f:variable step integration}. Linear interpolation is used when interpolating $\boldsymbol \eta_\pm$ within a grid element, since using higher order interpolation would necessitate verifying that there are no orientation discontinuities at more than only the four nearest grid points. Detection of orientation discontinuities is achieved by checking the inner product of the vector fields at adjacent grid points. Then, rotations exceeding 90\degree\, are classified as orientation discontinuities and are corrected before linear interpolation. Thus when setting the Cauchy-Green strain tensor main grid resolution, a histogram of eigenvector field rotations may be calculated to ensure all rotations are well below 90\degree\, or almost 180\degree.
+The second step is to integrate the $\lambda$-lines  starting from the Poincare section to obtain the corresponding Poincare map. Integration of $\lambda$-lines is performed using the $\eta_\pm^\lambda$ vector fields defined in \eqref{eq:eta} over the main grid. The underlying eigenvector fields $\xi_i(x_0)$ have generic but removable orientation discontinuities, which require monitoring and reorientation, as needed. This process is sketched in Table~\ref{t:variable step integration} and illustrated in Figure~\ref{f:variable step integration}. Linear interpolation is used in the interpolation of $\eta_\pm^\lambda$ within a grid element, since using higher-order interpolation would necessitate verifying that there are no orientation discontinuities beyond the four nearest grid points. We identify orientation discontinuities by checking the inner product of the $\eta_\pm^\lambda$ vectors at adjacent grid points. Rotations exceeding 90°, between two such neighboring vectors are classified as orientation discontinuities and are corrected before linear interpolation. When setting the Cauchy-Green strain tensor main grid resolution, one may find it helpful to calculate a histogram of eigenvector-field rotations to ensure that all rotations are well below 90°.
 
 \begin{table}
 \begin{enumerate}
 \item Linearly interpolate vector field orientation at initial position
-\item At next position, check whether vector field has rotated by over 90\degree, if yes, flip the vector field orientation by 180\degree.
-\item Stop integration when lambda-line returns to Poincare section, lambda-line reaches the domain boundary, or maximum integration length has been reached.
+\item At next position, check whether vector field has rotated by over 90°, if yes, flip the vector field orientation by 180°.
+\item Stop integration when $\lambda$-line returns to Poincare section, $\lambda$-line reaches the domain boundary, or maximum integration length has been reached.
 \end{enumerate}
-\caption{Algorithm used for variable time step integration of lambda-lines.}
+\caption{Algorithm used for variable time step integration of $\lambda$-lines.}
 \label{t:variable step integration}
 \end{table}
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.8\textwidth]{graphics/variable_step_integration}
+\includegraphics[width=.8\textwidth]{graphics/variable_step_integration}
 \end{center}
-\caption{Schematic illustration of lambda-line variable time step integration. At the initial point, there is an orientation discontinuity at the lower right grid point that must be corrected prior to linear interpolation. At point \#1, no orientation discontinuities are present. At point \#2 the interpolated $\eta_\pm$ vector must be rotated by 180\degree\,to match the orientation of the trajectory.}
+\caption{Schematic illustration of the variable-time-step $\lambda$-line integration. At the initial point, there is an orientation discontinuity at the lower-right grid point that must be corrected prior to linear interpolation. At point \#1, no orientation discontinuities are present. At point \#2 all interpolated $\eta_\pm^\lambda$ vectors must be rotated by 180° to match the orientation of the trajectory.}
 \label{f:variable step integration}
 \end{figure}
 
-An example of a Poincare return map produced from integration of the $\boldsymbol \eta_\pm$ field is shown in Figure~\ref{f:Poincare return map}. Well behaved orbits will return to the Poincare section and their integration will be stopped using ODE event detection. Some orbits may however deviate far from the Poincare section and their integration could take inordinately long. To limit this behavior, a maximum orbit length, \lstinline!poincareSection.orbitMaxLength!, is specified. In practice, viewing the Poincare section as the radius of a circle and setting the maximum lambda-line integration length to twice the circumference gives good results. In Figure~\ref{f:Poincare return map}, circle markers indicate closed orbit positions. Closed orbits exist where the Poincare return map, the distance between the final and the initial point of the orbit $P(s)-s$, is zero. The function \lstinline!poincare_closed_orbit_multi! performs the computations. In Figure~\ref{f:Poincare return map} not all zero crossings have circles. This is because a threshold parameter \lstinline!dThresh! is used to discard those zero crossings that appear in regions with high numerical noise. Its default value is 1\% of the length of the Poincare section. The position of each detected zero crossing is refined by iteratively bisecting the interval of the zero crossing. If after a predetermined number of iterations, \lstinline!nBisection! whose default value is five, the two points around the zero crossing have absolute values above \lstinline!dThresh!, the zero crossing is discarded. Once all valid closed lambda-line orbits have been located, the outermost orbit of every Poincare section is identified as an elliptic LCS.
+An example of a Poincare map produced from integration of the $\eta_\pm^\lambda$ field is shown in Figure~\ref{f:Poincare return map}. Most orbits will return to the Poincare section and their integration will then be stopped using the ODE event detection function of MATLAB. Some orbits may, however, deviate far from the Poincare section and do not return for any reasonable integration time. To control this behavior, we specify a maximum orbit length, \lstinline!poincareSection.orbitMaxLength!. In practice, viewing the Poincare section as the radius of a circle and setting the maximum $\lambda$-line integration length to twice the circumference gives good results.
+
+In Figure~\ref{f:Poincare return map}, circle markers indicate fixed points of the Poincare map, i.e., points where the distance between the final and the initial point of the orbit $P(s)-s$, is zero. The function \lstinline!poincare_closed_orbit_multi! performs the computations. As seen in Figure~\ref{f:Poincare return map}, LCS Tool uses a filtering parameter \lstinline!dThresh! to discard sign changes of $P(s)-s$ that are likely due to numerical sensitivity or a jump discontinuity of the Poincare map. Specifically, the location of each detected zero crossing is first refined by the bisection method. If after a predetermined number of iterations, \lstinline!nBisection! (default value 5) the two points around the zero crossing still have absolute values above \lstinline!dThresh!, the zero crossing is discarded.  Once all valid closed $\lambda$-lines have been located, the outermost closed $\lambda$-orbit associated with every Poincare section is identified as a coherent Lagrangian vortex boundary.
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.8\textwidth]{graphics/double_gyre/poincare_return_map}
+\includegraphics[width=.8\textwidth]{graphics/double_gyre/poincare_return_map}
 \end{center}
-\caption{Example of a Poincare return map obtained for an elliptic LCS. Circle markers indicate closed orbit positions. The filled circle indicates the outermost closed orbit and elliptic LCS.}
+\caption{Example of a Poincare map obtained for an elliptic LCS. Circle markers indicate closed orbit positions. The filled circle indicates the outermost fixed point of the Poincare map, marking the intersection of a coherent Lagrangian cortex boundary with the Poincare section.}
 \label{f:Poincare return map}
 \end{figure}
 
-\subsection{Hyperbolic LCS}
+\subsection{Computing hyperbolic LCSs}
 
-The main steps of the algorithm used to calculate hyperbolic LCSs are enumerated in Table~\ref{t:Hyperbolic LCS algorithm}. The main function to compute hyperbolic LCS in LCS Tool is \lstinline!seed_curves_from_lambda_max! and its syntax is given in Table~\ref{t:seed_curves_from_lambda_max syntax}.
+As discussed in section \ref{sub:Hyperbolic-LCSs}, positions of hyperbolic LCSs at time $t_{0}$ are found as the strongest repelling orbits of the vector field \eqref{eq:strainline} (repelling LCSs), and strongest attracting orbits of the vector field \eqref{eq:stretchline} (attracting LCSs.) By repulsion and attraction we mean a property of the LCS (as an evolving material line) under the flow map $F_{t_0}^t$. We identify the strongest repelling shrinklines as those crossing a local maximum of the $\lambda_2(x_0)$ field. Similarly, we identify the strongest attracting stretchlines as those crossing a local minimum of the $\lambda_1(x_0)$ field. These local maxima and minima of the appropriate $\lambda_i(x_0)$ eigenvalue field can be thought of as the extensions of the concept of a saddle points to the present finite-time, temporally aperiodic flow setting.
+
+The main steps of our hyperbolic LCS detection algorithm are enumerated in Table~\ref{t:Hyperbolic LCS algorithm}. The basic function to compute hyperbolic LCSs in LCS Tool is \lstinline!seed_curves_from_lambda_max! and its syntax is given in Table~\ref{t:seed_curves_from_lambda_max syntax}.
 
 \begin{table}
 \begin{enumerate}
 \item Define a local maximization distance.
-\item Find all local maxima of $\lambda_2$ on the main grid such that they are maxima within a circle with a radius equal to the local minimization distance.
-\item Define a maximum strainline length
-\item Integrate a strainline forward and backward according to Equation~\eqref{eq:strainline} and using the largest $\lambda_2$ local maximum as the initial position. Integrate until the strainline has attained the maximum strainline length, or until it has reached the domain boundary.
-\item Flag any remaining local maxima of $\lambda_2$ within the minimization distance of the strainline as ineligible initial positions for subsequent strainlines
-\item Continue integrating strainlines using local maxima of $\lambda_2$ as initial positions until no eligible local maxima of $\lambda_2$ remain.
-\item Remove all strainline segments within elliptic LCSs.
+\item Find all points of the main grid that are local maxima of $\lambda_2$ within a circle whose radius is the local  maximization distance.
+\item Define a maximum shrinkline length
+\item Integrate a shrinkline forward and backward according to Equation~\eqref{eq:strainline} and using the largest $\lambda_2$ local maximum as the initial position. Integrate until the shrinkline has attained the maximum shrinkline length, or until it has reached the domain boundary.
+\item Flag any remaining local maxima of $\lambda_2$ within the maximization distance of the shrinkline as ineligible initial positions for subsequent shrinklines
+\item Continue integrating shrinklines using local maxima of $\lambda_2$ as initial positions until no eligible local maxima of $\lambda_2$ remain.
+\item Remove all shrinkline segments within elliptic LCSs.
 \end{enumerate}
-\caption{Algorithm to calculate strainline hyperbolic LCSs. Algorithm for stretchline hyperbolic LCSs is similar.}
+\caption{Algorithm to calculate initial positions of repelling LCSs at time $t_0$. The algorithm for attracting LCSs is similar.}
 \label{t:Hyperbolic LCS algorithm}
 \end{table}
 
 \begin{table}
 \begin{center}
 \begin{tabular}{|c|p{.7\textwidth}|}
-\hline \hline
-\multicolumn{2}{|p{\textwidth}|}{\lstinline![curvePosition,curveInitialPosition] = seed_curves_from_lambda_max(distance,cgEigenvalue,cgEigenvector,flowDomain,flowResolution)!}\\
 \hline
-\lstinline!distance! & threshold distance for placement of lambda maxima\\
+\multicolumn{2}{|p{\textwidth}|}
+{\lstinline![curvePosition,curveInitialPosition] = seed_curves_from_lambda_max(distance,cgEigenvalue,cgEigenvector,flowDomain,flowResolution)!}\tabularnewline
 \hline
-\lstinline!cgEigenvalue! & array of Cauchy-Green strain eigenvalues\\
+\lstinline!distance! & threshold distance for placement of $\lambda_2(x_0)$ maxima\tabularnewline
 \hline
-\lstinline!cgEigenvector! & array of Cauchy-Green strain eigenvectors\\
+\lstinline!cgEigenvalue! & array of Cauchy-Green strain eigenvalues\tabularnewline
 \hline
-\lstinline!flowDomain! & $2 \times 2$ array to define flow domain\\
+\lstinline!cgEigenvector! & array of Cauchy-Green strain eigenvectors\tabularnewline
 \hline
-\lstinline!flowResolution! & $1 \times 2$ array to define Cauchy-Green strain main grid resolution\\
+\lstinline!flowDomain! & $2 \times 2$ array to define flow domain\tabularnewline
 \hline
-\lstinline!periodicBc! & optional $1 \times 2$ logical array to specify periodic boundary conditions. Default is \lstinline![false,false]!.\\
+\lstinline!flowResolution! & $1 \times 2$ array to define Cauchy-Green strain main grid resolution\tabularnewline
 \hline
-\lstinline!nMaxCurves! & optional maximum number of curves (i.e. strainlines of stretchlines) to generate. Default is \lstinline!numel(cgEigenvalue)!.\\
+\lstinline!periodicBc! & optional $1 \times 2$ logical array to specify periodic boundary conditions. Default is \lstinline![false,false]!.\tabularnewline
 \hline
-\lstinline!odeSolverOptions! & optional \lstinline!odeset! structure to specify flow map integration parameters\\
-\hline \hline
+\lstinline!nMaxCurves! & optional maximum number of curves (i.e. shrinklines of stretchlines) to generate. Default is \lstinline!numel(cgEigenvalue)!.\tabularnewline
+\hline
+\lstinline!odeSolverOptions! & optional \lstinline!odeset! structure to specify flow map integration parameters\tabularnewline
+\hline
 \end{tabular}
 \end{center}
 \caption{Syntax of the function \lstinline!seed_curves_from_lambda_max!}
 \label{t:seed_curves_from_lambda_max syntax}
 \end{table}
 
-Strainlines, trajectories of the $\boldsymbol \xi_1$ vector field, are integrated starting from local maxima of $\lambda_2$ on the main grid. The local maximization distance \lstinline!distance! is defined. This distance is set to a value between two and five grid points, since it represents the number of grid points over which the Cauchy-Green strain tensor is susceptible to numerical noise from integration. Thus, the local maximization distance is expected to be a function of variable time step integration tolerances. A record is made of all grid points where $\lambda_2$ is maximal within a circle whose radius equals the defined maximization distance. Then the first strainline is integrated from the largest of all the local maxima in both directions, i.e., integrating $\boldsymbol \xi_1$ and $-\boldsymbol \xi_1$. Similarly to lambda-lines, this integration must take into account eigenvector field orientation discontinuities. Prior to initiating strainline integration, a maximum length is defined. Strainlines are then integrated until reaching the domain boundary or the maximum length. The maximum length may be seen as safety factor to prevent highly sinuous strainlines leading to inordinately long computations; the maximum length should be set such that most strainlines stop at the domain boundary. Once a strainline position has been calculated, local maxima of $\lambda_2$ within the minimization distance are flagged as ineligible initial positions for subsequent strainlines. After the first strainline has been obtained and any ineligible local maxima of $\lambda_2$ have been flagged, the next strainline is integrated starting form the highest eligible maximum of $\lambda_2$. The process continues until all eligible local maxima of $\lambda_2$ have been used to initialize strainline integration. These calculations are performed by the function \lstinline!seed_curves_from_lambda_max!. Note that once a strainline integration has begun, it may progress so as to be within the local minimization distance of an existing strainline. In other words, the local minimization distance controls where strainlines begin, but not where they stop.
-
-A further point important to note is the existence of hyperbolic LCS inside elliptic LCS. This may seem contradictory when accustomed to LCSs not crossing, however, numerical experimentation with LCS calculations overlaid with color tracer advection reveals that hyperbolic LCS can cross elliptic barriers and have an impact on the tracer pattern inside elliptic regions. At crossing points a line segment of an elliptic LCS, oriented along $\boldsymbol \eta_\lambda^{\pm}$, does not stretch, while a segment of a strainline, oriented along $\boldsymbol \xi_1$, repels fluid normally at a maximal rate and shrinks at a maximal rate. Figure~\ref{fig:ocean_dataset_colortracer} illustrates the effect of strainlines on tracer particles inside elliptic regions. Color-coded final positions show large gradients along strainlines, directly showing that particles are strongly repelled by the LCS and therefore end in different positions.
+In classical, infinite-time dynamical systems, elliptic and hyperbolic invariant manifolds cannot intersect, as the trajectories in their intersection would then have to follow two different asymptotic behaviors simultaneously. In finite-time dynamical systems, hyperbolic LCSs may well intersect elliptic LCSs, with hyperbolic LCSs continuing to act as cores of mixing patterns observed in the interior of elliptic LCSs. Motivated by convention and for clarity in visualization, however, the default setting of LCS Tool removes hyperbolic LCS segments from the interior of elliptic LCSs. These removed segments can be turned back on demand, as shown in Figure~\ref{fig:ocean_dataset_colortracer}.
 
 \begin{figure}[hbt]
 \centering
-\includegraphics[width=0.49\textwidth]{graphics/ocean_dataset/LCS_fwd_coherent_eddy}
-\includegraphics[width=0.49\textwidth]{graphics/ocean_dataset/LCS_fwd_colortracer}
-\caption{(Left) Elliptic LCS (green) with hyperbolic normally repelling LCS (red) inside. (Right) Final positions $\boldsymbol x_t = F_{t_0}^t(\boldsymbol x_0)$ of tracer particles are plotted with the x-position encoded in red and y-position encoded in green color. The impact of the repulsive property of hyperbolic LCS on the tracer particles can not only be observed outside, but also inside the elliptic region. Hyperbolic LCS mark lines of high color gradients, corresponding to tracer particles that start on both sides of the LCS, are repelled, and end up in distinct locations.}
+\includegraphics[width=.49\textwidth]{graphics/ocean_dataset/LCS_fwd_coherent_eddy}
+\includegraphics[width=.49\textwidth]{graphics/ocean_dataset/LCS_fwd_colortracer}
+\caption{(Left) Elliptic LCS (green) with repelling LCSs (red) continuing into its interior. (Right) Final positions $x(t) = (x_1(t),x_2(t)) = F_{t_0}^t(x_0)$ of tracer particles, are plotted with their $x_1(t)$ position encoded in red and $x_2(t)$ position encoded in green. Note the continued impact of the repelling hyperbolic LCSs (black) on tracer patterns inside the elliptic LCS (white.)}
 \label{fig:ocean_dataset_colortracer}
 \end{figure}
 
 \clearpage
 
 \section{Examples}
-In this section we present examples showing how to use LCS Tool to obtain LCSs in different flows, namely a double gyre, a jet, and an oceanic geostrophic flow. All three examples are available as demonstration files in the demo folder of LCS Tool. By executing these scripts, readers can follow LCS Tool computations step-wise.
+
+In this section we present examples of the use of LCS Tool to obtain LCSs in three different examples: a double gyre, a jet, and an oceanic geostrophic flow. All three examples are available as demonstration files in the demo folder of LCS Tool. By executing these scripts, readers can follow LCS Tool computations step by step.
 
 \subsection{Double gyre}
-The double gyre is a model for a time-dependent two gyre system observed in geophysical flows \parencite{shadden05:_defin_lagran_lyapun}. It consists of two counter rotating sinusoidal vortices with a harmonically oscillating line in-between. The velocity equations are:
+The double gyre is a model for a time-dependent two gyre system observed in geophysical flows \parencite{shadden05:_defin_lagran_lyapun}. The model consists of two counter rotating sinusoidal vortices with a harmonically oscillating line in-between. Lagrangian particle motions satisfy the non-autonomous dynamical system
 \begin{equation}
 \begin{split}
 \od{x}{t} = -\pi A \sin[\pi f(x,t)] \cos(\pi y),\\
@@ -369,7 +396,7 @@ f(x,t) = \epsilon \sin(\omega t) x^2 + [1 - 2 \epsilon \sin(\omega t)] x.
 \end{split}
 \label{eq:double gyre derivative equations}
 \end{equation}
-The MATLAB function corresponding to these equations is given in Listing~\ref{l:double gyre derivative} and shows how to specify a derivative function that supports vector form integration.
+The MATLAB function describing this model velocity field is given in Listing~\ref{l:double gyre derivative}, specifying the right hand side of the particle ODE in a way that supports vectorized integration.
 
 \begin{lstlisting}[caption={Double gyre derivative function corresponding to Equations~\eqref{eq:double gyre derivative equations}.},label=l:double gyre derivative]
 function derivative_ = derivative(t,x,epsilon,amplitude,omega)
@@ -387,57 +414,56 @@ derivative_(idx1) = -pi*amplitude*sin(pi*forcing).*cos(pi*x(idx2));
 derivative_(idx2) = pi*amplitude*cos(pi*forcing).*sin(pi*x(idx2)).*(2*a*x(idx1) + b);
 \end{lstlisting}
 
-In what follows, the parameter values are: $A = 0.1$, $\epsilon = 0.1$, $\omega = \pi/5$. The flow timespan is $t \in [0,5]$ and the domain is $x \in [0,2]$, $y \in [0,1]$.
+In what follows, the parameter values are: $A = 0.1$, $\epsilon = 0.1$, $\omega = \pi/5$. The flow timespan is $t \in [0,10]$ and the domain is $x \in [0,2]$, $y \in [0,1]$. By examining the FTLE field (which
+is optionally provided by LCS Tool), we position Poincare sections to capture elliptic LCSs. An LCS Tool demo script to perform this operation is given in Listing~\ref{l:double gyre lambda-line LCS} where two Poincare sections are defined. The free stretching parameter $\lambda$ (Equation \eqref{eq:etafields}) is varied over the range $[0.93,1.07]$ with increments of $0.01$. In a loop , closed orbits for all predefined $\lambda$ values are computed and the outermost closed orbit is kept as the Lagrangian vortex boundary. In this script, we have chosen small values for the error tolerances of the integration of the Cauchy-Green strain tensor and $\lambda$-lines to facilitate convergence.
 
-By examining the FTLE, we can position Poincare sections to detect lambda-line LCSs. An LCS Tool script to perform this operation is given in Listing~\ref{l:double gyre lambda-line LCS} where two Poincare sections are defined. In the script we have set error tolerances for integration of the Cauchy-Green strain tensor and lambda lines. These numerical parameters help achieve convergence.
+\lstinputlisting[caption={Double gyre script for elliptic lambda-line LCSs},label=l:double gyre lambda-line LCS]{listings/double_gyre/lambda_lcs.m}
 
-\lstinputlisting[caption={Double gyre script for lambda-line LCSs},label=l:double gyre lambda-line LCS]{listings/double_gyre/lambda_lcs.m}
-
-In Figure~\ref{fig:double_gyre_lambda_lcs_convergence} the resolution of the  Cauchy-Green strain tensor is varied from $500 \times 250$ to $1000 \times 500$. The location of the outermost closed lambda-line changes little, demonstrating convergence.
+In Figure~\ref{fig:double_gyre_lambda_lcs_convergence}, the resolution of the  Cauchy-Green strain tensor is varied from $500 \times 250$ to $1000 \times 500$. The location of the outermost closed lambda-line changes little, demonstrating convergence. For all tested resolutions the $\lambda$ values of the outermost closed orbits are constant. This is also suggests that the lowest tested resolution of $500 \times 250$ is sufficient to identify the elliptic LCS in this example.
 
 \begin{figure}[hbt]
-  \centering
-  \includegraphics[width=.8\textwidth]{graphics/double_gyre/lambda_lcs_convergence_500}
+\centering
+\includegraphics[width=.8\textwidth]{graphics/double_gyre/lambda_lcs_convergence_500}
 \includegraphics[width=.8\textwidth]{graphics/double_gyre/lambda_lcs_convergence_750}
 \includegraphics[width=.8\textwidth]{graphics/double_gyre/lambda_lcs_convergence_1000}
-  \caption{Double gyre closed lambda-lines at varying resolutions with FTLE background}
-  \label{fig:double_gyre_lambda_lcs_convergence}
+\caption{Double gyre closed lambda-lines at varying resolutions with FTLE background}
+\label{fig:double_gyre_lambda_lcs_convergence}
 \end{figure}
 
-We continue the example by adding the calculation of hyperbolic strainline and stretchline LCSs. Figures~\ref{fig:double_gyre_lambda_strain_lcs} and~\ref{fig:double_gyre_lambda_stretch_lcs} show the results and Listing~\ref{lst:double_gyre_lambda_strain_stretch_lcs} gives the LCS Tool commands. The local maximization distance is set larger for stretchlines than for strainlines usually. This is because strainlines follow ridges of $\lambda_2$ maxima whereas stretchlines do not follow ridges of $\lambda_1$ minima.
+Figure \ref{fig:double_gyre_lambda_strain_lcs} shows the complete picture of elliptic and hyperbolic LCSs of the double gyre at this resolution. Listing~\ref{lst:double_gyre_lambda_strain_stretch_lcs} lists the corresponding LCS Tool commands. The maximal length of shrinklines and stretchlines, \lstinline!strainlineMaxLength! and \lstinline!stretchlineMaxLength!, is set to $20$, a multiple of the domain size, since the hyperbolic LCSs may wind around vortices several times. 
+
+As usual, the local maximization distance is set larger for stretchlines than for shrinklines (cf. l.\,4 and l\,9). The purpose of the maximization distance is to obtain spatially separated LCSs and to avoid a dense tangle of lines that basically indicates the same hyperbolic LCS (cf. Table \ref{t:Hyperbolic LCS algorithm}, point 5). Setting the local maximization distance for stretchlines larger than for shrinklines allows obtaining a comparable number of stretchlines and shrinklines overall in the flow domain (recall that hyperbolic LCS seed points are discarded if they are within the local maximization distance of an existing hyperbolic LCS.) Shrinklines are locally tangent to ridges of $\lambda_2$ maxima, whereas stretchlines are locally normal to these ridges. Setting the local maximization distance of stretchlines and shrinklines equal would therefore produce a greater number of stretchlines than shrinklines overall.
+
+\lstinputlisting[caption={LCS Tool commands for double gyre hyperbolic LCSs. Condensed version of the LCS Tool script \lstinline!demo/double_gyre/hyperbolic_shear_lcs.m! },label=lst:double_gyre_lambda_strain_stretch_lcs]{listings/double_gyre/lambda_strain_stretch_lcs.m}
 
 \begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{graphics/double_gyre/lambda_strain_lcs}
-  \caption{Double gyre lambda-line and strainline LCSs}
-  \label{fig:double_gyre_lambda_strain_lcs}
+\centering
+\includegraphics[width=\textwidth]{graphics/double_gyre/lambda_strain_lcs}
+\caption{Double gyre lambda-line and shrinkline LCSs}
+\label{fig:double_gyre_lambda_strain_lcs}
 \end{figure}
 
 \begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{graphics/double_gyre/lambda_stretch_lcs}
-  \caption{Double gyre lambda-line and stretchline LCSs}
-  \label{fig:double_gyre_lambda_stretch_lcs}
+\centering
+\includegraphics[width=\textwidth]{graphics/double_gyre/lambda_stretch_lcs}
+\caption{Double gyre lambda-line and stretchline LCSs}
+\label{fig:double_gyre_lambda_stretch_lcs}
 \end{figure}
-
-\lstinputlisting[caption={LCS Tool commands for double gyre strainline and stretchline LCSs. Condensed version of the LCS Tool script \lstinline!demo/double_gyre/hyperbolic_shear_lcs.m! },label=lst:double_gyre_lambda_strain_stretch_lcs]{listings/double_gyre/lambda_strain_stretch_lcs.m}
 
 \clearpage
 
 \subsection{Bickley jet}
 
 The Bickley jet models a meandering zonal jet flanked above and below by
-counter rotating vortices. This is an idealized model of geophysical flows
-such as the polar night jet perturbed by a Rossby
-wave\parencite{haller12:_geodes_theor_trans_barrier_two_dimen_flows,beron-vera10:_invar_lagran}.
+counter rotating vortices. This is an idealized model of geophysical flows such as the Gulf Stream and the polar night jet perturbed by a Rossby wave\parencite{castilloNegrete93:_chaot_rossb,beron-vera10:_invar_lagran}.
 
-The velocity is given by $\boldsymbol{v}(x,y,t) = (-\partial_y \psi, \partial_x \psi)$ where
+The velocity is given by $v(x,y,t) = (-\partial_y \psi, \partial_x \psi)$ where
 \begin{gather*}
 \psi(x,y,t) = \psi_0(x,y) + \psi_1(x,y,t),\\
 \psi_0(x,y) = c_3 y - U L_y \tanh\frac{y}{L_y} + \epsilon_3 U L_y \mathrm{sech}^2\frac{y}{L_y} \cos k_3 x,\\
 \psi_1(x,y,t) = U L_y \mathrm{sech}^2\frac{y}{L_y} \mathrm{Re}\left[ \sum_{n=1}^2 \epsilon_n f_n(t) e^{i k_n x}\right].
 \end{gather*}
-As a forcing function we choose a chaotic solution of the Duffing oscillator, specifically
+As a forcing function, we choose a solution running on the chaotic attractor of the damped and forced Duffing oscillator, specifically
 \begin{gather*}
 \od{\phi_1}{t} = \phi_2,\\
 \od{\phi_1}{t} = -0.1 \phi_2 - \phi_1^3 + 11 \cos(t),\\
@@ -445,13 +471,14 @@ f_{1,2}(t) = 2.625 \times 10^{-2} \phi_1(t/6.238 \times 10^5)
 \end{gather*}
 The parameter values we use are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$.
 
-Figure~\ref{fig:Bickley_jet_lambda_LCS_full} shows lambda-line LCS of the Bickley jet with the FTLE in the background. The figure demonstrates a poor result since the LCSs change shape significantly between eddies. To address this problem we could adjust numerical parameters such as the resolution, but instead we will analyze lambda-line closed orbits of one vortex for a short timespan.
+The integration time is $T=4L_x/U$, a multiple of a the eddy turnover
+time in the flow. Figure~\ref{fig:Bickley_jet_lambda_LCS_full} shows lambda-line LCS of the Bickley jet with the FTLE in the background. The figure demonstrates a poor result since the LCSs change shape significantly between eddies. To address this problem we could adjust numerical parameters such as the resolution, but instead we will analyze lambda-line closed orbits of one vortex for a short timespan.
 
 \begin{figure}
-  \centering
-  \includegraphics[width=.85\textwidth]{graphics/bickley_jet/lambda_lcs_full}
-  \caption{Bickley jet lambda-line LCSs}
-  \label{fig:Bickley_jet_lambda_LCS_full}
+\centering
+\includegraphics[width=.85\textwidth]{graphics/bickley_jet/lambda_lcs_full}
+\caption{Bickley jet lambda-line LCSs}
+\label{fig:Bickley_jet_lambda_LCS_full}
 \end{figure}
 
 Figure ~\ref{fig:Bickley jet lambda lcs convergence} shows convergence of the lambda-line elliptic LCSs. The LCS Tool script used to produce that figure are based on the script \lstinline!demo/bickley_jet/hyperbolic_shear_lcs.m! which is given in  Listing~\ref{lst:Bickley jet hyperbolic_shear_lcs subset}. It is worth pointing out that in order to obtain closed orbits, $\lambda = 0.995$; with $\lambda = 1$ no closed orbits exist.
@@ -459,21 +486,21 @@ Figure ~\ref{fig:Bickley jet lambda lcs convergence} shows convergence of the la
 \lstinputlisting[caption={Bickley jet script for hyperbolic and elliptic LCSs. Subset of \lstinline!demo/bickley_jet/hyperbolic_shear_lcs.m!},label=lst:Bickley jet hyperbolic_shear_lcs subset]{listings/bickley_jet/hyperbolic_shear_lcs_subset.m}
 
 \begin{figure}[hbt]
-  \centering
-  \includegraphics[width=.7\textwidth]{graphics/bickley_jet/lambda_lcs_convergence_400}
+\centering
+\includegraphics[width=.7\textwidth]{graphics/bickley_jet/lambda_lcs_convergence_400}
 \includegraphics[width=.7\textwidth]{graphics/bickley_jet/lambda_lcs_convergence_500}
 \includegraphics[width=.7\textwidth]{graphics/bickley_jet/lambda_lcs_convergence_600}
-  \caption{Bickley jet closed lambda-line at varying resolutions}
-  \label{fig:Bickley jet lambda lcs convergence}
+\caption{Bickley jet closed lambda-line at varying resolutions}
+\label{fig:Bickley jet lambda lcs convergence}
 \end{figure}
 
-Strainline LCSs are shown in Figure~\ref{fig:Bickley_jet_strain_lcs} and stretchline LCSs are shown in Figure~\ref{fig:Bickley_jet_stretch_lcs}.
+Shrinkline LCSs are shown in Figure~\ref{fig:Bickley_jet_strain_lcs} and stretchline LCSs are shown in Figure~\ref{fig:Bickley_jet_stretch_lcs}.
 
 \begin{figure}
-  \centering
-  \includegraphics[width=.85\textwidth]{graphics/bickley_jet/strain_lcs}
-  \caption{Bickley jet strainline LCSs}
-  \label{fig:Bickley_jet_strain_lcs}
+\centering
+\includegraphics[width=.85\textwidth]{graphics/bickley_jet/strain_lcs}
+\caption{Bickley jet shrinkline LCSs}
+\label{fig:Bickley_jet_strain_lcs}
 \end{figure}
 
 \begin{figure}
@@ -488,17 +515,19 @@ Strainline LCSs are shown in Figure~\ref{fig:Bickley_jet_strain_lcs} and stretch
 \subsection{Ocean dataset}
 \label{sec:oceandataset}
 
-For the last example, corresponding to the ocean dataset demo files in LCS Tool, we choose a measured geophysical flow. In contrast to the previous analytic examples, the two dimensional incompressible velocity field is presented as a dataset with discrete temporal and spatial resolution. Our region of interest is a small domain in the South Atlantic Ocean, where exceptionally coherent eddies, Agulhas rings, were recently found using methods provided by LCS Tool \parencite{haller13:_coher_lagran}. The oceanic velocity field is obtained from altimetric satellite measurements of the sea surface height under the assumption that the flow is geostrophic. Under this assumption the sea surface height $\eta$ serves as a stream-function and in a longitude-latitude $(\varphi,\theta)$ coordinate system the evolution of a fluid particle is given by
+This last example demonstrates the use of LCS Tool on velocity data derived from satellite-observed sea-surface heights under the geostrophic approximation. In contrast to the previous two analytic examples, the velocity field is available only with discrete temporal and spatial resolution. Our region of interest is a small domain in the South Atlantic Ocean, where exceptionally coherent eddies, Agulhas rings, were recently found by \parencite{haller13:_coher_lagran} using the theory we surveyed in Section \ref{sub:Elliptic-LCSs}.
+
+In the geostrophic approximation, the sea-surface height $\eta$ serves as a stream-function for surface velocities. In a longitude-latitude $(\varphi,\theta)$ coordinate system, the evolution of a fluid particle is given by
 \begin{eqnarray}
 \pd{\varphi(\varphi,\theta,t)}{t} = -\frac{g}{R^2 f(\theta) \cos\theta} \pd{\eta(\varphi,\theta,t)}{\theta}\label{eq:dtlon}\\
 \pd{\theta(\varphi,\theta,t)}{t} = \frac{g}{R^2 f(\theta) \cos\theta}\pd{\eta(\varphi,\theta,t)}{\varphi}
 \label{eq:dtlat}
 \end{eqnarray}
-where $g$ is the gravitational acceleration, $R$ is the mean radius of Earth, and $f(\theta) \equiv 2\Omega\sin\theta$ is the Coriolis parameter with $\Omega$ being the Earth's mean angular velocity. 
+where $g$ is the constant of gravity, $R$ is the mean radius of the Earth, and $f(\theta) \equiv 2\Omega\sin\theta$ is the Coriolis parameter, with $\Omega$ denoting the Earth's mean angular velocity.
 
-The data is given at a spatial resolution of $1/4\degree$ and a temporal resolution of $7\,\mathrm{days}$. Due to the discrete data, defining the right hand side of Equation~\eqref{eq:dtlon} and~\eqref{eq:dtlat} involves interpolation in space and time with a spline interpolation scheme. An interpolant is generated first, then the function \lstinline!flowdata_derivative! evaluates the interpolants for the zonal and meridional velocity at the needed coordinates. Listing \ref{l:griddedInterp} shows large parts of the code in LCS Tool's ocean demo file \lstinline!hyperbolic_shear_lcs.m!. In lines 8-11 the commands for the interpolation are given.
+The data is given at a spatial resolution of $1/4°$ and a temporal resolution of $7\,\mathrm{days}$. Due to the discrete data, defining the right hand side of Equation~\eqref{eq:dtlon} and~\eqref{eq:dtlat} involves spline interpolation in space and time. An interpolant is generated first, then the function \lstinline!flowdata_derivative! evaluates the interpolants for the zonal and meridional velocity at the needed coordinates. Listing \ref{l:griddedInterp} shows the relevant part of the code in LCS Tool's ocean demo file \lstinline!hyperbolic_shear_lcs.m!. In lines 8-11, the commands for the interpolation are given of the velocity dataset are given.
 
-\begin{lstlisting}[caption={LCS ocean demo: Parts of the demo script included in LCS Tool to compute LCS from an ocean data set},label=l:griddedInterp]
+\begin{lstlisting}[caption={LCS ocean demo: Parts of the demo script included in LCS Tool to compute LCS from an ocean dataset},label=l:griddedInterp]
 % Input parameters
 domain = [0,6;-34,-28];
 resolution = [400,400];
@@ -560,15 +589,15 @@ strainlineLcs = seed_curves_from_lambda_max(strainlineLocalMaxDistance,strainlin
 stretchlineLcs = seed_curves_from_lambda_max(stretchlineLocalMaxDistance,stretchlineMaxLength,-cgEigenvalue(:,1),cgEigenvector(:,3:4),domain,resolution,'odeSolverOptions',stretchlineOdeSolverOptions);
 \end{lstlisting}
 
-For the ocean data, the integration time was chosen to be $T=30$ days (Listing \ref{l:griddedInterp}, line 4), a time larger than the turn over time of the mesoscale eddies in the domain. The resolution of the grid of initial conditions is set to $400\times400$ (line 3) which corresponds to a resolution of roughly 0.015\degree\, and gives good results. With this choice the resolution of the tracer grid is of the order of 15 times higher than the resolution of the velocity field. The flow is integrated and the Cauchy-Green strain tensor is computed by the function \lstinline!eig_cgStrain! (line 35). Incompressibility of the flow is enforced (line 12), the auxiliary grid distance is set to 1\% of the main grid distance (line 17), and eigenvalues are computed from the auxiliary grid (line 16). Lambda-line LCS are computed in line 54, after the Poincare section have been set (line 41-42) and the $\boldsymbol\eta_\pm$ fields have been defined (line 53). Hyperbolic LCS, strainlines and strechlines, are computed in lines 57 and 59, respectively.
+We choose the integration time as $T=30$ days (Listing \ref{l:griddedInterp}, line 4), which is larger than the eddy turnover time in this region. The resolution of the main computational grid for initial conditions is set to $400 \times 400$ (line 3.) This corresponds to a resolution of roughly 0.015° and gives good results. With this choice, the resolution of the tracer grid is 15 times higher than the resolution of the velocity field. The flow is integrated and the Cauchy-Green strain tensor is computed by the function \lstinline!eig_cgStrain! (line 35). Incompressibility of the flow is enforced (line 12), the auxiliary grid distance is set to 1\% of the main grid distance (line 17), and eigenvalues are computed from the auxiliary grid (line 16). Elliptic LCSs are computed in line 54, after the Poincare sections have been set (line 41-42) and the $\eta_\pm^\lambda$ fields have been defined (line 53). Hyperbolic LCSs are computed in lines 57 and 59.
 
-Figures~\ref{f:ocean dataset hyperbolic shear lcs details strainline} and \ref{f:ocean dataset hyperbolic shear lcs details stretchline} show elliptic and hyperbolic LCS on 22 November 2006, i.e., the same time instant shown in~\textcite{haller13:_coher_lagran,beron-vera13:_objec_agulh}. Note that here the integration time is $T=30$ days, as opposed to 90 days in their analysis. Since for 90 days the hyperbolic LCSs would be a confusing entanglement of lines, we choose a shorter integration time here, to show hyperbolic LCS together with elliptic LCSs. For the shorter integration time, the analysis with LCS Tool reveals a large coherent eddy bounded by a closed lambda-line at $(3,-32)$ which corresponds to eddy \#2 in Figure~3 of \textcite{beron-vera13:_objec_agulh}. Additionally, a further smaller coherent eddy core at approximately $(1,-31)$ is found that does not stay coherent over a time of 90 days. Both closed orbits are stable if the resolution for the Cauchy-Green strain tensor field is increased. Strainlines (red) and stretchlines (blue) mark the core lines of strong normal attraction and repulsion.
+Figures~\ref{f:ocean dataset hyperbolic shear lcs details strainline} and \ref{f:ocean dataset hyperbolic shear lcs details stretchline} show the positions of elliptic and hyperbolic LCSs on 22 November 2006, which is the same time instant analyzed in~\textcite{haller13:_coher_lagran,beron-vera13:_objec_agulh}. Here the integration time is chosen as $T = 30$ days, as opposed to 90 days in the cited references, to avoid the length tangling of hyperbolic LCSs. Our analysis via LCS Tool reveals five coherent eddy boundaries. The large coherent eddy at $(3,-32)$ has a non-stretching boundary, i.e., $\lambda = 1$. It corresponds to eddy \#2 in Figure~3 of \textcite{beron-vera13:_objec_agulh}. Additionally, four further smaller coherent eddy cores are found. They do not stay coherent over a time of 90 days. All closed orbits are stable under increased spatial resolution for the Cauchy-Green strain tensor field. Repelling LCSs (red) and attracting LCSs (blue) are superimposed over the plot of FTLE values. The hyperbolic LCSs determine the deformation of the fluid in-between coherent eddy cores.
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.8\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_strainlines}
+\includegraphics[width=.8\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_strainlines}
 \end{center}
-\caption{Lambda-line LCSs (green) and strainline LCSs (red) of the ocean data set. Background gray-scale is the finite time Lyapunov exponent. Dashed green lines are Poincare sections. White dots indicate $\lambda_2$ local maxima used for strainline integration initial positions.}
+\caption{Elliptic LCSs (green) and repelling LCSs (red) in the ocean dataset. Background gray-scale is the finite time Lyapunov exponent. Dashed green lines are Poincare sections. White dots indicate $\lambda_2$ local maxima used as initial positions for shrinkline integration.}
 \label{f:ocean dataset hyperbolic shear lcs details strainline}
 \end{figure}
 
@@ -576,7 +605,7 @@ Figures~\ref{f:ocean dataset hyperbolic shear lcs details strainline} and \ref{f
 \begin{center}
 \includegraphics[width=0.8\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_stretchlines}
 \end{center}
-\caption{Lambda-line LCSs (green) and stretchline LCSs (blue) of the ocean data set. Background gray-scale is the finite time Lyapunov exponent. Dashed green lines are Poincare sections. White dots indicate $\lambda_1$ local minima used for stretchline integration initial positions.}
+\caption{Elliptic LCSs (green) and attracting LCSs (blue) in the ocean dataset. Background gray-scale is the finite time Lyapunov exponent. Dashed green lines are Poincare sections. White dots indicate $\lambda_1$ local minima used as initial positions for stretchline integration.}
 \label{f:ocean dataset hyperbolic shear lcs details stretchline}
 \end{figure}
 
@@ -584,11 +613,13 @@ Figures~\ref{f:ocean dataset hyperbolic shear lcs details strainline} and \ref{f
 
 \section{Conclusions}
 
-Algorithms to identify LCSs using variational principles have been presented, and a software library, LCS Tool, that implements these algorithms has been introduced and demonstrated on analytic flow models and a geophysical dataset. The software library provides functions to enable exploring variational LCS methods without requiring detailed knowledge of variational LCS theory. These functions make it possible to write compact programs to identify and visualize LCSs. Since LCS Tool is programmed in MATLAB, testing new methods and visualizing their results can be done quite quickly.
+We have described a computational toolbox, LCS Tool, that implements recent variational results for Lagrangian Coherent Structures (LCSs) in two-dimensional unsteady flows. We have also demonstrated the performance of LCS Tool on two analytic flow models and a geophysical velocity dataset. The publicly available software library producing these results enables the exploration of variational LCS methods without assuming a detailed knowledge of geodesic LCS theory.
 
-LCS Tool is built atop MATLAB and leverages that software's capabilities extensively. With FTLE-based LCSs, computational performance has received considerable attention\parencite{conti12:_gpu_apu_finit_time_lyapun_expon,miron12:_anisot_lagran_coher_struc}. LCS Tool is free software and we hope it will evolve to incorporate similar advances. Optimizing computational performance will likely help apply variational LCS methods to large-scale real-time forecasting applications, for example to allow tracking environmental contaminants.
+LCS Tool leverages the capabilities of MATLAB extensively. For FTLE based extraction of LCSs, computational performance has received considerable attention \parencite{conti12:_gpu_apu_finit_time_lyapun_expon,miron12:_anisot_lagran_coher_struc}. We hope to see similar computational advances for the publicly available LCS Tool platform. Optimizing computational performance will likely aid the application of variational LCS methods to large-scale real-time forecasting applications, such as the tracking of environmental contaminants\parencite{olascoaga12:_forec}.
 
-In addition to improving computational performance, we hope LCS Tool will be the foundation to integrate new theoretical advances, for example the variational LCS jet core identification method\parencite{farazmand13:_shearless} and the analysis of LCSs in higher dimensions\parencite{blazevski:_hyper_ellip_trans_barrier_three}.
+We also hope that LCS Tool will serve as a foundation for the numerical
+implementation of recent theoretical advances. These include the geodesic theory of parabolic LCSs (jet cores)\parencite{farazmand14:_shearless} and the variational theory of hyperbolic and elliptic LCSs for three-dimensional
+flows\parencite{blazevski14:_hyper_ellip_trans_barrier_three}.
 
 \subsection*{Acknowledgments}
 
@@ -601,6 +632,4 @@ The altimeter products used in this work are produced by SSALTO/DUACS and distri
 % Local Variables:
 % ispell-dictionary: "en_US"
 % End:
-% LocalWords:  stretchline stretchlines incompressible gyre eigenvector eigenvectors incompressibility dataset datasets LCS LCSs strainline Lyapunov Bickley Rossby timespan variational adaptively vortices parametrise advected strainlines minima extremal FTLE MATLAB maxima geostrophic
-
-
+% LocalWords:  stretchline stretchlines incompressible gyre eigenvector eigenvectors incompressibility dataset datasets LCS LCSs strainline Lyapunov Bickley Rossby timespan variational adaptively vortices parametrise advected strainlines minima extremal FTLE MATLAB maxima geostrophic shrinkline shrinklines
