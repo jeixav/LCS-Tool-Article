@@ -183,11 +183,11 @@ an auxiliary grid for differentiating with respect to initial conditions.
 \hline
 \lstinline!resolution! & $1 \times 2$ array to define Cauchy-Green strain main grid resolution\tabularnewline
 \hline
-\lstinline!auxGridRelDelta! & optional scalar between 0 and 0.5 to specify auxiliary grid spacing. Default is $10^{-2}$.\tabularnewline
+\lstinline!auxGridRelDelta! & optional scalar between 0 and 0.5 to specify auxiliary grid spacing. Default: $10^{-2}$.\tabularnewline
 \hline
-\lstinline!eigenvalueFromMainGrid! & optional logical to control whether eigenvalues of Cauchy-Green strain are calculated from main or auxiliary grid. Default is \lstinline!true!.\tabularnewline
+\lstinline!eigenvalueFromMainGrid! & optional logical to control whether eigenvalues of Cauchy-Green strain are calculated from main or auxiliary grid. Default: \lstinline!true!.\tabularnewline
 \hline
-\lstinline!incompressible! & optional logical to specify if incompressibility is imposed. Default is \lstinline!false!.\tabularnewline
+\lstinline!incompressible! & optional logical to specify if incompressibility is imposed. Default: \lstinline!false!.\tabularnewline
 \hline
 \lstinline!odeSolverOptions! & optional \lstinline!odeset! structure to specify flow map integration parameters\tabularnewline
 \hline
@@ -279,13 +279,13 @@ The main steps in calculating elliptic LCSs are enumerated in \cref{t:Elliptic L
 \hline
 \lstinline!PSList! & user-defined structure for Poincare section end-points, number of $\lambda$-lines launched from Poincare section, and maximum closed $\lambda$-line length\tabularnewline
 \hline
-\lstinline!nBisection! & optional number of bisection steps to refine zero crossings of Poincare map. Default value: 5.\tabularnewline
+\lstinline!nBisection! & optional number of bisection steps to refine zero crossings of Poincare map. Default: 5.\tabularnewline
 \hline
-\lstinline!dThresh! & optional threshold to discard discontinuous zero crossings of Poincare map. Default value: $10^{-2}$.\tabularnewline
+\lstinline!dThresh! & optional threshold to discard discontinuous zero crossings of Poincare map. Default: $10^{-2}$.\tabularnewline
 \hline
 \lstinline!odeSolverOptions! & optional \lstinline!odeset! structure to specify $\lambda$-line integration parameters\tabularnewline
 \hline
-\lstinline!periodicBc! & optional $1 \times 2$ logical array to specify periodic boundary conditions. Default is \lstinline![false,false]!.\tabularnewline
+\lstinline!periodicBc! & optional $1 \times 2$ logical array to specify periodic boundary conditions. Default: \lstinline![false,false]!.\tabularnewline
 \hline
 \end{tabular}
 \caption{Syntax of LCS Tool's elliptic LCS functions.}
@@ -363,9 +363,9 @@ The main steps of our hyperbolic LCS detection algorithm are enumerated in \cref
 \hline
 \lstinline!flowResolution! & $1 \times 2$ array to define Cauchy-Green strain main grid resolution\tabularnewline
 \hline
-\lstinline!periodicBc! & optional $1 \times 2$ logical array to specify periodic boundary conditions. Default is \lstinline![false,false]!.\tabularnewline
+\lstinline!periodicBc! & optional $1 \times 2$ logical array to specify periodic boundary conditions. Default: \lstinline![false,false]!.\tabularnewline
 \hline
-\lstinline!nMaxCurves! & optional maximum number of curves (i.e. shrinklines of stretchlines) to generate. Default is \lstinline!numel(cgEigenvalue)!.\tabularnewline
+\lstinline!nMaxCurves! & optional maximum number of curves (i.e. shrinklines of stretchlines) to generate. Default: \lstinline!numel(cgEigenvalue)!.\tabularnewline
 \hline
 \lstinline!odeSolverOptions! & optional \lstinline!odeset! structure to specify flow map integration parameters\tabularnewline
 \hline
