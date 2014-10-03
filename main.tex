@@ -9,6 +9,9 @@
 \usepackage[numbered,framed]{mcode}
 \usepackage{cleveref}
 
+% FIXME Some figures use PDF version 1.6, PDFLaTeX default is 1.5
+\pdfoptionpdfminorversion 6
+
 \definecolor{gray}{rgb}{0.9,0.9,0.9}
 
 \lstloadlanguages{Matlab}
@@ -402,14 +405,14 @@ The main steps of our hyperbolic LCS detection algorithm are enumerated in \cref
 \label{t:seed_curves_from_lambda_max syntax}
 \end{table}
 
-In classical, infinite-time dynamical systems, elliptic and hyperbolic invariant manifolds cannot intersect, as the trajectories in their intersection would then have to follow two different asymptotic behaviors simultaneously. In finite-time dynamical systems, hyperbolic LCSs may well intersect elliptic LCSs, with hyperbolic LCSs continuing to act as cores of mixing patterns observed in the interior of elliptic LCSs. Motivated by convention and for clarity in visualization, however, the default setting of LCS Tool removes hyperbolic LCS segments from the interior of elliptic LCSs. These removed segments can be turned back on demand, as shown in \cref{fig:ocean_dataset_colortracer}.
+In classical, infinite-time dynamical systems, elliptic and hyperbolic invariant manifolds cannot intersect, as the trajectories in their intersection would then have to follow two different asymptotic behaviors simultaneously. In finite-time dynamical systems, hyperbolic LCSs may well intersect elliptic LCSs, with hyperbolic LCSs continuing to act as cores of mixing patterns observed in the interior of elliptic LCSs. Motivated by convention and for clarity in visualization, however, the default setting of LCS Tool removes hyperbolic LCS segments from the interior of elliptic LCSs. These removed segments can be turned back on demand, as shown in \cref{f:ocean_dataset_colortracer}.
 
 \begin{figure}[hbt]
 \centering
 \includegraphics[width=.49\textwidth]{graphics/ocean_dataset/LCS_fwd_coherent_eddy}
 \includegraphics[width=.49\textwidth]{graphics/ocean_dataset/LCS_fwd_colortracer}
 \caption{(Left) Elliptic LCS (green) with repelling LCSs (red) continuing into its interior. (Right) Final positions $x(t) = (x_1(t),x_2(t)) = F_{t_0}^t(x_0)$ of tracer particles, are plotted with their $x_1(t)$ position encoded in red and $x_2(t)$ position encoded in green. Note the continued impact of the repelling hyperbolic LCSs (black) on tracer patterns inside the elliptic LCS (white).}
-\label{fig:ocean_dataset_colortracer}
+\label{f:ocean_dataset_colortracer}
 \end{figure}
 
 \section{Examples}
@@ -449,18 +452,16 @@ is optionally provided by LCS Tool), we position Poincare sections to capture el
 
 \lstinputlisting[caption={Double gyre script for elliptic lambda-line LCSs},label=l:double gyre lambda-line LCS]{listings/double_gyre/lambda_lcs.m}
 
-In \cref{fig:double_gyre_lambda_lcs_convergence}, the resolution of the  Cauchy-Green strain tensor is varied from $500 \times 250$ to $1000 \times 500$. The location of the outermost closed lambda-line changes little, demonstrating convergence. For all tested resolutions the $\lambda$ values of the outermost closed orbits are constant. This is also suggests that the lowest tested resolution of $500 \times 250$ is sufficient to identify the elliptic LCSs in this example.
+In \cref{f:double gyre lambda LCS convergence}, the resolution of the  Cauchy-Green strain tensor is varied from $500 \times 250$ to $1000 \times 500$. The location of the outermost closed lambda-line changes little, demonstrating convergence. For all tested resolutions the $\lambda$ values of the outermost closed orbits are constant. This is also suggests that the lowest tested resolution of $500 \times 250$ is sufficient to identify the elliptic LCSs in this example.
 
 \begin{figure}[hbt]
 \centering
-\includegraphics[width=.8\textwidth]{graphics/double_gyre/lambda_lcs_convergence_500}
-\includegraphics[width=.8\textwidth]{graphics/double_gyre/lambda_lcs_convergence_750}
-\includegraphics[width=.8\textwidth]{graphics/double_gyre/lambda_lcs_convergence_1000}
-\caption{Double gyre closed lambda-lines at varying resolutions with FTLE background}
-\label{fig:double_gyre_lambda_lcs_convergence}
+\includegraphics[width=.8\textwidth]{graphics/double_gyre/lambda_lcs_convergence}\caption{Convergence of closed $\lambda$-lines for increasing main-grid resolution in the double-gyre model. The outermost closed $\lambda$-line (bold green line) is the vortex boundary. (Top) {[}500x250{]}, $\lambda$-values
+of closed orbits from interior to exterior, left gyre: $\lambda=(0.97, 0.98, 0.99, 1.00, 1.01)$, right gyre: $\lambda=(1.00, 1.01, 1.02, 1.03, 1.04)$; (Middle) {[}750x375{]}, left: $\lambda=(0.97, 0.98, 0.99, 1.00, 1.01)$, right: $\lambda=(1.00, 1.01, 1.02, 1.03, 1.04, 1.05)$; (Bottom) {[}1000x500{]}, left: $\lambda=(0.97, 0.98, 0.99, 1.00, 1.01)$, right: $\lambda=(1.00, 1.01, 1.02, 1.03, 1.04, 1.05)$.}
+\label{f:double gyre lambda LCS convergence}
 \end{figure}
 
-\Cref{fig:double_gyre_lambda_strain_lcs} shows the complete picture of elliptic and hyperbolic LCSs of the double gyre at this resolution. \Cref{lst:double_gyre_lambda_strain_stretch_lcs} lists the corresponding LCS Tool commands. The maximal length of shrinklines and stretchlines, \lstinline!strainlineMaxLength! and \lstinline!stretchlineMaxLength!, is set to $20$, a multiple of the domain size, since the hyperbolic LCSs may wind around vortices several times. 
+\Cref{f:double gyre lambda hyperbolic LCS} shows the complete picture of elliptic and hyperbolic LCSs of the double gyre at this resolution. \Cref{lst:double_gyre_lambda_strain_stretch_lcs} lists the corresponding LCS Tool commands. The maximal length of shrinklines and stretchlines, \lstinline!strainlineMaxLength! and \lstinline!stretchlineMaxLength!, is set to $20$, a multiple of the domain size, since the hyperbolic LCSs may wind around vortices several times. 
 
 As usual, the local maximization distance is set larger for stretchlines than for shrinklines (cf. \cref{ll:strainlineLocalMaxDistance} and \cref{ll:stretchlineLocalMaxDistance}). The purpose of the maximization distance is to obtain spatially separated LCSs and to avoid a dense tangle of lines that basically indicates the same hyperbolic LCS (cf. \cref{t:Hyperbolic LCS algorithm}, \cref{i:flag maxima}). Setting the local maximization distance for stretchlines larger than for shrinklines allows obtaining a comparable number of stretchlines and shrinklines overall in the flow domain (recall that hyperbolic LCS seed points are discarded if they are within the local maximization distance of an existing hyperbolic LCS). Shrinklines are locally tangent to ridges of $\lambda_2$ maxima, whereas stretchlines are locally normal to these ridges. Setting the local maximization distance of stretchlines and shrinklines equal would therefore produce a greater number of stretchlines than shrinklines overall.
 
@@ -472,16 +473,9 @@ label=lst:double_gyre_lambda_strain_stretch_lcs
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{graphics/double_gyre/lambda_strain_lcs}
-\caption{Double gyre lambda-line and shrinkline LCSs}
-\label{fig:double_gyre_lambda_strain_lcs}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{graphics/double_gyre/lambda_stretch_lcs}
-\caption{Double gyre lambda-line and stretchline LCSs}
-\label{fig:double_gyre_lambda_stretch_lcs}
+\includegraphics[width=\textwidth]{graphics/double_gyre/lambda_hyperbolic_lcs}
+\caption{LCSs in the double gyre flow. Resolution $[500\times250]$. $\lambda = 1.00$ and $1.04$ for the left and the right gyre. $\lambda \in [0.93,1.07],\,\Delta\lambda=0.01$. (Top) Elliptic (green) and repelling (red) LCSs with the FTLE shown in the background. (Bottom) Elliptic and attracting (blue) LCSs.}
+\label{f:double gyre lambda hyperbolic LCS}
 \end{figure}
 
 \subsection{Bickley jet}
@@ -503,44 +497,18 @@ f_{1,2}(t) = 2.625 \times 10^{-2} \phi_1(t/6.238 \times 10^5)
 \end{gather*}
 The parameter values we use are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$.
 
-The integration time is $T=4L_x/U$, a multiple of a the eddy turnover
-time in the flow. \Cref{fig:Bickley_jet_lambda_LCS_full} shows lambda-line LCS of the Bickley jet with the FTLE in the background. The figure demonstrates a poor result since the LCSs change shape significantly between eddies. To address this problem we could adjust numerical parameters such as the resolution, but instead we will analyze lambda-line closed orbits of one vortex for a short timespan.
+The integration time is $T=4L_x/U$, a multiple of a the eddy turnover time in the flow. \Cref{f:Bickley jet LCS} shows lambda-line LCS of the Bickley jet with the FTLE in the background. The figure demonstrates a poor result since the LCSs change shape significantly between eddies. To address this problem we could adjust numerical parameters such as the resolution, but instead we will analyze lambda-line closed orbits of one vortex for a short timespan.
+
+\Cref{f:Bickley jet LCS} shows elliptic and hyperbolic LCSs of the Bickley jet with the FTLE field in the background.
 
 \begin{figure}
 \centering
-\includegraphics[width=.85\textwidth]{graphics/bickley_jet/lambda_lcs_full}
-\caption{Bickley jet lambda-line LCSs}
-\label{fig:Bickley_jet_lambda_LCS_full}
+\includegraphics[width=.85\textwidth]{graphics/bickley_jet/lambda_hyperbolic_lcs}
+\caption{Elliptic and hyperbolic (top: red - repelling, bottom: blue - attracting) LCSs in the Bickley jet. $\lambda$-valuestrains of coherent eddies from left to right [0.95,\,0.80,\,0.94,\,0.80,\,0.94], $\lambda \in [0.80,1.20],\,\Delta\lambda=0.01$.}
+\label{f:Bickley jet LCS}
 \end{figure}
-
-\Cref{fig:Bickley jet lambda lcs convergence} shows convergence of the lambda-line elliptic LCSs. The LCS Tool script used to produce that figure are based on the script \lstinline!demo/bickley_jet/hyperbolic_shear_lcs.m! which is given in \cref{lst:Bickley jet hyperbolic_shear_lcs subset}. It is worth pointing out that in order to obtain closed orbits, $\lambda = 0.995$; with $\lambda = 1$ no closed orbits exist.
 
 \lstinputlisting[caption={Bickley jet script for hyperbolic and elliptic LCSs. Subset of \lstinline!demo/bickley_jet/hyperbolic_shear_lcs.m!},label=lst:Bickley jet hyperbolic_shear_lcs subset]{listings/bickley_jet/hyperbolic_shear_lcs_subset.m}
-
-\begin{figure}[hbt]
-\centering
-\includegraphics[width=.7\textwidth]{graphics/bickley_jet/lambda_lcs_convergence_400}
-\includegraphics[width=.7\textwidth]{graphics/bickley_jet/lambda_lcs_convergence_500}
-\includegraphics[width=.7\textwidth]{graphics/bickley_jet/lambda_lcs_convergence_600}
-\caption{Bickley jet closed lambda-line at varying resolutions}
-\label{fig:Bickley jet lambda lcs convergence}
-\end{figure}
-
-Shrinkline LCSs are shown in \cref{fig:Bickley_jet_strain_lcs} and stretchline LCSs are shown in \cref{fig:Bickley_jet_stretch_lcs}.
-
-\begin{figure}
-\centering
-\includegraphics[width=.85\textwidth]{graphics/bickley_jet/strain_lcs}
-\caption{Bickley jet shrinkline LCSs}
-\label{fig:Bickley_jet_strain_lcs}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=.85\textwidth]{graphics/bickley_jet/stretch_lcs}
-  \caption{Bickley jet stretchline LCSs}
-  \label{fig:Bickley_jet_stretch_lcs}
-\end{figure}
 
 \subsection{Ocean dataset}
 \label{sec:oceandataset}
@@ -621,22 +589,14 @@ stretchlineLcs = seed_curves_from_lambda_max(stretchlineLocalMaxDistance,stretch
 
 We choose the integration time as $T=30$ days (\cref{l:griddedInterp}, \cref{ll:timespan}), which is larger than the eddy turnover time in this region. The resolution of the main computational grid for initial conditions is set to $400 \times 400$ (\cref{ll:resolution}). This corresponds to a resolution of roughly 0.015° and gives good results. With this choice, the resolution of the tracer grid is 15 times higher than the resolution of the velocity field. The flow is integrated and the Cauchy-Green strain tensor is computed by the function \lstinline!eig_cgStrain! (\cref{ll:eig_cgStrain}). Incompressibility of the flow is enforced (\cref{ll:incompressible}), the auxiliary grid distance is set to 1\% of the main grid distance (\cref{ll:cgAuxGridRelDelta}), and eigenvalues are computed from the auxiliary grid (\cref{ll:cgEigenvalueFromMainGrid}). Elliptic LCSs are computed in \cref{ll:poincare_closed_orbit_multi}, after the Poincare sections have been set (\cref{ll:poincareSection(1),ll:poincareSection(2)}) and the $\eta_\pm^\lambda$ fields have been defined (\cref{ll:lambda_line}). Hyperbolic LCSs are computed in \cref{ll:strainlineLcs,ll:stretchlineLcs}.
 
-\Cref{f:ocean dataset hyperbolic shear lcs details strainline,f:ocean dataset hyperbolic shear lcs details stretchline} show the positions of elliptic and hyperbolic LCSs on 22 November 2006, which is the same time instant analyzed in \citet{haller13:_coher_lagran,beron-vera13:_objec_agulh}. Here the integration time is chosen as $T = 30$ days, as opposed to 90 days in the cited references, to avoid tangling of hyperbolic LCSs. Our analysis via LCS Tool reveals five coherent eddy boundaries. The large coherent eddy at $(3,-32)$ has a non-stretching boundary, i.e., $\lambda = 1$. It corresponds to eddy \#2 in Figure~3 of \citet{beron-vera13:_objec_agulh}. Additionally, four smaller coherent eddy cores are found. They do not stay coherent over a time of 90 days. All closed orbits are stable under increased spatial resolution for the Cauchy-Green strain tensor field. Repelling LCSs (red) and attracting LCSs (blue) are superimposed over the plot of FTLE values. The hyperbolic LCSs determine the deformation of the fluid in-between coherent eddy cores.
+\Cref{f:ocean dataset LCS} shows the positions of elliptic and hyperbolic LCSs on 22 November 2006, which is the same time instant analyzed in \citet{haller13:_coher_lagran,beron-vera13:_objec_agulh}. Here the integration time is chosen as $T = 30$ days, as opposed to 90 days in the cited references, to avoid tangling of hyperbolic LCSs. Our analysis via LCS Tool reveals five coherent eddy boundaries. The large coherent eddy at $(3,-32)$ has a non-stretching boundary, i.e., $\lambda = 1$. It corresponds to eddy \#2 in Figure~3 of \citet{beron-vera13:_objec_agulh}. Additionally, four smaller coherent eddy cores are found. They do not stay coherent over a time of 90 days. All closed orbits are stable under increased spatial resolution for the Cauchy-Green strain tensor field. Repelling LCSs (red) and attracting LCSs (blue) are superimposed over the plot of FTLE values. The hyperbolic LCSs determine the deformation of the fluid in-between coherent eddy cores.
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=.8\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_strainlines}
+\includegraphics[width=.8\textwidth]{graphics/ocean_dataset/lambda_hyperbolic_lcs}
 \end{center}
-\caption{Elliptic LCSs (green) and repelling LCSs (red) in the ocean dataset. Background gray-scale is the finite time Lyapunov exponent. Dashed green lines are Poincare sections. White dots indicate $\lambda_2$ local maxima used as initial positions for shrinkline integration.}
-\label{f:ocean dataset hyperbolic shear lcs details strainline}
-\end{figure}
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.8\textwidth]{graphics/ocean_dataset/hyperbolic_shear_lcs_stretchlines}
-\end{center}
-\caption{Elliptic LCSs (green) and attracting LCSs (blue) in the ocean dataset. Background gray-scale is the finite time Lyapunov exponent. Dashed green lines are Poincare sections. White dots indicate $\lambda_1$ local minima used as initial positions for stretchline integration.}
-\label{f:ocean dataset hyperbolic shear lcs details stretchline}
+\caption{(Top) Elliptic LCSs (green, $\lambda=$ 1.00, 1.08, 0.94, 0.90, 1.06) and repelling LCSs (red) in the ocean data set. Background gray-scale is the finite time Lyapunov exponent. Dashed green lines are Poincare sections. White dots indicate $\lambda_{2}$ local maxima used as initial positions for shrinkline integration. (Bottom) Elliptic LCSs (green) and attracting LCSs (blue).}
+\label{f:ocean dataset LCS}
 \end{figure}
 
 \section{Conclusions}
