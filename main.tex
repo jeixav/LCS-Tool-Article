@@ -1,7 +1,9 @@
+% FIXME Add 5p option to get JCompSci two column layout
 \documentclass{elsarticle}
 
 \usepackage{amsmath}
 \usepackage{commath}
+\usepackage{gensymb}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 \usepackage[numbered,framed]{mcode}
@@ -34,7 +36,8 @@
 
 \author{F.~Huhn}
 
-\author{G.~Haller\corref{cor}}
+% FIXME Confirm George can be corresponding author
+\author{G.~Haller}
 \ead{georgehaller@ethz.ch}
 
 \cortext[cor]{Corresponding author}
@@ -46,7 +49,9 @@ We give an algorithmic introduction to Lagrangian coherent structures (LCSs) usi
 \end{abstract}
 
 \begin{keyword}
-Dynamical systems \sep Lagrangian coherent structures \sep Invariant manifolds \sep Mixing \ Mathematical software
+% FIXME Match keywords and PACS and MSC classifications
+% FIXME Consult previous publications to find keywords
+Lagrangian coherent structures \sep Mathematical software \sep Dynamical systems \sep Invariant manifolds \sep Mixing
 
 % FIXME Verify these classifications, http://www.aip.org/pacs
 \PACS 47.10.Fg \sep 47.27.De \sep 47.11.-j
@@ -550,7 +555,7 @@ In the geostrophic approximation, the sea-surface height $\eta$ serves as a stre
 \end{eqnarray}
 where $g$ is the constant of gravity, $R$ is the mean radius of the Earth, and $f(\theta) \equiv 2\Omega\sin\theta$ is the Coriolis parameter, with $\Omega$ denoting the Earth's mean angular velocity.
 
-The data is given at a spatial resolution of $1/4°$ and a temporal resolution of $7\,\mathrm{days}$. Due to the discrete data, defining the right hand side of \cref{eq:dtlon} and \cref{eq:dtlat} involves spline interpolation in space and time. An interpolant is generated first, then the function \lstinline!flowdata_derivative! evaluates the interpolants for the zonal and meridional velocity at the needed coordinates. \Cref{l:griddedInterp} shows the relevant part of the code in LCS Tool's ocean demo file \lstinline!hyperbolic_shear_lcs.m!. In \crefrange{ll:interpolation start}{ll:interpolation end}, the commands for the interpolation are given of the velocity dataset are given.
+The data is given at a spatial resolution of $1/4\degree$ and a temporal resolution of $7\,\mathrm{days}$. Due to the discrete data, defining the right hand side of \cref{eq:dtlon} and \cref{eq:dtlat} involves spline interpolation in space and time. An interpolant is generated first, then the function \lstinline!flowdata_derivative! evaluates the interpolants for the zonal and meridional velocity at the needed coordinates. \Cref{l:griddedInterp} shows the relevant part of the code in LCS Tool's ocean demo file \lstinline!hyperbolic_shear_lcs.m!. In \crefrange{ll:interpolation start}{ll:interpolation end}, the commands for the interpolation are given of the velocity dataset are given.
 
 \begin{lstlisting}[caption={LCS ocean demo: Parts of the demo script included in LCS Tool to compute LCS from an ocean dataset},label=l:griddedInterp]
 % Input parameters
@@ -655,6 +660,7 @@ The altimeter products used in this work are produced by SSALTO/DUACS and distri
 
 \end{document}
 
+% FIXME Keywords are required to be in British English (http://www.elsevier.com/journals/journal-of-computational-science/1877-7503/guide-for-authors), so should switch entire document to British English
 % Local Variables:
 % ispell-dictionary: "en_US"
 % End:
