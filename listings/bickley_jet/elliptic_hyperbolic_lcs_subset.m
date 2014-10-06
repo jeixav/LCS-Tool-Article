@@ -4,7 +4,7 @@ lengthX = pi*earthRadius;
 lengthY = 1.77e6;
 epsilon = [.075,.4,.3];
 domain = [0,lengthX;[-1,1]*2.25*lengthY];
-resolutionX = 500;
+resolution = [500,276];
 timespan = [0,4*lengthX/u];
 
 %% Velocity definition

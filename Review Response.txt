@@ -1,0 +1,23 @@
+Response to reviewer comments
+
+Reviewer #2
+
+Comment #1
+
+Typo corrected as suggested
+
+Comment #2
+
+Typo corrected as suggested
+
+Comment #4
+
+Typo corrected as suggested
+
+Comment #5
+
+Figure caption modified to explain notation of axes
+
+Comment #6
+
+Figure captions modified to explain labelling of lambda extrema

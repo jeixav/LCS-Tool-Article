@@ -187,7 +187,7 @@ normal perturbation to a shrinkline $\gamma$ at its point $r$ grows under the fl
 
 Here we describe a step-by-step numerical implementation of the geodesic detection of elliptic and hyperbolic LCSs through the differential \cref{eq:etafields,eq:strainline,eq:stretchline}.
 
-% FIXME Reviewer #3, comment #1: Between the three applications, there should be a description about linking them in terms of generic APIs (application programming interface) or common code style. It is good to have code in the paper but it doesn't seem straightforward for a reader to find out how this simplifies the effort from coding from scratch (instead of using the platform). That part should be highlighted as a key point for judging the merit to the community. So, it would be very useful to pinpoint the generics with a flowchart (e.g. it always starts from input parameters, velocity definition and then LCS parameters, and how you finally call only 1-2 functions for the core solving routine), and your Matlab code there can further demonstrate the paradigm.
+% FIXME Reviewer #3, comment #1: Between the three applications, there should be a description about linking them in terms of generic APIs (application programming interface) or common code style. It is good to have code in the paper but it doesn't seem straightforward for a reader to find out how this simplifies the effort from coding from scratch (instead of using the platform). That part should be highlighted as a key point for judging the merit to the community. So, it would be very useful to pinpoint the generics with a flowchart (e.g. it always starts from input parameters, velocity definition and then LCS parameters, and how you finally call only 1-2 functions for the core solving routine), and your MATLAB code there can further demonstrate the paradigm.
 % FIXME Reviewer #5, comment #6: The functionality and taxonomy of the proposed LCS tool should be introduced for an overview understanding of the tool.
 
 \subsection{Computing the invariants of the Cauchy-Green strain tensor}
@@ -233,10 +233,7 @@ The common first step in calculating elliptic and hyperbolic LCSs is the computa
 \end{center}
 \end{table}
 
-
-The Cartesian grid of initial conditions mentioned in \cref{t:Cauchy-Green algorithm} is rectangular, with user-defined vertical and horizontal ranges and resolutions. The optimal resolution may be determined by a successive doubling of the initial resolution until convergence of the extracted LCSs is observed visually.
-% FIXME Reviewer #2, comment #1: "500 grid point" → "500 grid points"
-If the domain of interest comprises only a few expected LCSs, e.g., one vortex, then a resolution of about 500 grid point along the longest axis usually gives good results. Otherwise, a higher resolution must be chosen.
+The Cartesian grid of initial conditions mentioned in \cref{t:Cauchy-Green algorithm} is rectangular, with user-defined vertical and horizontal ranges and resolutions. The optimal resolution may be determined by a successive doubling of the initial resolution until convergence of the extracted LCSs is observed visually. If the domain of interest comprises only a few expected LCSs, e.g., one vortex, then a resolution of about 500 grid points along the longest axis usually gives good results. Otherwise, a higher resolution must be chosen.
 
 The auxiliary grid (cf. \cref{t:Cauchy-Green algorithm}) comprises four points placed symmetrically around each point of the Cartesian grid (\cref{f:main and auxiliary grids}). These points are used to achieve increased accuracy in the finite-difference approximation
 \[
@@ -362,8 +359,7 @@ In \cref{f:Poincare return map}, circle markers indicate fixed points of the Poi
 \begin{center}
 \includegraphics[width=.8\textwidth]{graphics/double_gyre/poincare_return_map}
 \end{center}
-% FIXME Reviewer #2, comment #5: Indicate what are "s" and "P(s)"
-\caption{Example of a Poincare map obtained for an elliptic LCS. Circle markers indicate closed orbit positions. The filled circle indicates the outermost fixed point of the Poincare map, marking the intersection of a coherent Lagrangian cortex boundary with the Poincare section.}
+\caption{Example of a Poincare map obtained for an elliptic LCS. The abscissa, $s$, represents distance along Poincare section. The ordinate, $p(s) - s$, represents distance of Poincare orbit return point from initial position. Circle markers indicate closed orbit positions. The filled circle indicates the outermost fixed point of the Poincare map, marking the intersection of a coherent Lagrangian cortex boundary with the Poincare section.}
 \label{f:Poincare return map}
 \end{figure}
 
@@ -495,10 +491,17 @@ As usual, the local maximization distance is set larger for stretchlines than fo
 
 \begin{figure}
 \centering
+% FIXME Reviewer #2, comment #6: Improve appearance of $lambda$ extrema (white dots)
 \includegraphics[width=\textwidth]{graphics/double_gyre/lambda_hyperbolic_lcs}
-% FIXME Reviewer #2, comment #6: Explain meaning of white dots ($\lambda$ maxima) and, if possible improve their appearance
-\caption{LCSs in the double gyre flow. Resolution $[500\times250]$. $\lambda = 1.00$ and $1.04$ for the left and the right gyre. $\lambda \in [0.93,1.07]$, $\Delta\lambda = 0.01$.
-(Top) Elliptic (green) and repelling (red) LCSs with the FTLE shown in the background. (Bottom) Elliptic and attracting (blue) LCSs.}
+\caption{
+LCSs in the double gyre.
+Resolution is $[500\times250]$.
+Elliptic LCSs are green, shrinkline LCSs are red and stretchline LCSs are blue.
+White dots indicate $\lambda_2$ maxima for shrinklines and $\lambda_1$ minima stretchlines.
+FTLE shown in the background.
+$\lambda = 1.00$ and $1.04$ for the left and the right gyre.
+$\lambda \in [0.93,1.07]$, $\Delta\lambda = 0.01$.
+}
 \label{f:double gyre lambda hyperbolic LCS}
 \end{figure}
 
@@ -521,8 +524,8 @@ f_{1,2}(t) = 2.625 \times 10^{-2} \phi_1(t/6.238 \times 10^5)
 \end{gather*}
 The parameter values we use are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$.
 
-% FIXME Reviewer #2, comment #7: Remove "a" in "multiple of a the eddy turnover", and sentence reads awkwardly
-The integration time is $T=4L_x/U$, a multiple of a the eddy turnover time in the flow. \Cref{l:Bickley jet elliptic hyperbolic LCS subset} shows the LCS Tool commands in which the chaotically perturbed velocity is defined (\crefrange{ll:Bickley jet velocity definition start}{ll:Bickley jet velocity definition end}), periodic boundary conditions are imposed in the x-direction (\cref{ll:Bickley jet periodicBc}), and five Poincare sections are defined where we expect coherent vortices (\crefrange{ll:Bickley jet Poincare start}{ll:Bickley jet Poincare end}).
+% FIXME Reviewer #2, comment #7: sentence reads awkwardly
+The integration time is $T = 4L_x/U$, a multiple of the eddy turnover time. \Cref{l:Bickley jet elliptic hyperbolic LCS subset} shows the LCS Tool commands in which the chaotically perturbed velocity is defined (\crefrange{ll:Bickley jet velocity definition start}{ll:Bickley jet velocity definition end}), periodic boundary conditions are imposed in the x-direction (\cref{ll:Bickley jet periodicBc}), and five Poincare sections are defined where we expect coherent vortices (\crefrange{ll:Bickley jet Poincare start}{ll:Bickley jet Poincare end}).
 $\lambda$-values for closed orbit detection are varied over the range $[0.80,1.20]$ with a step of $0.01$.
 
 \Cref{f:Bickley jet LCS} shows elliptic and hyperbolic LCSs of the Bickley jet with the FTLE in the background.
@@ -534,8 +537,16 @@ $\lambda$-values for closed orbit detection are varied over the range $[0.80,1.2
 
 \begin{figure}
 \centering
+% FIXME Shrinkline LCS figure does not treat periodic boundary condition correctly
 \includegraphics[width=.85\textwidth]{graphics/bickley_jet/lambda_hyperbolic_lcs}
-\caption{Elliptic and hyperbolic (top: red - repelling, bottom: blue - attracting) LCSs in the Bickley jet. $\lambda$ values of elliptic LCSs from left to right are [0.95,\,0.80,\,0.94,\,0.80,\,0.94], $\lambda \in [0.80,1.20]$, $\Delta\lambda = 0.01$.}
+\caption{
+LCSs in the Bickley jet.
+Resolution is $[500 \times 276]$.
+Elliptic LCSs are green, shrinkline LCSs are red and stretchline LCSs are blue. 
+White dots indicate $\lambda_2$ maxima for shrinklines and $\lambda_1$ minima stretchlines.
+FTLE shown in the background.
+$\lambda$ values of elliptic LCSs from left to right are [0.95,\,0.80,\,0.94,\,0.80,\,0.94], $\lambda \in [0.80,1.20]$, $\Delta\lambda = 0.01$.
+}
 \label{f:Bickley jet LCS}
 \end{figure}
 
@@ -572,7 +583,14 @@ Hyperbolic LCSs are computed in \cref{ll:ocean data shrinklineLcs,ll:ocean data 
 \begin{center}
 \includegraphics[width=.8\textwidth]{graphics/ocean_dataset/lambda_hyperbolic_lcs}
 \end{center}
-\caption{(Top) Elliptic LCSs (green, $\lambda=$ 1.00, 1.08, 0.94, 0.90, 1.06) and repelling LCSs (red) in the ocean data set. Background gray-scale is the finite time Lyapunov exponent. Dashed green lines are Poincare sections. White dots indicate $\lambda_{2}$ local maxima used as initial positions for shrinkline integration. (Bottom) Elliptic LCSs (green) and attracting LCSs (blue).}
+\caption{
+LCSs in the ocean velocity data from satellite altimetry.
+Resolution is $[500\times250]$.
+Elliptic LCSs are green, shrinkline LCSs are red and stretchline LCSs are blue. 
+White dots indicate $\lambda_2$ maxima for shrinklines and $\lambda_1$ minima stretchlines.
+FTLE shown in the background.
+$\lambda=$ 1.00, 1.08, 0.94, 0.90, 1.06
+}
 \label{f:ocean dataset LCS}
 \end{figure}
 
@@ -601,4 +619,4 @@ The altimeter products used in this work are produced by SSALTO/DUACS and distri
 % Local Variables:
 % ispell-dictionary: "en_US"
 % End:
-% LocalWords:  stretchline stretchlines incompressible gyre eigenvector eigenvectors incompressibility dataset datasets LCS LCSs Lyapunov Bickley Rossby timespan variational adaptively vortices parametrise advected strainlines minima extremal FTLE MATLAB maxima geostrophic shrinkline shrinklines
+% LocalWords:  stretchline stretchlines incompressible gyre eigenvector eigenvectors incompressibility dataset datasets LCS LCSs Lyapunov Bickley Rossby timespan variational adaptively vortices parametrise advected strainlines minima extremal FTLE MATLAB maxima geostrophic shrinkline shrinklines Poincare altimetry
