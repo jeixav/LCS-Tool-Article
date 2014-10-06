@@ -48,6 +48,8 @@
 \address{Institute of Mechanical Systems, ETH Zurich, Switzerland}
 
 \begin{abstract}
+% FIXME Reviewer #5, comment #1: Abstract and introduction the objective and contribution of the paper are not clear; several points need to be clarified further.
+% FIXME Reviewer #5, comment #2: For readers to quickly catch the contribution in this work, it would be better to highlight major difficulties and challenges, and original achievements to overcome them, in a clearer way in abstract and introduction.
 We give an algorithmic introduction to Lagrangian coherent structures (LCSs) using a newly developed computational engine, LCS Tool. LCSs are most repelling, attracting and shearing material lines that form the centerpieces of observed tracer patterns in two-dimensional unsteady dynamical systems. LCS Tool implements the latest geodesic theory of LCSs for two-dimensional flows, uncovering key transport barriers in unsteady flow velocity data as explicit solutions of differential equations. After a review of the underlying theory, we explain the steps and numerical methods used by LCS Tool, and illustrate its capabilities on three unsteady fluid flow examples.
 \end{abstract}
 
@@ -67,6 +69,7 @@ Lagrangian coherent structures \sep Mathematical software \sep Dynamical systems
 
 \section{Introduction}
 
+% FIXME Reviewer #5, comment #5: Please provide information regarding practical applications of this algorithmic software tool.
 Lagrangian Coherent Structures (LCSs) are evolving organizing centers of trajectory patterns in non-autonomous dynamical systems\citep{haller00:_lagran,peacock13:_lagran,haller15:_langr_coher_struc}. Applications of LCSs include oceanic and atmospheric flows\citep{beron-vera13:_objec_agulh,koh02:_hyper}, biological transport problems\citep{wilson09:_lagran_reynol,tallapragada11:_lagran,huhn12:_south_indian_ocean_count_madag}, aeronautics\citep{tang10:_accur_lagran_hong_kong_inter_airpor}, celestial mechanics\citep{gawlik09:_lagran}, crowd dynamics\citep{ali07:_lagran_partic_dynam_approac_crowd}, and aperiodically forced mechanical oscillators\citep{hadjighasem13:_detec_kam}.
 
 \citet{haller01:_distin} proposed that ridges of the finite-time Lyapunov exponent (FTLE) are heuristic indicators of hyperbolic (i.e., repelling- and attracting-type) LCSs. A number of examples indeed support this principle\citep{peacock13:_lagran}. Equating FTLE ridges with LCSs, however, would create theoretical inconsistencies, as well as false positives and negatives in hyperbolic LCS detection\citep{haller11:_lagran_coher_struc,norgard12:_secon_lagran_coher_struc}. In addition, the role of the FTLE field in the accurate detection of elliptic (vortex-type) and parabolic (jet-core type) LCSs has remained an open question (but see \citet{beron-vera10:_invar_lagran}).
@@ -74,10 +77,13 @@ Lagrangian Coherent Structures (LCSs) are evolving organizing centers of traject
 More recent work has focused on an exact mathematical formulation of the properties defining LCSs\citep{haller11:_lagran_coher_struc,farazmand12:_comput_lagran,haller12:_geodes_theor_trans_barrier_two_dimen_flows,haller13:_coher_lagran,blazevski14:_hyper_ellip_trans_barrier_three}. In two-dimensional flows, hyperbolic and parabolic LCSs turn out to be stationary curves of the averaged material shear\citep{farazmand14:_shearless}, whereas elliptic LCSs are stationary curves of the averaged strain\citep{haller13:_coher_lagran}. These variational formulations lead to explicit solutions for LCSs as null-geodesics of appropriate Lorentzian metrics.
 
 Here we present a simple algorithmic introduction to geodesic LCS detection without details on the the underlying mathematics.
-% FIXME Replace GitHub link with http://runmycode.org/
+% FIXME JCompSci editor: Replace GitHub link with http://runmycode.org/
+% FIXME Reviewer #3, comment #4: Add documentation within the github repository to show some reference to the APIs and how users may start to run a his/her own application.
+% FIXME Reviewer #4: Please make sure the code is downloadable once the paper is published
 We then review the implementation of this approach in a computational engine called LCS Tool\footnote{LCS Tool is publicly available at: https://github.com/jeixav/LCS-Tool}.
 This engine is a library of MATLAB functions that extract LCSs from two-dimensional unsteady flows. The examples we present here have been programmed into demonstration scripts.
 
+% FIXME Reviewer #3, comment #3: The comparison with other publicly available LCS detection software should include more details. It contains a very high-level summary of LCS tool being an "all-purpose numerical engine". That part should be revisited and become more concrete.
 The list of publicly available software for LCS detection further
 includes the following packages:
 \begin{itemize}
@@ -181,6 +187,9 @@ normal perturbation to a shrinkline $\gamma$ at its point $r$ grows under the fl
 
 Here we describe a step-by-step numerical implementation of the geodesic detection of elliptic and hyperbolic LCSs through the differential \cref{eq:etafields,eq:strainline,eq:stretchline}.
 
+% FIXME Reviewer #3, comment #1: Between the three applications, there should be a description about linking them in terms of generic APIs (application programming interface) or common code style. It is good to have code in the paper but it doesn't seem straightforward for a reader to find out how this simplifies the effort from coding from scratch (instead of using the platform). That part should be highlighted as a key point for judging the merit to the community. So, it would be very useful to pinpoint the generics with a flowchart (e.g. it always starts from input parameters, velocity definition and then LCS parameters, and how you finally call only 1-2 functions for the core solving routine), and your Matlab code there can further demonstrate the paradigm.
+% FIXME Reviewer #5, comment #6: The functionality and taxonomy of the proposed LCS tool should be introduced for an overview understanding of the tool.
+
 \subsection{Computing the invariants of the Cauchy-Green strain tensor}
 
 The common first step in calculating elliptic and hyperbolic LCSs is the computation of the Cauchy-Green strain tensor field $C_{t_0}^t(x_0)$, as defined in \cref{eq:CG}. The function performing this calculation in LCS Tool is \lstinline!eig_cgStrain!. The main steps executed by this function are enumerated in \cref{t:Cauchy-Green algorithm}, while \cref{t:eig_cgStrain syntax} summarizes the syntax of \lstinline!eig_cgStrain!.
@@ -225,7 +234,9 @@ The common first step in calculating elliptic and hyperbolic LCSs is the computa
 \end{table}
 
 
-The Cartesian grid of initial conditions mentioned in \cref{t:Cauchy-Green algorithm} is rectangular, with user-defined vertical and horizontal ranges and resolutions. The optimal resolution may be determined by a successive doubling of the initial resolution until convergence of the extracted LCSs is observed visually. If the domain of interest comprises only a few expected LCSs, e.g., one vortex, then a resolution of about 500 grid point along the longest axis usually gives good results. Otherwise, a higher resolution must be chosen.
+The Cartesian grid of initial conditions mentioned in \cref{t:Cauchy-Green algorithm} is rectangular, with user-defined vertical and horizontal ranges and resolutions. The optimal resolution may be determined by a successive doubling of the initial resolution until convergence of the extracted LCSs is observed visually.
+% FIXME Reviewer #2, comment #1: "500 grid point" → "500 grid points"
+If the domain of interest comprises only a few expected LCSs, e.g., one vortex, then a resolution of about 500 grid point along the longest axis usually gives good results. Otherwise, a higher resolution must be chosen.
 
 The auxiliary grid (cf. \cref{t:Cauchy-Green algorithm}) comprises four points placed symmetrically around each point of the Cartesian grid (\cref{f:main and auxiliary grids}). These points are used to achieve increased accuracy in the finite-difference approximation
 \[
@@ -249,7 +260,9 @@ The function \lstinline!eig_cgStrain! of LCS Tool provides the option to calcula
 
 As mentioned above, a typical main grid for the Cauchy-Green strain tensor comprises $500 \times 500$ points. This means that after the addition of 4 auxiliary grid points around each main grid point, \cref{eq:velocity} must be integrated over 1.25 million initial conditions.
 
-To avoid excessive computational times in MATLAB, we vectorize \cref{eq:velocity}, i.e., combine its right hand side evaluated over each initial point into a single system of equations. The resulting system is composed of independent blocks of two-dimensional first-order ODEs. We then use MATLAB's \lstinline!ode45! function to perform trajectory integration from all grid points simultaneously. This calculation typically takes five to ten minutes with default error tolerances. A potential drawback of vector form integration is that memory requirements may become excessive at high resolutions. Furthermore, writing the velocity function in vector form is more error-prone than the simpler two-dimensional form.
+To avoid excessive computational times in MATLAB, we vectorize \cref{eq:velocity}, i.e., combine its right hand side evaluated over each initial point into a single system of equations. The resulting system is composed of independent blocks of two-dimensional first-order ODEs. We then use MATLAB's \lstinline!ode45! function to perform trajectory integration from all grid points simultaneously. This calculation typically takes five to ten minutes with default error tolerances.
+% FIXME Reviewer #2, comment #3: Add memory use data based on, for example, computations for \cref{f:double gyre lambda LCS convergence}.
+A potential drawback of vector form integration is that memory requirements may become excessive at high resolutions. Furthermore, writing the velocity function in vector form is more error-prone than the simpler two-dimensional form.
 
 The Cauchy-Green strain tensor generically admits point singularities, i.e., points where $C_{t_0}^t(x_0)$ has repeated eigenvalues. At these points the eigenvectors $\xi_1(x_0)$ and $\xi_2(x_0)$ are no longer well-defined. This generically arises at a finite set of isolated points within the computational domain\citep{delmarcelle94}, and hence lie off the computational grid with probability one.
 
@@ -349,6 +362,7 @@ In \cref{f:Poincare return map}, circle markers indicate fixed points of the Poi
 \begin{center}
 \includegraphics[width=.8\textwidth]{graphics/double_gyre/poincare_return_map}
 \end{center}
+% FIXME Reviewer #2, comment #5: Indicate what are "s" and "P(s)"
 \caption{Example of a Poincare map obtained for an elliptic LCS. Circle markers indicate closed orbit positions. The filled circle indicates the outermost fixed point of the Poincare map, marking the intersection of a coherent Lagrangian cortex boundary with the Poincare section.}
 \label{f:Poincare return map}
 \end{figure}
@@ -413,6 +427,8 @@ In classical, infinite-time dynamical systems, elliptic and hyperbolic invariant
 \label{f:ocean_dataset_colortracer}
 \end{figure}
 
+% FIXME Reviewer #3, comment #2: "As for a platform, efficiency is also a matter in consideration. Performance degradation is not expected as a cost of generalized computational paradigm. That part should be at least mentioned along with the applications to make the article technically more sound."
+
 \section{Examples}
 
 In this section we present examples of the use of LCS Tool to obtain LCSs in three different examples: a double gyre, a jet, and an oceanic geostrophic flow. All three examples are available as demonstration files in the demo folder of LCS Tool. By executing these scripts, readers can follow LCS Tool computations step by step.
@@ -429,6 +445,8 @@ f(x,t) = \epsilon \sin(\omega t) x^2 + [1 - 2 \epsilon \sin(\omega t)] x.
 \end{equation}
 The MATLAB function describing this velocity field is given in \cref{l:double gyre derivative}, specifying the right hand side of the particle ODE in a way that supports vectorized integration.
 
+% FIXME Reviewer #2, comment #8: Check all code listings for awkward splits across pages and line-splits (e.g. semicolon on own line and array indices)
+% FIXME Reviewer #5, comment #3: Format manuscript carefully with regards to code listings
 \begin{lstlisting}[caption={Double gyre derivative function corresponding to \cref{eq:double gyre derivative equations}.},label=l:double gyre derivative]
 function derivative_ = derivative(t,x,epsilon,amplitude,omega)
 
@@ -469,6 +487,7 @@ of closed orbits from interior to exterior, left gyre: $\lambda=(0.97, 0.98, 0.9
 
 As usual, the local maximization distance is set larger for stretchlines than for shrinklines (cf. \cref{ll:shrinklineLocalMaxDistance} and \cref{ll:stretchlineLocalMaxDistance}). The purpose of the maximization distance is to obtain spatially separated LCSs and to avoid a dense tangle of lines that basically indicates the same hyperbolic LCS (cf. \cref{t:Hyperbolic LCS algorithm}, \cref{i:flag maxima}). Setting the local maximization distance for stretchlines larger than for shrinklines allows obtaining a comparable number of stretchlines and shrinklines overall in the flow domain (recall that hyperbolic LCS seed points are discarded if they are within the local maximization distance of an existing hyperbolic LCS). Shrinklines are locally tangent to ridges of $\lambda_2$ maxima, whereas stretchlines are locally normal to these ridges. Setting the local maximization distance of stretchlines and shrinklines equal would therefore produce a greater number of stretchlines than shrinklines overall.
 
+% FIXME Reviewer #5, comment #4: There is too much source code in the main content such as cref{l:double gyre lambda strain stretch LCS,l:Bickley jet elliptic hyperbolic LCS subset,l:ocean data elliptic hyperbolic lcs}. They could be arranged as an appendix at the end.
 \lstinputlisting[
         caption={LCS Tool commands for double gyre hyperbolic LCSs. Subset of the LCS Tool script \lstinline!demo/double_gyre/hyperbolic_shear_lcs.m!},
         label=l:double gyre lambda strain stretch LCS]
@@ -477,6 +496,7 @@ As usual, the local maximization distance is set larger for stretchlines than fo
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{graphics/double_gyre/lambda_hyperbolic_lcs}
+% FIXME Reviewer #2, comment #6: Explain meaning of white dots ($\lambda$ maxima) and, if possible improve their appearance
 \caption{LCSs in the double gyre flow. Resolution $[500\times250]$. $\lambda = 1.00$ and $1.04$ for the left and the right gyre. $\lambda \in [0.93,1.07]$, $\Delta\lambda = 0.01$.
 (Top) Elliptic (green) and repelling (red) LCSs with the FTLE shown in the background. (Bottom) Elliptic and attracting (blue) LCSs.}
 \label{f:double gyre lambda hyperbolic LCS}
@@ -501,13 +521,16 @@ f_{1,2}(t) = 2.625 \times 10^{-2} \phi_1(t/6.238 \times 10^5)
 \end{gather*}
 The parameter values we use are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$.
 
+% FIXME Reviewer #2, comment #7: Remove "a" in "multiple of a the eddy turnover", and sentence reads awkwardly
 The integration time is $T=4L_x/U$, a multiple of a the eddy turnover time in the flow. \Cref{l:Bickley jet elliptic hyperbolic LCS subset} shows the LCS Tool commands in which the chaotically perturbed velocity is defined (\crefrange{ll:Bickley jet velocity definition start}{ll:Bickley jet velocity definition end}), periodic boundary conditions are imposed in the x-direction (\cref{ll:Bickley jet periodicBc}), and five Poincare sections are defined where we expect coherent vortices (\crefrange{ll:Bickley jet Poincare start}{ll:Bickley jet Poincare end}).
 $\lambda$-values for closed orbit detection are varied over the range $[0.80,1.20]$ with a step of $0.01$.
 
 \Cref{f:Bickley jet LCS} shows elliptic and hyperbolic LCSs of the Bickley jet with the FTLE in the background.
 
-\lstinputlisting[caption={LCS Tool commands for Bickley jet elliptic and hyperbolic LCSs. Subset of the LCS Tool script \lstinline!demo/bickley_jet/hyperbolic_shear_lcs.m!},
-                 label=l:Bickley jet elliptic hyperbolic LCS subset]{listings/bickley_jet/elliptic_hyperbolic_lcs_subset.m}
+\lstinputlisting[
+        caption={LCS Tool commands for Bickley jet elliptic and hyperbolic LCSs. Subset of the LCS Tool script \lstinline!demo/bickley_jet/hyperbolic_shear_lcs.m!},
+        label=l:Bickley jet elliptic hyperbolic LCS subset]
+        {listings/bickley_jet/elliptic_hyperbolic_lcs_subset.m}
 
 \begin{figure}
 \centering
