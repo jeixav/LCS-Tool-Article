@@ -2,4 +2,6 @@ This repository contains source files for a scientific journal style article on 
 
 	make
 
+The article will be the file main.pdf.
+
 A version of this article is published on arXiv: <http://arxiv.org/abs/1406.3527>
