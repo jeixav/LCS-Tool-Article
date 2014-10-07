@@ -185,10 +185,24 @@ normal perturbation to a shrinkline $\gamma$ at its point $r$ grows under the fl
 
 \section{Numerical methods}
 
-Here we describe a step-by-step numerical implementation of the geodesic detection of elliptic and hyperbolic LCSs through the differential \cref{eq:etafields,eq:strainline,eq:stretchline}.
+This section describes stepwise the numerical implementation of geodesic detection of elliptic and hyperbolic LCSs based on \cref{eq:etafields,eq:strainline,eq:stretchline}. \Cref{t:LCS Tool overview} gives an overview of the steps, functions and variable names used in LCS Tool to analyse a flow.
 
-% FIXME Reviewer #3, comment #1: Between the three applications, there should be a description about linking them in terms of generic APIs (application programming interface) or common code style. It is good to have code in the paper but it doesn't seem straightforward for a reader to find out how this simplifies the effort from coding from scratch (instead of using the platform). That part should be highlighted as a key point for judging the merit to the community. So, it would be very useful to pinpoint the generics with a flowchart (e.g. it always starts from input parameters, velocity definition and then LCS parameters, and how you finally call only 1-2 functions for the core solving routine), and your MATLAB code there can further demonstrate the paradigm.
-% FIXME Reviewer #5, comment #6: The functionality and taxonomy of the proposed LCS tool should be introduced for an overview understanding of the tool.
+\begin{table}
+\begin{enumerate}
+\item Define a velocity field, \lstinline!dx = derivative(t,x,p)!
+\item Compute Cauchy-Green strain tensor invariants, \lstinline![v,d] = eig_cgStrain(derivative)!
+\item Compute $\lambda$-lines, \lstinline![etaPos,etaNeg] = lambda_line(v,d,lambda)!
+\item Define Poincare sections, \lstinline!ps!
+% FIXME function call below does not reflect LCS Tool usage (e.g. poincare_close_orbit_multi)
+\item Detect elliptic LCSs, \lstinline!ellipticLcs = poincare_closed_orbit(etaPos,etaNeg,ps)!
+\item Define a local maximization/minimization distance for hyperbolic LCSs \lstinline!lmd!
+% FIXME function call below does not reflect LCS Tool usage (e.g. remove_strain_in_shear)
+% FIXME seed_curves_from_lambda_max is a poor name for a function that detects hyperbolic LCSs
+\item Detect hyperbolic LCSs, \lstinline!hyperbolicLcs = seed_curves_from_lambda_max(v,d,ellipticLcs,lmd)!
+\end{enumerate}
+\caption{Overview of sequence of computations to detect LCSs with LCS Tool functions.}
+\label{t:LCS Tool overview}
+\end{table}
 
 \subsection{Computing the invariants of the Cauchy-Green strain tensor}
 

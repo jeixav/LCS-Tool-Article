@@ -21,3 +21,15 @@ Figure caption modified to explain notation of axes
 Comment #6
 
 Figure captions modified to explain labelling of lambda extrema
+
+Reviewer #3
+
+Comment #1
+
+LCS Tool functions overview table added at beginning of numerical methods section.
+
+Reviewer #5
+
+Comment #6
+
+LCS Tool functions overview table added at beginning of numerical methods section.
