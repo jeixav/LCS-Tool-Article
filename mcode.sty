@@ -21,7 +21,7 @@
 %%          \end{lstlisting}
 %%
 %%
-%%   2) Inline object:
+%%   2) Inline object*:
 %%
 %%          Bla bla \mcode{CODEFRAGMENT} bla bla.
 %%
@@ -58,6 +58,9 @@
 %%   For example, you may use \usepackage[numbered,framed]{mcode}
 %%   in your document preamble.
 %%   
+%%   * If you want to place  some inline code in a footnote,  use
+%%   \mcodefn{} instead (this will reduce the font size a bit).
+%%
 %%   Note:  Inside code blocks you  can escape to LaTeX text mode
 %%   using §...§.  For ex. §text and some math: $x^2$§,  which is
 %%   especially  useful  in comments  for putting  nicely typeset
@@ -75,8 +78,11 @@
 %%      Florian Knorn | florian@knorn.org | www.florian-knorn.com
 %%
 %%   Version history:
-%%      2.3  --  More keywords (thanks Dominik Wild!)
-%%      2.2  --  Bugfix (thanks Willi Gerbig!)
+%%      2.6  --  Add support for µ, fix for math-minus problem
+%%      2.5  --  Renamed internal variables (thx S. Kranenbarg!)
+%%      2.4  --  Added \mcodefn{} command (thx Tony Almeida!)
+%%      2.3  --  More keywords (thx Dominik Wild!)
+%%      2.2  --  Bugfix (thx Willi Gerbig!)
 %%      2.1  --  Finally automatic detection between end and end
 %%      2.0  --  New options for line breaking and literate prog.
 %%      1.8  --  Fixed typo in documentation regarding §...§
@@ -93,52 +99,55 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %              D O N ' T    T O U C H    T H I S                %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\fileversion{2.3}
-\def\filedate{2012/08/31}
+\def\fileversion{2.5}
+\def\filedate{2014/03/06}
 
 \typeout{-- Package: `mcode' \fileversion\space <\filedate> --}
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{mcode}[\filedate\space\fileversion]
 
 % for bw-option
-\newif\ifbw
-\DeclareOption{bw}{\bwtrue}
+\newif\ifmcode@bw
+\DeclareOption{bw}{\mcode@bwtrue}
 
 % numbered option
-\newif\ifnumbered
-\DeclareOption{numbered}{\numberedtrue}
+\newif\ifmcode@numbered
+\DeclareOption{numbered}{\mcode@numberedtrue}
 
 % final option
-\newif\iffinal
-\DeclareOption{final}{\finaltrue}
+\newif\ifmcode@final
+\DeclareOption{final}{\mcode@finaltrue}
 
 % autolinebreaks option
-\newif\ifautolinebreaks
-\DeclareOption{autolinebreaks}{\autolinebreakstrue}
+\newif\ifmcode@autolinebreaks
+\DeclareOption{autolinebreaks}{\mcode@autolinebreakstrue}
 
 % literate programming (replace certain characters/relations
-\newif\ifuseliterate
-\DeclareOption{useliterate}{\useliteratetrue}
+\newif\ifmcode@useliterate
+\DeclareOption{useliterate}{\mcode@useliteratetrue}
 
 % framed option
-\newif\ifframed
-\DeclareOption{framed}{\framedtrue}
+\newif\ifmcode@framed
+\DeclareOption{framed}{\mcode@framedtrue}
 
 \DeclareOption*{% default
   \PackageWarning{mcode}{Unknown option `\CurrentOption' !}%
 }
 \ProcessOptions
 
-\ifbw\typeout{ - settings optimized for printing (bw formating)}
+\ifmcode@bw\typeout{ - settings optimized for printing (bw formating)}
 \else\typeout{ - settings optimized for display (colour formating)}\fi
-\ifnumbered\typeout{ - line numbering enabled}\else\fi
-\ifuseliterate\typeout{ - literate programming (character replacements) enabled}\else\fi
-\ifautolinebreaks\typeout{ - automatic line breaking enabled (careful, buggy!)}\else\fi
-\ifframed\typeout{ - framed listings}\else\fi
+\ifmcode@numbered\typeout{ - line numbering enabled}\else\fi
+\ifmcode@useliterate\typeout{ - literate programming (character replacements) enabled}\else\fi
+\ifmcode@autolinebreaks\typeout{ - automatic line breaking enabled (careful, buggy!)}\else\fi
+\ifmcode@framed\typeout{ - framed listings}\else\fi
 
 % This command allows you to typeset syntax highlighted Matlab
 % code ``inline''.  The font size \small seems to look best...
 \newcommand{\mcode}[1]{\lstinline[basicstyle=\lstbasicfont\small]|#1|}
+
+% Same, but for footnotes
+\newcommand{\mcodefn}[1]{\lstinline[basicstyle=\lstbasicfont\footnotesize]|#1|}
 
 % check if color command exists
 \ifx\color\undefined%
@@ -147,7 +156,7 @@
 
 % check if listings has been loaded
 \ifx\lstset\undefined%
-  \iffinal
+  \ifmcode@final
     \RequirePackage[final]{listings}
   \else
     \RequirePackage{listings}
@@ -197,7 +206,7 @@
 
 % ---------------------------------------------------------------------------------
 % define colours and styles
-\ifbw % use font formating and gray 'colors'
+\ifmcode@bw % use font formating and gray 'colors'
 	\def\mcommentfont{\color[gray]{.75}\itshape} %comments light gray and italic
   \lstset{language=matlabfloz,                % use our version of highlighting
     keywordstyle=\bfseries,                   % keywords in bold
@@ -216,7 +225,7 @@
 % ---------------------------------------------------------------------------------
 % automatic line breaking --- warning, this is buggy and
 % doesn't break comments correctly!
-\ifautolinebreaks
+\ifmcode@autolinebreaks
 	\newsavebox{\lbreakdots}\sbox{\lbreakdots}{\lstbasicfont\mcommentfont...}
 	\lstset{breaklines=true,breakatwhitespace=true,prebreak=\usebox{\lbreakdots}}
 \fi
@@ -225,14 +234,15 @@
 % literate replacements
 % the following is for replacing some matlab relations like >= or ~=
 % by the corresponding LaTeX symbols, which are much easier to read ...
-\ifuseliterate
+\ifmcode@useliterate
 	\lstset{%
 		literate=%
-			{~}{{$\neg$}}1 %               \neg
+			{~}{{$\neg$}}1 %               \neg, logical not
 			{<=}{{\tiny$\leq$}}1 %         \leq
 			{>=}{{\tiny$\geq$}}1 %         \geq
-			{~=}{{\tiny$\neq$}}1 %         \neq
+			{~=}{{\tiny$\neq$}}1 %         \neq, not equal
 			{delta}{{\tiny$\Delta$}}1 %    \Delta
+			{µ}{{$\mu$}}1 %                \mu
 			{(end)}{\lstbasicfont (end)}{5} % black ``end'' when indexing last vector element
 			{({ }end)}{\lstbasicfont ({ }end)}{6}
 			{(end{ })}{\lstbasicfont (end{ })}{6}
@@ -257,27 +267,35 @@
 			{end{ }:}{\lstbasicfont end{ }:}{5}
 			{,end}{\lstbasicfont ,end}{4}
 			{,{ }end}{\lstbasicfont ,{ }end}{5}
+			{µ}{$\mu$}1
+			{~}{{\fontfamily{ptm}\selectfont\texttildelow}}1 % get a nicer tilde character
 	}
 \fi%literates
 
 % ---------------------------------------------------------------------------------
 % line numbering
-\ifnumbered% numbered option
+\ifmcode@numbered% numbered option
   \lstset{%
     numbersep=3mm, numbers=left, numberstyle=\tiny, % number style
   }
 \fi
 
-\ifframed%   framed option
+\ifmcode@framed%   framed option
   \lstset{%
     frame=single,                             % frame
   }
-  \ifnumbered%
+  \ifmcode@numbered%
     \lstset{%
       framexleftmargin=6mm, xleftmargin=6mm   % tweak margins
     }
   \fi
 \fi
+
+% fix for ``minus'' character issue, as suggested by Stefan Karlsson, thanks!
+\makeatletter 
+\lst@CCPutMacro\lst@ProcessOther {"2D}{\lst@ttfamily{-{}}{-{}}} 
+\@empty\z@\@empty 
+\makeatother
 
 \endinput
 %% End of file `mcode.sty'.
