@@ -78,16 +78,14 @@ Lagrangian Coherent Structures (LCSs) are evolving organizing centres of traject
 
 More recent work has focused on an exact mathematical formulation of the properties defining LCSs\citep{haller11:_lagran_coher_struc,farazmand12:_comput_lagran,haller12:_geodes_theor_trans_barrier_two_dimen_flows,haller13:_coher_lagran,blazevski14:_hyper_ellip_trans_barrier_three}. In two-dimensional flows, hyperbolic and parabolic LCSs turn out to be stationary curves of the averaged material shear\citep{farazmand14:_shearless}, whereas elliptic LCSs are stationary curves of the averaged strain\citep{haller13:_coher_lagran}. These variational formulations lead to explicit solutions for LCSs as null-geodesics of appropriate Lorentzian metrics.
 
-Here we present a simple algorithmic introduction to geodesic LCS detection without details on the the underlying mathematics.
+Here we present a simple algorithmic introduction to geodesic LCS detection.
 % FIXME JCompSci editor: Replace GitHub link with http://runmycode.org/
 % FIXME Reviewer #3, comment #4: Add documentation within the github repository to show some reference to the APIs and how users may start to run a his/her own application.
 % FIXME Reviewer #4: Please make sure the code is downloadable once the paper is published
-We then review the implementation of this approach in a computational engine called LCS Tool\footnote{LCS Tool is publicly available at: https://github.com/jeixav/LCS-Tool}.
-This engine is a library of MATLAB functions that extract LCSs from two-dimensional unsteady flows. The examples we present here have been programmed into demonstration scripts.
+We then review the implementation of this approach in a computational engine called LCS Tool\footnote{LCS Tool is available at: http://github.com/jeixav/LCS-Tool}. This engine is a library of MATLAB functions that extract LCSs from two-dimensional unsteady flows. The examples we present have been programmed into demonstration scripts.
 
 % FIXME Reviewer #3, comment #3: The comparison with other publicly available LCS detection software should include more details. It contains a very high-level summary of LCS tool being an "all-purpose numerical engine". That part should be revisited and become more concrete.
-The list of publicly available software for LCS detection further
-includes the following packages:
+Software for LCS detection includes the following packages:
 \begin{itemize}
 \item \emph{MANGEN}\citep{lekien03:_time} calculates FTLE and advects material curves in two dimensional velocity fields. It also includes a graphical user interface and uses MPI for parallel calculations.
 % FIXME Cannot cite LCS MATLAB Kit without a journal reference
@@ -194,7 +192,7 @@ Here we describe a step-by-step numerical implementation of the geodesic detecti
 
 \subsection{Computing the invariants of the Cauchy-Green strain tensor}
 
-The common first step in calculating elliptic and hyperbolic LCSs is the computation of the Cauchy-Green strain tensor field $C_{t_0}^t(x_0)$, as defined in \cref{eq:CG}. The function performing this calculation in LCS Tool is \lstinline!eig_cgStrain!. The main steps executed by this function are enumerated in \cref{t:Cauchy-Green algorithm}, while \cref{t:eig_cgStrain syntax} summarizes the syntax of \lstinline!eig_cgStrain!.
+The first step in calculating elliptic and hyperbolic LCSs is the computation of the Cauchy-Green strain tensor field $C_{t_0}^t(x_0)$, as defined in \cref{eq:CG}. The function performing this calculation in LCS Tool is \lstinline!eig_cgStrain!. The main steps executed by this function are enumerated in \cref{t:Cauchy-Green algorithm}, while \cref{t:eig_cgStrain syntax} summarizes the syntax of \lstinline!eig_cgStrain!.
 
 \begin{table}
 \begin{enumerate}
