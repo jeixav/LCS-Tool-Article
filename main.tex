@@ -9,6 +9,8 @@
 \usepackage[numbered,framed]{mcode}
 \usepackage{cleveref}
 
+\DeclareMathOperator{\sech}{sech}
+
 % FIXME Some figures use PDF version 1.6, PDFLaTeX default is 1.5
 \pdfoptionpdfminorversion 6
 
@@ -513,8 +515,8 @@ counter rotating vortices. This is an idealized model of geophysical flows such 
 The velocity is given by $v(x,y,t) = (-\partial_y \psi, \partial_x \psi)$ where
 \begin{gather*}
 \psi(x,y,t) = \psi_0(x,y) + \psi_1(x,y,t),\\
-\psi_0(x,y) = c_3 y - U L_y \tanh\frac{y}{L_y} + \epsilon_3 U L_y \mathrm{sech}^2\frac{y}{L_y} \cos k_3 x,\\
-\psi_1(x,y,t) = U L_y \mathrm{sech}^2\frac{y}{L_y} \mathrm{Re}\left[ \sum_{n=1}^2 \epsilon_n f_n(t) e^{i k_n x}\right].
+\psi_0(x,y) = c_3 y - U L_y \tanh\frac{y}{L_y} + \epsilon_3 U L_y \sech^2\frac{y}{L_y} \cos k_3 x,\\
+\psi_1(x,y,t) = U L_y \sech^2\frac{y}{L_y} \Re\left[\sum_{n=1}^2 \epsilon_n f_n(t) e^{i k_n x}\right].
 \end{gather*}
 As a forcing function, we choose a solution running on the chaotic attractor of the damped and forced Duffing oscillator, specifically
 \begin{gather*}
