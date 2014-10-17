@@ -4,6 +4,6 @@
 .PHONY : FORCE_MAKE
 all : main.pdf
 %.pdf : %.tex FORCE_MAKE
-	latexmk -norc -lualatex $<
+	latexmk -norc -lualatex -bibtex $<
 clean :
-	latexmk -norc -CA main
+	latexmk -norc -lualatex -bibtex -CA main
