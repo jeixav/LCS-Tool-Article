@@ -28,6 +28,10 @@ Comment #1
 
 LCS Tool functions overview table added at beginning of numerical methods section.
 
+Comment #2
+
+Paragraph added at the beginning of Examples section to explain LCS Tool functions balance between performance and ease of use. Give approximate run-times for demo scripts.
+
 Reviewer #5
 
 Comment #6
