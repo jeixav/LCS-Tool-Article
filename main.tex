@@ -77,24 +77,21 @@ Lagrangian Coherent Structures (LCSs) are evolving organizing centres of traject
 
 More recent work has focused on an exact mathematical formulation of the properties defining LCSs\citep{haller11:_lagran_coher_struc,farazmand12:_comput_lagran,haller12:_geodes_theor_trans_barrier_two_dimen_flows,haller13:_coher_lagran,blazevski14:_hyper_ellip_trans_barrier_three}. In two-dimensional flows, hyperbolic and parabolic LCSs turn out to be stationary curves of the averaged material shear\citep{farazmand14:_shearless}, whereas elliptic LCSs are stationary curves of the averaged strain\citep{haller13:_coher_lagran}. These variational formulations lead to explicit solutions for LCSs as null-geodesics of appropriate Lorentzian metrics.
 
-Here we present a simple algorithmic introduction to geodesic LCS detection.
+Here we present an algorithmic introduction to geodesic LCS detection.
 % FIXME JCompSci editor: Replace GitHub link with http://runmycode.org/
 % FIXME Reviewer #3, comment #4: Add documentation within the github repository to show some reference to the APIs and how users may start to run a his/her own application.
 % FIXME Reviewer #4: Please make sure the code is downloadable once the paper is published
-We then review the implementation of this approach in a computational engine called LCS Tool\footnote{LCS Tool is available at: http://github.com/jeixav/LCS-Tool}. This engine is a library of MATLAB functions that extract LCSs from two-dimensional unsteady flows. The examples we present have been programmed into demonstration scripts.
+We then review the implementation of this approach in a computational engine called LCS Tool\footnote{LCS Tool is available at: http://github.com/jeixav/LCS-Tool}. This engine is a library of MATLAB functions that extract LCSs from two-dimensional unsteady flows. The examples we present form demonstration scripts distributed with LCS Tool.
 
-% FIXME Reviewer #3, comment #3: The comparison with other publicly available LCS detection software should include more details. It contains a very high-level summary of LCS tool being an "all-purpose numerical engine". That part should be revisited and become more concrete.
-Software for LCS detection includes the following packages:
-\begin{itemize}
-\item \emph{MANGEN}\citep{lekien03:_time} calculates FTLE and advects material curves in two dimensional velocity fields. It also includes a graphical user interface and uses MPI for parallel calculations.
-% FIXME Cannot cite LCS MATLAB Kit without a journal reference
-% \item \emph{LCS MATLAB Kit}\citep{dabiri09:_lmk} calculates the FTLE from velocity datasets. Includes a graphical user interface.
-\item \emph{Newman}\citep{toit10:_trans} calculates the FTLE in $N$ dimensions. Assists ridge extraction of FTLE fields. Supports analytic  and dataset based velocity definitions.
-% FIXME Cannot cite FlowVC without a journal reference
-% \item \emph{FlowVC}\citep{shadden10:_flowvc} is a general purpose LCS platform for two and three dimensional datasets. Parallel calculations are supported with Open\-MP, CUDA and OpenCL.
-% FIXME Add FlowTK, https://github.com/FlowPhysics/FlowTK, doi:10.1007%2F978-3-319-04099-8_13
-\end{itemize}
-These packages primarily target the automated generation of FTLE plots to aid the visual assessment of hyperbolic LCSs in the flow. The purpose of LCS Tool and this article is to provide an all-purpose numerical engine for the geodesic extraction of LCSs as parametrized material curves in unsteady two-dimensional flows, and extend the scope of such extraction to elliptic LCSs.
+Other software for LCS detection exists.
+ManGen\citep{lekien03:_time} calculates the FTLE and advects material curves in two-dimensional velocity fields.
+It includes a graphical user interface and uses the Message Passing Interface standard for parallel calculations.
+Newman\citep{toit10:_trans} calculates the FTLE using dimension independent code.
+It assists ridge extraction of FTLE fields and supports analytic and dataset based velocity definitions.
+FlowTK\citep{ameli14:_devel_effic_flexib_pipel_lagran} calculates the FTLE in two and three-dimensions on cartesian and unstructured grids. The NVIDIA CUDA parrallel computing platform is used for fast computations and Kitware's ParaView data analysis and visualization application is used for a user interface.
+
+These packages target the automated generation of FTLE plots to aid the visual assessment of hyperbolic LCSs.
+LCS Tool also has functions to generate FTLE plots, but its emphasis is to provide geodesic extraction of LCSs as parametrized material curves, and extend the scope of such extraction to elliptic LCSs.
 
 \section{Theory}
 
@@ -162,6 +159,7 @@ Next we consider positions of material lines at time $t_0$ that prevail as most 
 Q(\gamma) = \frac{1}{\sigma} \int_0^\sigma \frac{\langle r'(s),D_{t_0}^t(r(s)) r'(s)\rangle}{\sqrt{\langle r'(s),C_{t_0}^t(r(s)) r'(s)\rangle\langle r'(s),r'(s)\rangle}}\dif s,\\
 D_{t_0}^t = \frac12 [C_{t_0}^t \Omega - \Omega C_{t_0}^t],
 \end{gather*}
+% FIXME Clarify what is meant by _closed_ material lines
 obtained by averaging the Lagrangian shear arising over $[t_0,t]$ along closed material lines parametrized as $r(s)$ with $s \in [0,\sigma]$. More precisely, hyperbolic LCSs are stationary curves of $Q(\gamma)$ with respect to fixed-endpoint perturbations. We note that parabolic LCSs (Lagrangian jet cores) are also stationary curves of $Q(\gamma)$, but under variable endpoint perturbations (cf. \citet{farazmand14:_shearless}).
 
 Solutions to this variational problem turn out to be orbits of the $\xi_1$ or $\xi_2$ eigenvector field. Repelling LCSs (\emph{shrinklines}) are obtained as trajectories of the differential equation
