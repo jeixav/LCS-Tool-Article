@@ -165,7 +165,7 @@ obtained by averaging the Lagrangian shear arising over $[t_0,t]$ along closed m
 Solutions to this variational problem turn out to be orbits of the $\xi_1$ or $\xi_2$ eigenvector field. Repelling LCSs (\emph{shrinklines}) are obtained as trajectories of the differential equation
 \begin{equation}
 r' = \xi_1(r),
-\label{eq:strainline}
+\label{eq:shrinkline}
 \end{equation}
 and attracting LCSs (\emph{stretchlines}) are obtained as trajectories of the differential equation
 \begin{equation}
@@ -180,7 +180,7 @@ normal perturbation to a shrinkline $\gamma$ at its point $r$ grows under the fl
 
 \section{Numerical methods}
 
-This section describes stepwise the numerical implementation of geodesic detection of elliptic and hyperbolic LCSs based on \cref{eq:etafields,eq:strainline,eq:stretchline}. \Cref{t:LCS Tool overview} gives an overview of the steps, functions and variable names used in LCS Tool to analyse a flow.
+This section describes stepwise the numerical implementation of geodesic detection of elliptic and hyperbolic LCSs based on \cref{eq:etafields,eq:shrinkline,eq:stretchline}. \Cref{t:LCS Tool overview} gives an overview of the steps, functions and variable names used in LCS Tool to analyse a flow.
 
 \begin{table}
 \begin{enumerate}
@@ -374,7 +374,7 @@ In \cref{f:Poincare return map}, circle markers indicate fixed points of the Poi
 
 \subsection{Computing hyperbolic LCSs}
 
-As discussed in \cref{sec:Hyperbolic LCSs}, positions of hyperbolic LCSs at time $t_0$ are found as the strongest repelling orbits of the vector field \cref{eq:strainline} (repelling LCSs), and strongest attracting orbits of the vector field \cref{eq:stretchline} (attracting LCSs). By repulsion and attraction we mean a property of the LCS (as an evolving material line) under the flow map $F_{t_0}^t$. We identify the strongest repelling shrinklines as those crossing a local maximum of the $\lambda_2(x_0)$ field. Similarly, we identify the strongest attracting stretchlines as those crossing a local minimum of the $\lambda_1(x_0)$ field. These local maxima and minima of the appropriate $\lambda_i(x_0)$ eigenvalue field can be thought of as the extensions of the concept of saddle points to the present finite-time, temporally aperiodic flow setting.
+As discussed in \cref{sec:Hyperbolic LCSs}, positions of hyperbolic LCSs at time $t_0$ are found as the strongest repelling orbits of the vector field \cref{eq:shrinkline} (repelling LCSs), and strongest attracting orbits of the vector field \cref{eq:stretchline} (attracting LCSs). By repulsion and attraction we mean a property of the LCS (as an evolving material line) under the flow map $F_{t_0}^t$. We identify the strongest repelling shrinklines as those crossing a local maximum of the $\lambda_2(x_0)$ field. Similarly, we identify the strongest attracting stretchlines as those crossing a local minimum of the $\lambda_1(x_0)$ field. These local maxima and minima of the appropriate $\lambda_i(x_0)$ eigenvalue field can be thought of as the extensions of the concept of saddle points to the present finite-time, temporally aperiodic flow setting.
 
 The main steps of our hyperbolic LCS detection algorithm are enumerated in \cref{t:Hyperbolic LCS algorithm}. The basic function to compute hyperbolic LCSs in LCS Tool is \lstinline!seed_curves_from_lambda_max! and its syntax is given in \cref{t:seed_curves_from_lambda_max syntax}.
 
@@ -383,7 +383,7 @@ The main steps of our hyperbolic LCS detection algorithm are enumerated in \cref
 \item Define a local maximization distance.
 \item Find all points of the main grid that are local maxima of $\lambda_2$ within a circle whose radius is the local  maximization distance.
 \item Define a maximum shrinkline length
-\item Integrate a shrinkline forward and backward according to \cref{eq:strainline} and using the largest $\lambda_2$ local maximum as the initial position. Integrate until the shrinkline has attained the maximum shrinkline length, or until it has reached the domain boundary.
+\item Integrate a shrinkline forward and backward according to \cref{eq:shrinkline} and using the largest $\lambda_2$ local maximum as the initial position. Integrate until the shrinkline has attained the maximum shrinkline length, or until it has reached the domain boundary.
 \item Flag any remaining local maxima of $\lambda_2$ within the maximization distance of the shrinkline as ineligible initial positions for subsequent shrinklines
 \label{i:flag maxima}
 \item Continue integrating shrinklines using local maxima of $\lambda_2$ as initial positions until no eligible local maxima of $\lambda_2$ remain.
@@ -492,7 +492,7 @@ of closed orbits from interior to exterior, left gyre: $\lambda=(0.97, 0.98, 0.9
 \label{f:double gyre lambda LCS convergence}
 \end{figure}
 
-\Cref{f:double gyre lambda hyperbolic LCS} shows the complete picture of elliptic and hyperbolic LCSs of the double gyre at this resolution. \Cref{l:double gyre lambda strain stretch LCS} lists the corresponding LCS Tool commands. The maximal length of shrinklines and stretchlines, \lstinline!strainlineMaxLength! and \lstinline!stretchlineMaxLength!, is set to $20$, a multiple of the domain size, since the hyperbolic LCSs may wind around vortices several times. 
+\Cref{f:double gyre lambda hyperbolic LCS} shows the complete picture of elliptic and hyperbolic LCSs of the double gyre at this resolution. \Cref{l:double gyre lambda strain stretch LCS} lists the corresponding LCS Tool commands. The maximal length of shrinklines and stretchlines, \lstinline!shrinklineMaxLength! and \lstinline!stretchlineMaxLength!, is set to $20$, a multiple of the domain size, since the hyperbolic LCSs may wind around vortices several times. 
 
 As usual, the local maximization distance is set larger for stretchlines than for shrinklines (cf. \cref{ll:shrinklineLocalMaxDistance} and \cref{ll:stretchlineLocalMaxDistance}). The purpose of the maximization distance is to obtain spatially separated LCSs and to avoid a dense tangle of lines that basically indicates the same hyperbolic LCS (cf. \cref{t:Hyperbolic LCS algorithm}, \cref{i:flag maxima}). Setting the local maximization distance for stretchlines larger than for shrinklines allows obtaining a comparable number of stretchlines and shrinklines overall in the flow domain (recall that hyperbolic LCS seed points are discarded if they are within the local maximization distance of an existing hyperbolic LCS). Shrinklines are locally tangent to ridges of $\lambda_2$ maxima, whereas stretchlines are locally normal to these ridges. Setting the local maximization distance of stretchlines and shrinklines equal would therefore produce a greater number of stretchlines than shrinklines overall.
 
@@ -631,4 +631,4 @@ The altimeter products used in this work are produced by SSALTO/DUACS and distri
 % Local Variables:
 % ispell-dictionary: "en_GB"
 % End:
-% LocalWords:  stretchline stretchlines incompressible gyre eigenvector eigenvectors incompressibility dataset datasets LCS LCSs Lyapunov Bickley Rossby timespan variational adaptively vortices parametrise advected strainlines minima extremal FTLE MATLAB maxima geostrophic shrinkline shrinklines Poincare altimetry zonal
+% LocalWords:  stretchline stretchlines incompressible gyre eigenvector eigenvectors incompressibility dataset datasets LCS LCSs Lyapunov Bickley Rossby timespan variational adaptively vortices parametrise advected minima extremal FTLE MATLAB maxima geostrophic shrinkline shrinklines Poincare altimetry zonal

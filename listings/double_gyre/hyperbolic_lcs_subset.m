@@ -2,7 +2,7 @@
 shrinklineMaxLength = 20;
 gridSpace = diff(domain(1,:))/(double(resolution(1))-1);
 shrinklineLocalMaxDistance = 2*gridSpace; %@\label{ll:shrinklineLocalMaxDistance}
-strainlineOdeSolverOptions = odeset('relTol',1e-6);
+shrinklineOdeSolverOptions = odeset('relTol',1e-6);
 
 % Stretchlines
 stretchlineMaxLength = 20;
