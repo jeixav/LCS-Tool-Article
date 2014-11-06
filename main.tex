@@ -472,14 +472,14 @@ derivative_(idx1) = -pi*amplitude*sin(pi*forcing).*cos(pi*x(idx2));
 derivative_(idx2) = pi*amplitude*cos(pi*forcing).*sin(pi*x(idx2)).*(2*a*x(idx1) + b);
 \end{lstlisting}
 
-In what follows, the parameter values are: $A = 0.1$, $\epsilon = 0.1$, $\omega = \pi/5$. The flow timespan is $t \in [0,10]$ and the domain is $x \in [0,2]$, $y \in [0,1]$. By examining the FTLE field (which LCS Tool can provide), we position Poincare sections to capture elliptic LCSs. An LCS Tool demo script to perform this operation is given in \cref{l:double gyre lambda-line LCS} where two Poincare sections are defined (\cref{ll:double gyre poincareSection(1),ll:double gyre poincareSection(2)}). The free stretching parameter $\lambda$ (\cref{eq:etafields}) is varied over the range $[0.93,1.07]$ with increments of $0.01$ (\cref{ll:double gyre lambdaRange}).
+In what follows, the parameter values are: $A = 0.1$, $\epsilon = 0.1$, $\omega = \pi/5$. The flow timespan is $t \in [0,10]$ and the domain is $x \in [0,2]$, $y \in [0,1]$. By examining the FTLE field (which LCS Tool can provide), we position Poincare sections to capture elliptic LCSs. An LCS Tool demo script to perform this operation is given in \cref{l:double gyre elliptic LCS} where two Poincare sections are defined (\cref{ll:double gyre poincareSection(1),ll:double gyre poincareSection(2)}). The free stretching parameter $\lambda$ (\cref{eq:etafields}) is varied over the range $[0.93,1.07]$ with increments of $0.01$ (\cref{ll:double gyre lambdaRange}).
 % FIXME The cited loop contains ellipses (...), that hide important code and should become an LCS Tool function
 In a loop (\crefrange{ll:double gyre lambda loop start}{ll:double gyre lambda loop end}), closed orbits for all predefined $\lambda$ values are computed and the outermost closed orbit is kept as the Lagrangian vortex boundary.
 % FIXME Small tolerances (i.e. strict tolerances) should make convergence difficult not easy, so the word "facilitate" in the sentence below seems illogical.
 In this script, we have chosen small values for the error tolerances of the integration of the Cauchy-Green strain tensor (\cref{ll:double gyre cgStrainOdeSolverOptions}) and $\lambda$-lines (\cref{ll:double gyre lambdaLineOdeSolverOptions}) to facilitate convergence.
 
 \lstinputlisting[caption={LCS Tool commands for double gyre elliptic LCSs. Subset of the LCS Tool script \lstinline!demo/double_gyre/hyperbolic_shear_lcs.m!},
-                 label=l:double gyre lambda-line LCS]{listings/double_gyre/elliptic_lcs_subset.m}
+                 label=l:double gyre elliptic LCS]{listings/double_gyre/elliptic_lcs_subset.m}
 
 In \cref{f:double gyre lambda LCS convergence}, the resolution of the  Cauchy-Green strain tensor is varied from $500 \times 250$ to $1000 \times 500$. The location of the outermost closed $\lambda$-line changes insignificantly, demonstrating convergence. For all tested resolutions, the $\lambda$ values of the outermost closed orbits match.
 % FIXME Should reduce lowest resolution used to demonstrate problems if selected resolution is too low
