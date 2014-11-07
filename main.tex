@@ -69,7 +69,9 @@ Lagrangian Coherent Structures (LCSs) are evolving organizing centres of traject
 
 \citet{haller01:_distin} proposed that ridges of the finite-time Lyapunov exponent (FTLE) are heuristic indicators of hyperbolic (i.e., repelling and attracting type) LCSs. A number of examples indeed support this principle\citep{peacock13:_lagran}. Equating FTLE ridges with LCSs, however, would create theoretical inconsistencies, as well as false positives and negatives in hyperbolic LCS detection\citep{haller11:_lagran_coher_struc,norgard12:_secon_lagran_coher_struc}. In addition, the role of the FTLE field in the accurate detection of elliptic (vortex-type) and parabolic (jet-core type) LCSs has remained an open question (but see \citet{beron-vera10:_invar_lagran}).
 
-More recent work has focused on an exact mathematical formulation of the properties defining LCSs\citep{haller11:_lagran_coher_struc,farazmand12:_comput_lagran,haller12:_geodes_theor_trans_barrier_two_dimen_flows,haller13:_coher_lagran,blazevski14:_hyper_ellip_trans_barrier_three}. In two-dimensional flows, hyperbolic and parabolic LCSs turn out to be stationary curves of the averaged material shear\citep{farazmand14:_shearless}, whereas elliptic LCSs are stationary curves of the averaged strain\citep{haller13:_coher_lagran}. These variational formulations lead to explicit solutions for LCSs as null-geodesics of appropriate Lorentzian metrics.
+More recent work has focused on an exact mathematical formulation of the properties defining LCSs\citep{haller11:_lagran_coher_struc,farazmand12:_comput_lagran,haller12:_geodes_theor_trans_barrier_two_dimen_flows,haller13:_coher_lagran,haller14:_adden_coher_lagran,farazmand13:_attrac_lagran,blazevski14:_hyper_ellip_trans_barrier_three}.
+In two-dimensional flows, hyperbolic and parabolic LCSs turn out to be stationary curves of the averaged material shear\citep{farazmand14:_shearless}, whereas elliptic LCSs are stationary curves of the averaged strain\citep{haller13:_coher_lagran,haller14:_adden_coher_lagran}.
+These variational formulations lead to explicit solutions for LCSs as null-geodesics of appropriate Lorentzian metrics.
 
 \begin{sloppypar}
 Here we present an algorithmic introduction to geodesic LCS detection.
@@ -130,7 +132,7 @@ C_{t_0}^t \xi_i = \lambda_i \xi_i, \qquad 0 < \lambda_1 \leq \lambda_2, \quad i 
 \label{sec:Elliptic LCSs}
 
 \begin{sloppypar}
-We seek positions of closed material lines at time $t_0$ that prevail as coherent Lagrangian vortex boundaries (or \emph{elliptic LCSs}) over a time interval $[t_0,t]\subset[t_-,t_+]$. \citet{haller13:_coher_lagran} argue that such initial material line positions are closed stationary curves of the averaged strain functional
+We seek positions of closed material lines at time $t_0$ that prevail as coherent Lagrangian vortex boundaries (or \emph{elliptic LCSs}) over a time interval $[t_0,t]\subset[t_-,t_+]$. \citet{haller13:_coher_lagran,haller14:_adden_coher_lagran} argue that such initial material line positions are closed stationary curves of the averaged strain functional
 \[
 Q(\gamma) = \frac{1}{\sigma} \int_0^{\sigma} \frac{\sqrt{\langle r'(s),C_{t_0}^t(r(s))r'(s)\rangle}}{\sqrt{\langle r'(s),r'(s)\rangle}} \dif s,
 \]
@@ -152,7 +154,7 @@ e_\lambda(u,v) = \left\langle u,\left[D_{t_0}^t(r) - \lambda^2 I\right] v \right
 For this reason, we refer to the computation of elliptic LCSs as limit cycles of \cref{eq:etafields} as \emph{geodesic detection of elliptic LCSs}.
 \end{sloppypar}
 
-Any orbit of \cref{eq:etafields} turns out to stretch uniformly under the flow map $F_{t_0}^t$. Specifically, any subset of an orbit of \cref{eq:etafields} increases its arc length precisely by a factor of $\lambda$. For this reason, we refer to trajectories of \cref{eq:etafields} as $\lambda$-lines. Following \citet{haller13:_coher_lagran}, we call the outermost member of a closed family of $\lambda$-lines a coherent Lagrangian vortex boundary.
+Any orbit of \cref{eq:etafields} turns out to stretch uniformly under the flow map $F_{t_0}^t$. Specifically, any subset of an orbit of \cref{eq:etafields} increases its arc length precisely by a factor of $\lambda$. For this reason, we refer to trajectories of \cref{eq:etafields} as $\lambda$-lines. Following \citet{haller13:_coher_lagran,haller14:_adden_coher_lagran}, we call the outermost member of a closed family of $\lambda$-lines a coherent Lagrangian vortex boundary.
 
 \subsection{Hyperbolic LCSs}
 \label{sec:Hyperbolic LCSs}
@@ -298,7 +300,7 @@ Velocity fields defined by datasets require preprocessing before they are used i
 
 \subsection{Computing elliptic LCSs}
 
-As discussed in \cref{sec:Elliptic LCSs}, positions of elliptic LCSs at time $t_0$ are found as closed orbits of the $\eta_\pm^\lambda$ vector fields defined in \cref{eq:eta}. We find such orbits by integrating \cref{eq:etafields} from points of an appropriately chosen section (Poincare section), and evaluating the first return map (Poincare map) onto this section. A $\lambda$-line returning to its starting point is then an elliptic LCS. The outermost member of a family of closed $\lambda$-lines (obtained by varying $\lambda$) is a coherent Lagrangian vortex boundary\citep{haller13:_coher_lagran}.
+As discussed in \cref{sec:Elliptic LCSs}, positions of elliptic LCSs at time $t_0$ are found as closed orbits of the $\eta_\pm^\lambda$ vector fields defined in \cref{eq:eta}. We find such orbits by integrating \cref{eq:etafields} from points of an appropriately chosen section (Poincare section), and evaluating the first return map (Poincare map) onto this section. A $\lambda$-line returning to its starting point is then an elliptic LCS. The outermost member of a family of closed $\lambda$-lines (obtained by varying $\lambda$) is a coherent Lagrangian vortex boundary\citep{haller13:_coher_lagran,haller14:_adden_coher_lagran}.
 
 The main steps in calculating elliptic LCSs are enumerated in \cref{t:Elliptic LCS algorithm} and described in further detail below. The syntax of elliptic LCS functions in LCS Tool is shown in \cref{t:Elliptic LCS functions}.
 
@@ -586,7 +588,7 @@ $\lambda$ values of elliptic LCSs from left to right are [0.95,\,0.80,\,0.94,\,0
 \subsection{Ocean velocity data from satellite altimetry}
 \label{sec:oceandataset}
 
-The final example demonstrates the use of LCS Tool on velocity data derived from satellite-observed sea-surface heights under the geostrophic approximation. In contrast to the previous two analytic examples, the velocity field is available only with discrete temporal and spatial resolution. Our region of interest is a small domain in the South Atlantic Ocean, where exceptionally coherent eddies, Agulhas rings, were recently found by \citet{haller13:_coher_lagran} using the theory we surveyed in \cref{sec:Elliptic LCSs}.
+The final example demonstrates the use of LCS Tool on velocity data derived from satellite-observed sea-surface heights under the geostrophic approximation. In contrast to the previous two analytic examples, the velocity field is available only with discrete temporal and spatial resolution. Our region of interest is a small domain in the South Atlantic Ocean, where exceptionally coherent eddies, Agulhas rings, were recently found by \citet{haller13:_coher_lagran,haller14:_adden_coher_lagran} using the theory we surveyed in \cref{sec:Elliptic LCSs}.
 
 \begin{sloppypar}
 In the geostrophic approximation, the sea-surface height $\eta$ serves as a stream-function for surface velocities. In a longitude-latitude $(\varphi,\theta)$ coordinate system, the evolution of a fluid particle is given by
@@ -613,7 +615,7 @@ The commands for the interpolation of the velocity data are given in \crefrange{
 
 We choose the integration time as $T=30$ days (\cref{l:ocean data elliptic hyperbolic lcs}, \cref{ll:ocean data timespan}), which is larger than the eddy turnover time in this region. The resolution of the main computational grid for initial conditions is set to $400 \times 400$ (\cref{ll:ocean data resolution}). This corresponds to a resolution of roughly 0.015° and gives good results. With this choice, the resolution of the tracer grid is 15 times higher than the resolution of the velocity field. The flow is integrated and the Cauchy-Green strain tensor is computed by the function \lstinline!eig_cgStrain! (\cref{ll:eig_cgStrain}). Incompressibility of the flow is enforced (\cref{ll:incompressible}), the auxiliary grid distance is set to 1\% of the main grid distance (\cref{ll:cgAuxGridRelDelta}), and eigenvalues are computed from the auxiliary grid (\cref{ll:cgEigenvalueFromMainGrid}). Elliptic LCSs are computed in \cref{ll:ocean data poincare_closed_orbit_multi}, after the Poincare sections have been set (\cref{ll:ocean data poincareSection(1),ll:ocean data poincareSection(2)}) and the $\eta_\pm^\lambda$ fields have been defined (\cref{ll:ocean data lambda_line}). $\lambda$-values are varied over a range of $[0.90,1.10]$ with a step of $0.02$ (\cref{ll:ocean data lambdaRange}). Hyperbolic LCSs are computed in \cref{ll:ocean data shrinklineLcs,ll:ocean data stretchlineLcs}.
 
-\Cref{f:ocean dataset LCS} shows the positions of elliptic and hyperbolic LCSs on 22 November 2006, which is the same time instant analysed in \citet{haller13:_coher_lagran,beron-vera13:_objec_agulh}. Here the integration time is chosen as $T = 30$ days, as opposed to 90 days in the cited references, to avoid tangling of hyperbolic LCSs. Our analysis via LCS Tool reveals five coherent eddy boundaries. The large coherent eddy at $(3,-32)$ has a non-stretching boundary, i.e., $\lambda = 1$. It corresponds to eddy \#2 in Figure~3 of \citet{beron-vera13:_objec_agulh}. Additionally, four smaller coherent eddy cores are found. They do not stay coherent over a time of 90 days. All closed orbits are stable under increased spatial resolution for the Cauchy-Green strain tensor field. Repelling LCSs (red) and attracting LCSs (blue) are superimposed over the plot of FTLE values. The hyperbolic LCSs determine the deformation of the fluid in-between coherent eddy cores.
+\Cref{f:ocean dataset LCS} shows the positions of elliptic and hyperbolic LCSs on 22 November 2006, which is the same time instant analysed in \citet{haller13:_coher_lagran,haller14:_adden_coher_lagran,beron-vera13:_objec_agulh}. Here the integration time is chosen as $T = 30$ days, as opposed to 90 days in the cited references, to avoid tangling of hyperbolic LCSs. Our analysis via LCS Tool reveals five coherent eddy boundaries. The large coherent eddy at $(3,-32)$ has a non-stretching boundary, i.e., $\lambda = 1$. It corresponds to eddy \#2 in Figure~3 of \citet{beron-vera13:_objec_agulh}. Additionally, four smaller coherent eddy cores are found. They do not stay coherent over a time of 90 days. All closed orbits are stable under increased spatial resolution for the Cauchy-Green strain tensor field. Repelling LCSs (red) and attracting LCSs (blue) are superimposed over the plot of FTLE values. The hyperbolic LCSs determine the deformation of the fluid in-between coherent eddy cores.
 
 \begin{figure}
 \begin{center}
