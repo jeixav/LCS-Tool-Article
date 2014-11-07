@@ -1,5 +1,4 @@
-% FIXME Add 5p option to get JCompSci two column layout
-\documentclass{elsarticle}
+\documentclass[5p]{elsarticle}
 
 \usepackage{amsmath}
 \usepackage{commath}
@@ -14,7 +13,7 @@
 % FIXME Some figures use PDF version 1.6, PDFLaTeX default is 1.5
 \pdfoptionpdfminorversion 6
 
-\definecolor{gray}{rgb}{0.9,0.9,0.9}
+\definecolor{grey}{rgb}{0.9,0.9,0.9}
 
 \lstloadlanguages{Matlab}
 \lstset{
@@ -25,7 +24,7 @@
   columns=fullflexible,
   numbers=left,
   stepnumber=2,
-  backgroundcolor=\color{gray},
+  backgroundcolor=\color{grey},
   escapeinside={\%@}{\^^M}
 }
 
@@ -70,19 +69,24 @@ Lagrangian coherent structures \sep Mathematical software \sep Dynamical systems
 
 \section{Introduction}
 
+\begin{sloppypar}
 % FIXME Reviewer #5, comment #5: Please provide information regarding practical applications of this algorithmic software tool.
 Lagrangian Coherent Structures (LCSs) are evolving organizing centres of trajectory patterns in non-autonomous dynamical systems\citep{haller00:_lagran,peacock13:_lagran,haller15:_langr_coher_struc}. Applications of LCSs include oceanic and atmospheric flows\citep{beron-vera13:_objec_agulh,koh02:_hyper}, biological transport problems\citep{wilson09:_lagran_reynol,tallapragada11:_lagran,huhn12:_south_indian_ocean_count_madag}, aeronautics\citep{tang10:_accur_lagran_hong_kong_inter_airpor}, celestial mechanics\citep{gawlik09:_lagran}, crowd dynamics\citep{ali07:_lagran_partic_dynam_approac_crowd}, and aperiodically forced mechanical oscillators\citep{hadjighasem13:_detec_kam}.
+\end{sloppypar}
 
 \citet{haller01:_distin} proposed that ridges of the finite-time Lyapunov exponent (FTLE) are heuristic indicators of hyperbolic (i.e., repelling and attracting type) LCSs. A number of examples indeed support this principle\citep{peacock13:_lagran}. Equating FTLE ridges with LCSs, however, would create theoretical inconsistencies, as well as false positives and negatives in hyperbolic LCS detection\citep{haller11:_lagran_coher_struc,norgard12:_secon_lagran_coher_struc}. In addition, the role of the FTLE field in the accurate detection of elliptic (vortex-type) and parabolic (jet-core type) LCSs has remained an open question (but see \citet{beron-vera10:_invar_lagran}).
 
 More recent work has focused on an exact mathematical formulation of the properties defining LCSs\citep{haller11:_lagran_coher_struc,farazmand12:_comput_lagran,haller12:_geodes_theor_trans_barrier_two_dimen_flows,haller13:_coher_lagran,blazevski14:_hyper_ellip_trans_barrier_three}. In two-dimensional flows, hyperbolic and parabolic LCSs turn out to be stationary curves of the averaged material shear\citep{farazmand14:_shearless}, whereas elliptic LCSs are stationary curves of the averaged strain\citep{haller13:_coher_lagran}. These variational formulations lead to explicit solutions for LCSs as null-geodesics of appropriate Lorentzian metrics.
 
+\begin{sloppypar}
 Here we present an algorithmic introduction to geodesic LCS detection.
 % FIXME JCompSci editor: Replace GitHub link with http://runmycode.org/
 % FIXME Reviewer #3, comment #4: Add documentation within the github repository to show some reference to the APIs and how users may start to run a his/her own application.
 % FIXME Reviewer #4: Please make sure the code is downloadable once the paper is published
 We then review the implementation of this approach in a computational engine called LCS Tool\footnote{LCS Tool is available at: http://github.com/jeixav/LCS-Tool}. This engine is a library of MATLAB functions that extract LCSs from two-dimensional unsteady flows. The examples we present form demonstration scripts distributed with LCS Tool.
+\end{sloppypar}
 
+\begin{sloppypar}
 Other software for LCS detection exists.
 ManGen\citep{lekien03:_time} calculates the FTLE and advects material curves in two-dimensional velocity fields.
 It includes a graphical user interface and uses the Message Passing Interface standard for parallel calculations.
@@ -90,9 +94,12 @@ Newman\citep{toit10:_trans} calculates the FTLE using dimension independent code
 It assists ridge extraction of FTLE fields and supports analytic and dataset based velocity definitions.
 FlowTK\citep{ameli14:_devel_effic_flexib_pipel_lagran} calculates the FTLE in two and three-dimensions on Cartesian and unstructured grids.
 The NVIDIA CUDA parallel computing platform is used for fast computations and Kitware's ParaView data analysis and visualization application is used for a user interface.
+\end{sloppypar}
 
+\begin{sloppypar}
 These packages target the automated generation of FTLE plots to aid the visual assessment of hyperbolic LCSs.
 LCS Tool also has functions to generate FTLE plots, but its emphasis is to provide geodesic extraction of LCSs as parametrized material curves, and extend the scope of such extraction to elliptic LCSs.
+\end{sloppypar}
 
 \section{Theory}
 
@@ -129,6 +136,7 @@ C_{t_0}^t \xi_i = \lambda_i \xi_i, \qquad 0 < \lambda_1 \leq \lambda_2, \quad i 
 \subsection{Elliptic LCSs}
 \label{sec:Elliptic LCSs}
 
+\begin{sloppypar}
 We seek positions of closed material lines at time $t_0$ that prevail as coherent Lagrangian vortex boundaries (or \emph{elliptic LCSs}) over a time interval $[t_0,t]\subset[t_-,t_+]$. \citet{haller13:_coher_lagran} argue that such initial material line positions are closed stationary curves of the averaged strain functional
 \[
 Q(\gamma) = \frac{1}{\sigma} \int_0^{\sigma} \frac{\sqrt{\langle r'(s),C_{t_0}^t(r(s))r'(s)\rangle}}{\sqrt{\langle r'(s),r'(s)\rangle}} \dif s,
@@ -149,6 +157,7 @@ which coincide with null-geodesics of the Lorentzian metric family
 e_\lambda(u,v) = \left\langle u,\left[D_{t_0}^t(r) - \lambda^2 I\right] v \right\rangle.
 \]
 For this reason, we refer to the computation of elliptic LCSs as limit cycles of \cref{eq:etafields} as \emph{geodesic detection of elliptic LCSs}.
+\end{sloppypar}
 
 Any orbit of \cref{eq:etafields} turns out to stretch uniformly under the flow map $F_{t_0}^t$. Specifically, any subset of an orbit of \cref{eq:etafields} increases its arc length precisely by a factor of $\lambda$. For this reason, we refer to trajectories of \cref{eq:etafields} as $\lambda$-lines. Following \citet{haller13:_coher_lagran}, we call the outermost member of a closed family of $\lambda$-lines a coherent Lagrangian vortex boundary.
 
@@ -174,7 +183,9 @@ r' = \xi_2(r).
 \label{eq:stretchline}
 \end{equation}
 
+\begin{sloppypar}
 Shrinklines and stretchlines coincide with the null-geodesics of the Lorentzian metric $h(u,v) = \left\langle u,D_{t_0}^t(r) v \right\rangle$. For this reason, we refer to the computation of hyperbolic LCSs as strongest normally-repelling or normally-attracting orbits of \cref{eq:etafields} as \emph{geodesic detection of hyperbolic LCSs}.
+\end{sloppypar}
 
 To compute the normal repulsion of shrinklines, we note that an infinitesimal
 normal perturbation to a shrinkline $\gamma$ at its point $r$ grows under the flow map $F_{t_{0}}^{t}$ by a factor of $\lambda_{2}(r)$ in the direction normal to $F_{t_{0}}^{t}(\gamma).$ Similarly, small normal perturbations to a stretchline decay by a factor $\lambda_{1}(r)$ in the direction normal to the evolving stretchline. 
@@ -215,11 +226,11 @@ The first step in calculating elliptic and hyperbolic LCSs is the computation of
 \label{t:Cauchy-Green algorithm}
 \end{table}
 
-\begin{table}
+\begin{table*}
 \begin{center}
 \begin{tabular}{|c|p{.7\textwidth}|}
 \hline
-\multicolumn{2}{|p{\textwidth}|}{\lstinline![cgEigenvector,cgEigenvalue] = eig_cgStrain(derivative,domain,timespan,resolution)!}\tabularnewline
+\multicolumn{2}{|p{.95\textwidth}|}{\lstinline![cgEigenvector,cgEigenvalue] = eig_cgStrain(derivative,domain,timespan,resolution)!}\tabularnewline
 \hline
 \lstinline!derivative! & function handle for flow velocity equations\tabularnewline
 \hline
@@ -241,37 +252,46 @@ The first step in calculating elliptic and hyperbolic LCSs is the computation of
 \caption{Syntax of the function \lstinline!eig_cgStrain!}
 \label{t:eig_cgStrain syntax}
 \end{center}
-\end{table}
+\end{table*}
 
 The Cartesian grid of initial conditions mentioned in \cref{t:Cauchy-Green algorithm} is rectangular, with user-defined vertical and horizontal ranges and resolutions. The optimal resolution may be determined by a successive doubling of the initial resolution until convergence of the extracted LCSs is observed visually. If the domain of interest comprises only a few expected LCSs, e.g., one vortex, then a resolution of about 500 grid points along the longest axis usually gives good results. Otherwise, a higher resolution must be chosen.
 
 The auxiliary grid (cf. \cref{t:Cauchy-Green algorithm}) comprises four points placed symmetrically around each point of the Cartesian grid (\cref{f:main and auxiliary grids}). These points are used to achieve increased accuracy in the finite-difference approximation
-\[
+\begin{gather*}
 \nabla F_{t_0}^t(x_0) \approx
 \left(\begin{array}{cc}
-\frac{x_1(t;t_0,x_0 + \delta x_1) - x_1(t;t_0,x_0 - \delta x_1)}{2\vert\delta x_1\vert} & \frac{x_1(t;t_0,x_0+\delta x_2) - x_1(t;t_0,x_0-\delta x_2)}{2\vert\delta x_2\vert}\\
-\frac{x_2(t;t_0,x_0+\delta x_1) - x_2(t;t_0,x_0 - \delta x_1)}{2\vert\delta x_1\vert} & \frac{x_2(t;t_0,x_0 + \delta x_2) - x_2(t;t_0,x_0 - \delta x_2)}{2\vert\delta x_2\vert}
+\alpha_{11} & \alpha_{12}
+\\
+\alpha_{21} & \alpha_{22}
 \end{array}\right)
-\]
-of $\nabla F_{t_0}^t$ at a point $x_0$ of the Cartesian grid. Here $\delta x_i$ is a vector of length $\vert\delta x_i\vert > 0$ that points from the Cartesian grid-point $x_0$ in the $i^\text{th}$ coordinate direction (\cref{f:main and auxiliary grids}). Computational improvements arising from the use of the auxiliary grid over simply using the nearest points of the main grid were reported in \citet{farazmand12:_comput_lagran}. Experience suggests setting the auxiliary grid spacing to 1-10\% of the main grid spacing.
+\\
+\alpha_{ij} \equiv \frac{x_i(t;t_0,x_0+\delta x_j) - x_i(t;t_0,x_0-\delta x_j)}{2\vert\delta x_j\vert}
+\end{gather*}
+of $\nabla F_{t_0}^t$ at a point $x_0$ of the Cartesian grid. Here $\delta x_j$ is a vector of length $\vert\delta x_j\vert > 0$ that points from the Cartesian grid-point $x_0$ in the $j^\text{th}$ coordinate direction (\cref{f:main and auxiliary grids}). Computational improvements arising from the use of the auxiliary grid over simply using the nearest points of the main grid were reported in \citet{farazmand12:_comput_lagran}. Experience suggests setting the auxiliary grid spacing to 1-10\% of the main grid spacing.
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=.5\textwidth]{graphics/main_aux_grids}
+\includegraphics[width=.475\textwidth]{graphics/main_aux_grids}
 \end{center}
 \caption{Illustration of the main grid (filled circles) and the auxiliary grid (empty circles) used in the computation of the derivative of the flow map in \cref{eq:CG} of the Cauchy-Green strain tensor. The variable \lstinline!auxGridRelDelta! specifies the grid spacing of the auxiliary grid relative to the main grid spacing.}
 \label{f:main and auxiliary grids}
 \end{figure}
 
+\begin{sloppypar}
 The function \lstinline!eig_cgStrain! of LCS Tool provides the option to calculate Cauchy-Green eigenvectors from the auxiliary grid using eigenvalues calculated from the main grid. We have found that for flows defined analytically, the eigenvalues can reliably be calculated from the main grid. For flows defined by datasets, using the auxiliary grid for eigenvalue calculations gives better results.
+\end{sloppypar}
 
+\begin{sloppypar}
 As mentioned above, a typical main grid for the Cauchy-Green strain tensor comprises $500 \times 500$ points. This means that after the addition of 4 auxiliary grid points around each main grid point, \cref{eq:velocity} must be integrated over 1.25 million initial conditions.
+\end{sloppypar}
 
 To avoid excessive computational times in MATLAB, we vectorize \cref{eq:velocity}, i.e., combine its right hand side evaluated over each initial point into a single system of equations. The resulting system is composed of independent blocks of two-dimensional first-order ordinary differential equations. We then use MATLAB's \lstinline!ode45! function to perform trajectory integration from all grid points simultaneously. This calculation typically takes five to ten minutes with default error tolerances.
 % FIXME Reviewer #2, comment #3: Add memory use data based on, for example, computations for \cref{f:double gyre lambda LCS convergence}.
 A potential drawback of vector form integration is that memory requirements may become excessive at high resolutions. Furthermore, writing the velocity function in vector form is more error-prone than the simpler two-dimensional form.
 
+\begin{sloppypar}
 The Cauchy-Green strain tensor generically admits point singularities, i.e., points where $C_{t_0}^t(x_0)$ has repeated eigenvalues. At these points the eigenvectors $\xi_1(x_0)$ and $\xi_2(x_0)$ are no longer well-defined. This generically arises at a finite set of isolated points within the computational domain\citep{delmarcelle94}, and hence lie off the computational grid with probability one.
+\end{sloppypar}
 
 \subsubsection{Special case: incompressible velocity fields}
 
@@ -281,7 +301,7 @@ At some grid points, $\lambda_2 < 1$ may occur due to numerical integration erro
 
 \subsubsection{Special case: dataset velocity fields}
 
-Velocity fields defined by datasets require pre-processing before they are used in the numerical integration of \cref{eq:velocity}. This requires spatial and temporal interpolation that enables the evaluation of the velocity function at arbitrary points in $U$ and at arbitrary times between $t_-$ and $t_+$. In \cref{sec:oceandataset}, we present an ocean dataset example with details of possible interpolation functions.
+Velocity fields defined by datasets require preprocessing before they are used in the numerical integration of \cref{eq:velocity}. This requires spatial and temporal interpolation that enables the evaluation of the velocity function at arbitrary points in $U$ and at arbitrary times between $t_-$ and $t_+$. In \cref{sec:oceandataset}, we present an ocean dataset example with details of possible interpolation functions.
 
 \subsection{Computing elliptic LCSs}
 
@@ -304,10 +324,10 @@ The main steps in calculating elliptic LCSs are enumerated in \cref{t:Elliptic L
 \end{table}
 
 % FIXME Need to update table to account for lambda range
-\begin{table}
+\begin{table*}
 \begin{tabular}{|c|p{.7\textwidth}|}
 \hline
-\multicolumn{2}{|p{\textwidth}|}
+\multicolumn{2}{|p{.95\textwidth}|}
 {\lstinline![shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda)!}\tabularnewline
 \hline
 \lstinline!cgEigenvector! & array of Cauchy-Green strain eigenvectors\tabularnewline
@@ -316,7 +336,7 @@ The main steps in calculating elliptic LCSs are enumerated in \cref{t:Elliptic L
 \hline
 \lstinline!lambda! & scalar lambda value in \cref{eq:eta}\tabularnewline
 \hline \hline
-\multicolumn{2}{|p{\textwidth}|}{\lstinline![closedOrbits,orbits] = poincare_closed_orbit_multi(domain,resolution,shearline,PSList)!}\tabularnewline
+\multicolumn{2}{|p{.95\textwidth}|}{\lstinline![closedOrbits,orbits] = poincare_closed_orbit_multi(domain,resolution,shearline,PSList)!}\tabularnewline
 \hline
 \lstinline!domain! & array to define flow domain\tabularnewline
 \hline
@@ -337,7 +357,7 @@ The main steps in calculating elliptic LCSs are enumerated in \cref{t:Elliptic L
 \end{tabular}
 \caption{Syntax for LCS Tool elliptic LCS functions.}
 \label{t:Elliptic LCS functions}
-\end{table}
+\end{table*}
 
 The first step is to define the position of Poincare sections in regions where closed $\lambda$-lines are expected based on a visual analysis of the orbit structure of the $\eta_\pm^\lambda$ vector field. The Poincare section is to be oriented such that the first endpoint is close to the centre of the expected Lagrangian vortex, and the second endpoint is outside this vortex. There is no automated procedure implemented in LCS Tool for the positioning of Poincare sections (see however \citet{karrasch14:_autom_lagran} for a recently developed algorithm). Additionally, the number of lambda-lines launched from the Poincare section, \lstinline!poincareSection.numPoints!, must be defined. A reasonable default value is 100.
 
@@ -355,7 +375,7 @@ The second step is to integrate the $\lambda$-lines  starting from the Poincare 
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=.8\textwidth]{graphics/variable_step_integration}
+\includegraphics[width=.475\textwidth]{graphics/variable_step_integration}
 \end{center}
 \caption{Schematic illustration of the variable-time-step $\lambda$-line integration. At the initial point, there is an orientation discontinuity at the lower-right grid point that must be corrected prior to linear interpolation. At point \#1, no orientation discontinuities are present. At point \#2 all interpolated $\eta_\pm^\lambda$ vectors must be rotated by 180° to match the orientation of the trajectory.}
 \label{f:variable step integration}
@@ -367,7 +387,7 @@ In \cref{f:Poincare return map}, circle markers indicate fixed points of the Poi
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=.8\textwidth]{graphics/double_gyre/poincare_return_map}
+\includegraphics[width=.475\textwidth]{graphics/double_gyre/poincare_return_map}
 \end{center}
 \caption{Example of a Poincare map obtained for an elliptic LCS. The abscissa, $s$, represents distance along Poincare section. The ordinate, $p(s) - s$, represents distance of Poincare orbit return point from initial position. Circle markers indicate closed orbit positions. The filled circle indicates the outermost fixed point of the Poincare map, marking the intersection of a coherent Lagrangian cortex boundary with the Poincare section.}
 \label{f:Poincare return map}
@@ -375,9 +395,13 @@ In \cref{f:Poincare return map}, circle markers indicate fixed points of the Poi
 
 \subsection{Computing hyperbolic LCSs}
 
+\begin{sloppypar}
 As discussed in \cref{sec:Hyperbolic LCSs}, positions of hyperbolic LCSs at time $t_0$ are found as the strongest repelling orbits of the vector field \cref{eq:shrinkline} (repelling LCSs), and strongest attracting orbits of the vector field \cref{eq:stretchline} (attracting LCSs). By repulsion and attraction we mean a property of the LCS (as an evolving material line) under the flow map $F_{t_0}^t$. We identify the strongest repelling shrinklines as those crossing a local maximum of the $\lambda_2(x_0)$ field. Similarly, we identify the strongest attracting stretchlines as those crossing a local minimum of the $\lambda_1(x_0)$ field. These local maxima and minima of the appropriate $\lambda_i(x_0)$ eigenvalue field can be thought of as the extensions of the concept of saddle points to the present finite-time, temporally aperiodic flow setting.
+\end{sloppypar}
 
+\begin{sloppypar}
 The main steps of our hyperbolic LCS detection algorithm are enumerated in \cref{t:Hyperbolic LCS algorithm}. The basic function to compute hyperbolic LCSs in LCS Tool is \lstinline!seed_curves_from_lambda_max! and its syntax is given in \cref{t:seed_curves_from_lambda_max syntax}.
+\end{sloppypar}
 
 \begin{table}
 \begin{enumerate}
@@ -394,11 +418,11 @@ The main steps of our hyperbolic LCS detection algorithm are enumerated in \cref
 \label{t:Hyperbolic LCS algorithm}
 \end{table}
 
-\begin{table}
+\begin{table*}
 \begin{center}
 \begin{tabular}{|c|p{.7\textwidth}|}
 \hline
-\multicolumn{2}{|p{\textwidth}|}
+\multicolumn{2}{|p{.95\textwidth}|}
 {\lstinline![curvePosition,curveInitialPosition] = seed_curves_from_lambda_max(distance,cgEigenvalue,cgEigenvector,flowDomain,flowResolution)!}\tabularnewline
 \hline
 \lstinline!distance! & threshold distance for placement of $\lambda_2(x_0)$ maxima\tabularnewline
@@ -421,15 +445,15 @@ The main steps of our hyperbolic LCS detection algorithm are enumerated in \cref
 \end{center}
 \caption{Syntax of the function \lstinline!seed_curves_from_lambda_max!}
 \label{t:seed_curves_from_lambda_max syntax}
-\end{table}
+\end{table*}
 
 In classical, infinite-time dynamical systems, elliptic and hyperbolic invariant manifolds cannot intersect, as the trajectories in their intersection would then have to follow two different asymptotic behaviours simultaneously. In finite-time dynamical systems, hyperbolic LCSs may well intersect elliptic LCSs, with hyperbolic LCSs continuing to act as cores of mixing patterns observed in the interior of elliptic LCSs. Motivated by convention and for clarity in visualization, however, the default setting of LCS Tool removes hyperbolic LCS segments from the interior of elliptic LCSs. These removed segments can be turned back on demand, as shown in \cref{f:ocean_dataset_colortracer}.
 
-\begin{figure}[hbt]
+\begin{figure}
 \centering
-\includegraphics[width=.49\textwidth]{graphics/ocean_dataset/LCS_fwd_coherent_eddy}
-\includegraphics[width=.49\textwidth]{graphics/ocean_dataset/LCS_fwd_colortracer}
-\caption{(Left) Elliptic LCS (green) with repelling LCSs (red) continuing into its interior. (Right) Final positions $x(t) = (x_1(t),x_2(t)) = F_{t_0}^t(x_0)$ of tracer particles. $x_1(t)$ position encoded in red and $x_2(t)$ position encoded in green. Note the continued impact of the repelling hyperbolic LCSs (black) on tracer patterns inside the elliptic LCS (white).}
+\includegraphics[width=.475\textwidth]{graphics/ocean_dataset/LCS_fwd_coherent_eddy}
+\includegraphics[width=.475\textwidth]{graphics/ocean_dataset/LCS_fwd_colortracer}
+\caption{(Top) Elliptic LCS (green) with repelling LCSs (red) continuing into its interior. (Bottom) Final positions $x(t) = (x_1(t),x_2(t)) = F_{t_0}^t(x_0)$ of tracer particles. $x_1(t)$ position encoded in red and $x_2(t)$ position encoded in green. Note the continued impact of the repelling hyperbolic LCSs (black) on tracer patterns inside the elliptic LCS (white).}
 \label{f:ocean_dataset_colortracer}
 \end{figure}
 
@@ -486,14 +510,16 @@ In \cref{f:double gyre lambda LCS convergence}, the resolution of the  Cauchy-Gr
 % FIXME Should reduce lowest resolution used to demonstrate problems if selected resolution is too low
 This also suggests that the lowest tested resolution, $500 \times 250$, is sufficient to identify elliptic LCSs.
 
-\begin{figure}[hbt]
+\begin{figure}
 \centering
-\includegraphics[width=.8\textwidth]{graphics/double_gyre/lambda_lcs_convergence}\caption{Convergence of closed $\lambda$-lines for increasing main-grid resolution in the double-gyre model. The outermost closed $\lambda$-line (bold green line) is the vortex boundary. (Top) {[}500x250{]}, $\lambda$-values
+\includegraphics[width=.475\textwidth]{graphics/double_gyre/lambda_lcs_convergence}\caption{Convergence of closed $\lambda$-lines for increasing main-grid resolution in the double-gyre model. The outermost closed $\lambda$-line (bold green line) is the vortex boundary. (Top) {[}500x250{]}, $\lambda$-values
 of closed orbits from interior to exterior, left gyre: $\lambda=(0.97, 0.98, 0.99, 1.00, 1.01)$, right gyre: $\lambda=(1.00, 1.01, 1.02, 1.03, 1.04)$; (Middle) {[}750x375{]}, left: $\lambda=(0.97, 0.98, 0.99, 1.00, 1.01)$, right: $\lambda=(1.00, 1.01, 1.02, 1.03, 1.04, 1.05)$; (Bottom) {[}1000x500{]}, left: $\lambda=(0.97, 0.98, 0.99, 1.00, 1.01)$, right: $\lambda=(1.00, 1.01, 1.02, 1.03, 1.04, 1.05)$.}
 \label{f:double gyre lambda LCS convergence}
 \end{figure}
 
+\begin{sloppypar}
 \Cref{f:double gyre lambda hyperbolic LCS} shows the complete picture of elliptic and hyperbolic LCSs of the double gyre at this resolution. \Cref{l:double gyre lambda strain stretch LCS} lists the corresponding LCS Tool commands. The maximal length of shrinklines and stretchlines, \lstinline!shrinklineMaxLength! and \lstinline!stretchlineMaxLength!, is set to $20$, a multiple of the domain size, since the hyperbolic LCSs may wind around vortices several times. 
+\end{sloppypar}
 
 As usual, the local maximization distance is set larger for stretchlines than for shrinklines (cf. \cref{ll:shrinklineLocalMaxDistance} and \cref{ll:stretchlineLocalMaxDistance}). The purpose of the maximization distance is to obtain spatially separated LCSs and to avoid a dense tangle of lines that basically indicates the same hyperbolic LCS (cf. \cref{t:Hyperbolic LCS algorithm}, \cref{i:flag maxima}). Setting the local maximization distance for stretchlines larger than for shrinklines allows obtaining a comparable number of stretchlines and shrinklines overall in the flow domain (recall that hyperbolic LCS seed points are discarded if they are within the local maximization distance of an existing hyperbolic LCS). Shrinklines are locally tangent to ridges of $\lambda_2$ maxima, whereas stretchlines are locally normal to these ridges. Setting the local maximization distance of stretchlines and shrinklines equal would therefore produce a greater number of stretchlines than shrinklines overall.
 
@@ -506,7 +532,7 @@ As usual, the local maximization distance is set larger for stretchlines than fo
 \begin{figure}
 \centering
 % FIXME Reviewer #2, comment #6: Improve appearance of $lambda$ extrema (white dots)
-\includegraphics[width=\textwidth]{graphics/double_gyre/lambda_hyperbolic_lcs}
+\includegraphics[width=.475\textwidth]{graphics/double_gyre/lambda_hyperbolic_lcs}
 \caption{
 LCSs in the double gyre.
 Resolution is $[500\times250]$.
@@ -552,7 +578,7 @@ $\lambda$-values for closed orbit detection are varied over the range $[0.80,1.2
 \begin{figure}
 \centering
 % FIXME Shrinkline LCS figure does not treat periodic boundary condition correctly
-\includegraphics[width=.85\textwidth]{graphics/bickley_jet/lambda_hyperbolic_lcs}
+\includegraphics[width=.475\textwidth]{graphics/bickley_jet/lambda_hyperbolic_lcs}
 \caption{
 LCSs in the Bickley jet.
 Resolution is $[500 \times 276]$.
@@ -569,6 +595,7 @@ $\lambda$ values of elliptic LCSs from left to right are [0.95,\,0.80,\,0.94,\,0
 
 The final example demonstrates the use of LCS Tool on velocity data derived from satellite-observed sea-surface heights under the geostrophic approximation. In contrast to the previous two analytic examples, the velocity field is available only with discrete temporal and spatial resolution. Our region of interest is a small domain in the South Atlantic Ocean, where exceptionally coherent eddies, Agulhas rings, were recently found by \citet{haller13:_coher_lagran} using the theory we surveyed in \cref{sec:Elliptic LCSs}.
 
+\begin{sloppypar}
 In the geostrophic approximation, the sea-surface height $\eta$ serves as a stream-function for surface velocities. In a longitude-latitude $(\varphi,\theta)$ coordinate system, the evolution of a fluid particle is given by
 \begin{eqnarray}
 \pd{\varphi(\varphi,\theta,t)}{t} = -\frac{g}{R^2 f(\theta) \cos\theta} \pd{\eta(\varphi,\theta,t)}{\theta}\label{eq:dtlon}\\
@@ -576,12 +603,15 @@ In the geostrophic approximation, the sea-surface height $\eta$ serves as a stre
 \label{eq:dtlat}
 \end{eqnarray}
 where $g$ is the constant of gravity, $R$ is the mean radius of the Earth, and $f(\theta) \equiv 2\Omega\sin\theta$ is the Coriolis parameter, with $\Omega$ denoting the Earth's mean angular velocity.
+\end{sloppypar}
 
+\begin{sloppypar}
 The data is given at a spatial resolution of $1/4\degree$ and a temporal resolution of 7 days.
 Due to the discrete data, defining the right hand side of \cref{eq:dtlon} and \cref{eq:dtlat} involves spline interpolation in space and time.
 An interpolant is generated first, then the function \lstinline!flowdata_derivative! evaluates the interpolants for the zonal and meridional velocity at the needed coordinates.
 \Cref{l:ocean data elliptic hyperbolic lcs} shows the relevant part of the code in LCS Tool's ocean demo file \lstinline!demo/ocean_dataset/hyperbolic_shear_lcs.m!.
 The commands for the interpolation of the velocity data are given in \crefrange{ll:interpolation start}{ll:interpolation end}.
+\end{sloppypar}
 
 \lstinputlisting[
         caption={LCS Tool commands for ocean data elliptic and hyperbolic LCSs. Subset of the LCS Tool script \lstinline!demo/ocean_dataset/hyperbolic_shear_lcs.m!},
@@ -594,7 +624,7 @@ We choose the integration time as $T=30$ days (\cref{l:ocean data elliptic hyper
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=.8\textwidth]{graphics/ocean_dataset/lambda_hyperbolic_lcs}
+\includegraphics[width=.475\textwidth]{graphics/ocean_dataset/lambda_hyperbolic_lcs}
 \end{center}
 \caption{
 LCSs in the ocean velocity data from satellite altimetry.
