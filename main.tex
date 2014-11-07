@@ -6,6 +6,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 \usepackage[numbered,framed]{mcode}
+\usepackage[hidelinks]{hyperref}
 \usepackage{cleveref}
 
 \DeclareMathOperator{\sech}{sech}
@@ -24,6 +25,21 @@
   backgroundcolor=\color{grey},
   escapeinside={\%@}{\^^M}
 }
+
+% Workaround for bug in elsarticle-num-names.bst
+% Reference: http://www.tug.org/pipermail/tex-live/2012-August/032152.html
+\makeatletter
+\providecommand{\doi}[1]{%
+  \begingroup
+    \let\bibinfo\@secondoftwo
+    \urlstyle{rm}%
+    \href{http://dx.doi.org/#1}{%
+      doi:\discretionary{}{}{}%
+      \nolinkurl{#1}%
+    }%
+  \endgroup
+}
+\makeatother
 
 \journal{Journal of Computational Science}
 
@@ -645,7 +661,9 @@ These include the geodesic theory of parabolic LCSs (jet cores)\citep{farazmand1
 
 \section*{Acknowledgements}
 
-The altimeter products used in this work are produced by SSALTO/DUACS and distributed by AVISO, with support from CNES, http://www.aviso.oceanobs.com/duacs.
+\begin{sloppypar}
+The altimeter products used in this work are produced by SSALTO/DUACS and distributed by AVISO, with support from CNES, \url{http://www.aviso.oceanobs.com/duacs}.
+\end{sloppypar}
 
 \section*{References}
 
