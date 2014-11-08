@@ -306,7 +306,7 @@ The Cauchy-Green strain tensor generically admits point singularities, i.e., poi
 
 \subsubsection{Special case: incompressible velocity fields}
 
-Incompressible flows (i.e. those satisfying $\nabla \cdot v=0$) satisfy the relation $\lambda_1(x_0) \lambda_2(x_0) = 1$ at all points of the computational domain \citep{arnold78:_mathem}. Incompressibility can be computationally imposed by first calculating $\lambda_2(x_0)$, then setting $\lambda_1(x_0) = 1/\lambda_2(x_0)$ and calculating the strain eigenvectors $\xi_2$ from $\lambda_2$, then $\xi_1$ from the relationship in \cref{eq:CG_invariants}. Experience shows that computing $\lambda_i$ in this order gives higher accuracy than in the reverse order \citep{farazmand12:_comput_lagran}.
+Incompressible flows (i.e. those satisfying $\nabla \cdot v=0$) satisfy the relation $\lambda_1(x_0) \lambda_2(x_0) = 1$ at all points of the computational domain \citep{arnold89:_mathem}. Incompressibility can be computationally imposed by first calculating $\lambda_2(x_0)$, then setting $\lambda_1(x_0) = 1/\lambda_2(x_0)$ and calculating the strain eigenvectors $\xi_2$ from $\lambda_2$, then $\xi_1$ from the relationship in \cref{eq:CG_invariants}. Experience shows that computing $\lambda_i$ in this order gives higher accuracy than in the reverse order \citep{farazmand12:_comput_lagran}.
 
 At some grid points, $\lambda_2 < 1$ may occur due to numerical integration errors. By setting the integration tolerances to smaller values, the number of such grid points is reduced. Enforcing $\lambda_2 \geq 1$ everywhere, however, can incur excessive computational cost. To this end, the function \lstinline!eig_cgStrain! records the number of points with $\lambda_2 < 1$, providing a measure for setting feasible integration tolerances.
 
@@ -667,6 +667,7 @@ The altimeter products used in this work are produced by SSALTO/DUACS and distri
 
 \section*{References}
 
+% FIXME Citations without pages (haller15:_langr_coher_struc and karrasch14:_autom_lagran) do not list publication year
 \bibliographystyle{elsarticle-num-names} 
 \bibliography{main}
 
