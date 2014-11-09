@@ -84,34 +84,33 @@ Lagrangian coherent structures \sep Mathematical software \sep Non-autonomous dy
 Lagrangian Coherent Structures (LCSs) are evolving organizing centres of trajectory patterns in non-autonomous dynamical systems\citep{haller00:_lagran,peacock13:_lagran,haller15:_langr_coher_struc}. Applications of LCSs include oceanic and atmospheric flows\citep{beron-vera13:_objec_agulh,koh02:_hyper}, biological transport problems\citep{wilson09:_lagran_reynol,tallapragada11:_lagran,huhn12:_south_indian_ocean_count_madag}, aeronautics\citep{tang10:_accur_lagran_hong_kong_inter_airpor}, celestial mechanics\citep{gawlik09:_lagran}, crowd dynamics\citep{ali07:_lagran_partic_dynam_approac_crowd}, and aperiodically forced mechanical oscillators\citep{hadjighasem13:_detec_kam}.
 \end{sloppypar}
 
-\citet{haller01:_distin} proposed that ridges of the finite-time Lyapunov exponent (FTLE) are heuristic indicators of hyperbolic (i.e., repelling and attracting type) LCSs. A number of examples indeed support this principle\citep{peacock13:_lagran}. Equating FTLE ridges with LCSs, however, would create theoretical inconsistencies, as well as false positives and negatives in hyperbolic LCS detection\citep{haller11:_lagran_coher_struc,norgard12:_secon_lagran_coher_struc}. In addition, the role of the FTLE field in the accurate detection of elliptic (vortex-type) and parabolic (jet-core type) LCSs has remained an open question (but see \citet{beron-vera10:_invar_lagran}).
+\citet{haller01:_distin} proposed that ridges of the finite-time Lyapunov exponent (FTLE) are heuristic indicators of hyperbolic (i.e., repelling and attracting type) LCSs.
+A number of examples support this principle\citep{peacock13:_lagran}.
+Equating FTLE ridges with LCSs, however, would create theoretical inconsistencies, as well as false positives and negatives in hyperbolic LCS detection\citep{haller11:_lagran_coher_struc,norgard12:_secon_lagran_coher_struc}.
+In addition, the role of the FTLE field in the accurate detection of elliptic (vortex-type) and parabolic (jet-core type) LCSs has remained an open question (but see \citet{beron-vera10:_invar_lagran}).
 
 More recent work has focused on an exact mathematical formulation of the properties defining LCSs\citep{haller11:_lagran_coher_struc,farazmand12:_comput_lagran,haller12:_geodes_theor_trans_barrier_two_dimen_flows,haller13:_coher_lagran,haller14:_adden_coher_lagran,farazmand13:_attrac_lagran,blazevski14:_hyper_ellip_trans_barrier_three}.
 In two-dimensional flows, hyperbolic and parabolic LCSs turn out to be stationary curves of the averaged material shear\citep{farazmand14:_shearless}, whereas elliptic LCSs are stationary curves of the averaged strain\citep{haller13:_coher_lagran,haller14:_adden_coher_lagran}.
 These variational formulations lead to explicit solutions for LCSs as null geodesics of appropriate Lorentzian metrics.
 
 \begin{sloppypar}
-Here we present an algorithmic introduction to geodesic LCS detection.
+We present an algorithmic introduction to geodesic LCS detection.
 % FIXME Reviewer #3, comment #4: Add documentation within the github repository to show some reference to the APIs and how users may start to run a his/her own application.
 % FIXME Reviewer #4: Please make sure the code is downloadable once the paper is published
 We then review the implementation of this approach in a computational engine called LCS Tool\footnote{LCS Tool is available at: \url{http://www.runmycode.org/companion/view/908}}.
 This engine is a library of MATLAB functions that extract LCSs from two-dimensional unsteady flows. The examples we present form demonstration scripts distributed with LCS Tool.
 \end{sloppypar}
 
-\begin{sloppypar}
 Other software for LCS detection exists.
 ManGen\citep{lekien03:_time} calculates the FTLE and advects material curves in two-dimensional velocity fields.
 It includes a graphical user interface and uses the Message Passing Interface standard for parallel calculations.
 Newman\citep{toit10:_trans} calculates the FTLE using dimension independent code.
-It assists ridge extraction of FTLE fields and supports analytic and dataset based velocity definitions.
+It assists ridge extraction of FTLE fields and supports analytic and dataset velocity definitions.
 FlowTK\citep{ameli14:_devel_effic_flexib_pipel_lagran} calculates the FTLE in two and three-dimensions on Cartesian and unstructured grids.
 The NVIDIA CUDA parallel computing platform is used for fast computations and Kitware's ParaView data analysis and visualization application is used for a user interface.
-\end{sloppypar}
 
-\begin{sloppypar}
-These packages target the automated generation of FTLE plots to aid the visual assessment of hyperbolic LCSs.
+These packages generate FTLE plots to aid the visual assessment of hyperbolic LCSs.
 LCS Tool also has functions to generate FTLE plots, but its emphasis is to provide geodesic extraction of LCSs as parametrized material curves, and extend the scope of such extraction to elliptic LCSs.
-\end{sloppypar}
 
 \section{Theory}
 
@@ -163,7 +162,7 @@ with $\lambda > 0$ playing the role of a parameter. Such closed orbits satisfy t
 r' = \eta_\pm^\lambda(r),
 \label{eq:etafields}
 \end{equation}
-which coincide with null geodesics of the Lorentzian metric family 
+which coincide with null geodesics of the Lorentzian metric family
 \[
 e_\lambda(u,v) = \left\langle u,\left[D_{t_0}^t(r) - \lambda^2 I\right] v \right\rangle.
 \]
@@ -285,21 +284,20 @@ of $\nabla F_{t_0}^t$ at a point $x_0$ of the Cartesian grid. Here $\delta x_j$ 
 \label{f:main and auxiliary grids}
 \end{figure}
 
-\begin{sloppypar}
-The function \lstinline!eig_cgStrain! of LCS Tool provides the option to calculate Cauchy-Green eigenvectors from the auxiliary grid using eigenvalues calculated from the main grid. We have found that for flows defined analytically, the eigenvalues can reliably be calculated from the main grid. For flows defined by datasets, using the auxiliary grid for eigenvalue calculations gives better results.
-\end{sloppypar}
+The function \lstinline!eig_cgStrain! of LCS Tool provides the option to calculate Cauchy-Green eigenvectors from the auxiliary grid using eigenvalues calculated from the main grid.
+We have found that for analytic flows, the eigenvalues can be calculated from the main grid.
+For dataset flows, using the auxiliary grid for eigenvalue calculations gives better results.
 
-\begin{sloppypar}
-As mentioned above, a typical main grid for the Cauchy-Green strain tensor comprises $500 \times 500$ points. This means that after the addition of 4 auxiliary grid points around each main grid point, \cref{eq:velocity} must be integrated over 1.25 million initial conditions.
-\end{sloppypar}
+As stated above, a typical main grid for the Cauchy-Green strain tensor has $500 \times 500$ points.
+This means that after the addition of 4 auxiliary grid points around each main grid point, \cref{eq:velocity} must be integrated over 1.25 million initial conditions.
 
 To avoid excessive computational times in MATLAB, we vectorize \cref{eq:velocity}, i.e., combine its right hand side evaluated over each initial point into a single system of equations. The resulting system is composed of independent blocks of two-dimensional first-order ordinary differential equations. We then use MATLAB's \lstinline!ode45! function to perform trajectory integration from all grid points simultaneously. This calculation typically takes five to ten minutes with default error tolerances.
 % FIXME Reviewer #2, comment #3: Add memory use data based on, for example, computations for \cref{f:double gyre lambda LCS convergence}.
 A potential drawback of vector form integration is that memory requirements may become excessive at high resolutions. Furthermore, writing the velocity function in vector form is more error-prone than the simpler two-dimensional form.
 
-\begin{sloppypar}
-The Cauchy-Green strain tensor generically admits point singularities, i.e., points where $C_{t_0}^t(x_0)$ has repeated eigenvalues. At these points the eigenvectors $\xi_1(x_0)$ and $\xi_2(x_0)$ are no longer well-defined. This generically arises at a finite set of isolated points within the computational domain\citep{delmarcelle94}, and hence lie off the computational grid with probability one.
-\end{sloppypar}
+The Cauchy-Green strain tensor can have point singularities, i.e., points where $C_{t_0}^t(x_0)$ has repeated eigenvalues.
+At these points the eigenvectors $\xi_1(x_0)$ and $\xi_2(x_0)$ are no longer well-defined.
+This generically arises at a finite set of isolated points within the computational domain\citep{delmarcelle94}, and hence lie off the computational grid with probability one.
 
 \subsubsection{Special case: incompressible velocity fields}
 
@@ -403,13 +401,15 @@ In \cref{f:Poincare return map}, circle markers indicate fixed points of the Poi
 
 \subsection{Computing hyperbolic LCSs}
 
-\begin{sloppypar}
-As discussed in \cref{sec:Hyperbolic LCSs}, positions of hyperbolic LCSs at time $t_0$ are found as the strongest repelling orbits of the vector field \cref{eq:shrink line} (repelling LCSs), and strongest attracting orbits of the vector field \cref{eq:stretch line} (attracting LCSs). By repulsion and attraction we mean a property of the LCS (as an evolving material line) under the flow map $F_{t_0}^t$. We identify the strongest repelling shrink lines as those crossing a local maximum of the $\lambda_2(x_0)$ field. Similarly, we identify the strongest attracting stretch lines as those crossing a local minimum of the $\lambda_1(x_0)$ field. These local maxima and minima of the appropriate $\lambda_i(x_0)$ eigenvalue field can be thought of as the extensions of the concept of saddle points to the present finite-time, temporally aperiodic flow setting.
-\end{sloppypar}
+% FIXME Clarify use of the term "orbit"
+As discussed in \cref{sec:Hyperbolic LCSs}, hyperbolic LCS positions at time $t_0$ are found as the strongest repelling orbits of the vector field \cref{eq:shrink line} (repelling LCSs), and strongest attracting orbits of the vector field \cref{eq:stretch line} (attracting LCSs).
+By repulsion and attraction we mean a property of the LCS (as an evolving material line) under the flow map $F_{t_0}^t$.
+We identify the strongest repelling shrink lines as those crossing a local maximum of the $\lambda_2(x_0)$ field.
+Similarly, we identify the strongest attracting stretch lines as those crossing a local minimum of the $\lambda_1(x_0)$ field.
+These local maxima and minima of the appropriate $\lambda_i(x_0)$ eigenvalue field can be thought of as the extensions of the concept of saddle points to the present finite-time, temporally aperiodic flow setting.
 
-\begin{sloppypar}
-The main steps of our hyperbolic LCS detection algorithm are enumerated in \cref{t:Hyperbolic LCS algorithm}. The basic function to compute hyperbolic LCSs in LCS Tool is \lstinline!seed_curves_from_lambda_max! and its syntax is given in \cref{t:seed_curves_from_lambda_max syntax}.
-\end{sloppypar}
+The main steps of hyperbolic LCS detection are enumerated in \cref{t:Hyperbolic LCS algorithm}.
+The core function to compute hyperbolic LCSs is \lstinline!seed_curves_from_lambda_max! and its syntax is given in \cref{t:seed_curves_from_lambda_max syntax}.
 
 \begin{table}
 \begin{enumerate}
@@ -525,9 +525,9 @@ of closed orbits from interior to exterior, left gyre: $\lambda=(0.97, 0.98, 0.9
 \label{f:double gyre lambda LCS convergence}
 \end{figure}
 
-\begin{sloppypar}
-\Cref{f:double gyre lambda hyperbolic LCS} shows the complete picture of elliptic and hyperbolic LCSs of the double gyre at this resolution. \Cref{l:double gyre lambda strain stretch LCS} lists the corresponding LCS Tool commands. The maximal length of shrink lines and stretch lines, \lstinline!shrinkLineMaxLength! and \lstinline!stretchLineMaxLength!, is set to $20$, a multiple of the domain size, since the hyperbolic LCSs may wind around vortices several times. 
-\end{sloppypar}
+\Cref{f:double gyre lambda hyperbolic LCS} shows elliptic and hyperbolic LCSs for the double gyre at this resolution.
+% FIXME Sentence below is inaccurate since \cref{l:double gyre lambda strain stretch LCS} gives commands for hyperbolic LCSs only
+\Cref{l:double gyre lambda strain stretch LCS} gives the corresponding LCS Tool commands. The maximum length of shrink lines and stretch lines, \lstinline!shrinkLineMaxLength! and \lstinline!stretchLineMaxLength!, is set to $20$, a multiple of the domain size, since the hyperbolic LCSs may wind around vortices several times.
 
 As usual, the local maximization distance is set larger for stretch lines than for shrink lines (cf. \cref{ll:shrinkLineLocalMaxDistance} and \cref{ll:stretchLineLocalMaxDistance}). The purpose of the maximization distance is to obtain spatially separated LCSs and to avoid a dense tangle of lines that basically indicates the same hyperbolic LCS (cf. \cref{t:Hyperbolic LCS algorithm}, \cref{i:flag maxima}). Setting the local maximization distance for stretch lines larger than for shrink lines allows obtaining a comparable number of stretch lines and shrink lines overall in the flow domain (recall that hyperbolic LCS seed points are discarded if they are within the local maximization distance of an existing hyperbolic LCS). Shrink lines are locally tangent to ridges of $\lambda_2$ maxima, whereas stretch lines are locally normal to these ridges. Setting the local maximization distance of stretch lines and shrink lines equal would therefore produce a greater number of stretch lines than shrink lines overall.
 
@@ -590,7 +590,7 @@ $\lambda$-values for closed orbit detection are varied over the range $[0.80,1.2
 \caption{
 LCSs in the Bickley jet.
 Resolution is $[500 \times 276]$.
-Elliptic LCSs are green, shrink line LCSs are red and stretch line LCSs are blue. 
+Elliptic LCSs are green, shrink line LCSs are red and stretch line LCSs are blue.
 White dots indicate $\lambda_2$ maxima for shrink lines and $\lambda_1$ minima stretch lines.
 FTLE shown in the background.
 $\lambda$ values of elliptic LCSs from left to right are [0.95,\,0.80,\,0.94,\,0.80,\,0.94], $\lambda \in [0.80,1.20]$, $\Delta\lambda = 0.01$.
@@ -603,15 +603,13 @@ $\lambda$ values of elliptic LCSs from left to right are [0.95,\,0.80,\,0.94,\,0
 
 The final example demonstrates the use of LCS Tool on velocity data derived from satellite-observed sea-surface heights under the geostrophic approximation. In contrast to the previous two analytic examples, the velocity field is available only with discrete temporal and spatial resolution. Our region of interest is a small domain in the South Atlantic Ocean, where exceptionally coherent eddies, Agulhas rings, were recently found by \citet{haller13:_coher_lagran,haller14:_adden_coher_lagran} using the theory we surveyed in \cref{sec:Elliptic LCSs}.
 
-\begin{sloppypar}
-In the geostrophic approximation, the sea surface height ($\eta$) serves as a stream-function for surface velocities. In a longitude-latitude $(\varphi,\theta)$ coordinate system, the evolution of a fluid particle is given by
+In the geostrophic approximation, sea surface height ($\eta$) serves as a stream-function for surface velocities. In a longitude-latitude $(\varphi,\theta)$ coordinate system, the evolution of a fluid particle is given by
 \begin{gather}
 \pd{\varphi(\varphi,\theta,t)}{t} = -\frac{g}{R^2 f(\theta) \cos\theta} \pd{\eta(\varphi,\theta,t)}{\theta}\label{eq:dtlon}\\
 \pd{\theta(\varphi,\theta,t)}{t} = \frac{g}{R^2 f(\theta) \cos\theta}\pd{\eta(\varphi,\theta,t)}{\varphi}
 \label{eq:dtlat}
 \end{gather}
 where $g$ is the constant of gravity, $R$ is the mean radius of the Earth, and $f(\theta) \equiv 2\Omega\sin\theta$ is the Coriolis parameter, with $\Omega$ denoting the Earth's mean angular velocity.
-\end{sloppypar}
 
 The data is given at a spatial resolution of $1/4\degree$ and a temporal resolution of 7 days.
 Due to the discrete data, defining the right hand side of \cref{eq:dtlon} and \cref{eq:dtlat} involves spline interpolation in space and time.
@@ -635,7 +633,7 @@ We choose the integration time as $T=30$ days (\cref{l:ocean data elliptic hyper
 \caption{
 LCSs in the ocean velocity data from satellite altimetry.
 Resolution is $[500\times250]$.
-Elliptic LCSs are green, shrink line LCSs are red and stretch line LCSs are blue. 
+Elliptic LCSs are green, shrink line LCSs are red and stretch line LCSs are blue.
 White dots indicate $\lambda_2$ maxima for shrink lines and $\lambda_1$ minima stretch lines.
 FTLE shown in the background.
 $\lambda=$ 1.00, 1.08, 0.94, 0.90, 1.06
