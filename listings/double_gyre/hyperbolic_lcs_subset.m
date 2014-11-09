@@ -1,17 +1,17 @@
-% Shrinklines
-shrinklineMaxLength = 20;
+% Shrink lines
+shrinkLineMaxLength = 20;
 gridSpace = diff(domain(1,:))/(double(resolution(1))-1);
-shrinklineLocalMaxDistance = 2*gridSpace; %@\label{ll:shrinklineLocalMaxDistance}
-shrinklineOdeSolverOptions = odeset('relTol',1e-6);
+shrinkLineLocalMaxDistance = 2*gridSpace; %@\label{ll:shrinkLineLocalMaxDistance}
+shrinkLineOdeSolverOptions = odeset('relTol',1e-6);
 
-% Stretchlines
-stretchlineMaxLength = 20;
-stretchlineLocalMaxDistance = 10*gridSpace; %@\label{ll:stretchlineLocalMaxDistance}
-stretchlineOdeSolverOptions = odeset('relTol',1e-6);
+% Stretch lines
+stretchLineMaxLength = 20;
+stretchLineLocalMaxDistance = 10*gridSpace; %@\label{ll:stretchLineLocalMaxDistance}
+stretchLineOdeSolverOptions = odeset('relTol',1e-6);
 
-%% Hyperbolic shrinkline LCSs
-[shrinklineLcs,shrinklineLcsInitialPosition] = seed_curves_from_lambda_max(shrinklineLocalMaxDistance,shrinklineMaxLength,cgEigenvalue(:,2),cgEigenvector(:,1:2),domain,resolution,'odeSolverOptions',shrinklineOdeSolverOptions);
+%% Hyperbolic shrink line LCSs
+[shrinkLineLcs,shrinkLineLcsInitialPosition] = seed_curves_from_lambda_max(shrinkLineLocalMaxDistance,shrinkLineMaxLength,cgEigenvalue(:,2),cgEigenvector(:,1:2),domain,resolution,'odeSolverOptions',shrinkLineOdeSolverOptions);
 ...
-%% Hyperbolic stretchline LCSs
-[stretchlineLcs,stretchlineLcsInitialPosition] = seed_curves_from_lambda_max(stretchlineLocalMaxDistance,stretchlineMaxLength,-cgEigenvalue(:,1),cgEigenvector(:,3:4),domain,resolution,'odeSolverOptions',stretchlineOdeSolverOptions);
+%% Hyperbolic stretch line LCSs
+[stretchLineLcs,stretchLineLcsInitialPosition] = seed_curves_from_lambda_max(stretchLineLocalMaxDistance,stretchLineMaxLength,-cgEigenvalue(:,1),cgEigenvector(:,3:4),domain,resolution,'odeSolverOptions',stretchLineOdeSolverOptions);
 ...

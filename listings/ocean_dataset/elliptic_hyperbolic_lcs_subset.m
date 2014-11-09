@@ -21,16 +21,16 @@ cgAuxGridRelDelta = .01; %@\label{ll:cgAuxGridRelDelta}
 lambdaRange = .9:.02:1.1; %@\label{ll:ocean data lambdaRange}
 lambdaLineOdeSolverOptions = odeset('relTol',1e-6);
 
-% Shrinklines
-shrinklineMaxLength = 20;
+% Shrink lines
+shrinkLineMaxLength = 20;
 gridSpace = diff(domain(1,:))/(double(resolution(1))-1);
-shrinklineLocalMaxDistance = 2*gridSpace;
-shrinklineOdeSolverOptions = odeset('relTol',1e-4);
+shrinkLineLocalMaxDistance = 2*gridSpace;
+shrinkLineOdeSolverOptions = odeset('relTol',1e-4);
 
-% Stretchlines
-stretchlineMaxLength = 20;
-stretchlineLocalMaxDistance = 4*gridSpace;
-stretchlineOdeSolverOptions = odeset('relTol',1e-4);
+% Stretch lines
+stretchLineMaxLength = 20;
+stretchLineLocalMaxDistance = 4*gridSpace;
+stretchLineOdeSolverOptions = odeset('relTol',1e-4);
 ...
 % Cauchy-Green strain eigenvalues and eigenvectors
 [cgEigenvector,cgEigenvalue] = eig_cgStrain(lDerivative,domain,resolution,timespan,'incompressible',incompressible,'eigenvalueFromMainGrid',cgEigenvalueFromMainGrid,'auxGridRelDelta',cgAuxGridRelDelta); %@\label{ll:eig_cgStrain}
@@ -59,8 +59,8 @@ for lambda = lambdaRange
 ...
 end
 ...
-% Hyperbolic shrinkline LCSs
-shrinklineLcs = seed_curves_from_lambda_max(shrinklineLocalMaxDistance,shrinklineMaxLength,cgEigenvalue(:,2),cgEigenvector(:,1:2),domain,resolution,'odeSolverOptions',shrinklineOdeSolverOptions); %@\label{ll:ocean data shrinklineLcs}
+% Hyperbolic shrink line LCSs
+shrinkLineLcs = seed_curves_from_lambda_max(shrinkLineLocalMaxDistance,shrinkLineMaxLength,cgEigenvalue(:,2),cgEigenvector(:,1:2),domain,resolution,'odeSolverOptions',shrinkLineOdeSolverOptions); %@\label{ll:ocean data shrinkLineLcs}
 ...
-% Hyperbolic stretchline LCSs
-stretchlineLcs = seed_curves_from_lambda_max(stretchlineLocalMaxDistance,stretchlineMaxLength,-cgEigenvalue(:,1),cgEigenvector(:,3:4),domain,resolution,'odeSolverOptions',stretchlineOdeSolverOptions); %@\label{ll:ocean data stretchlineLcs}
+% Hyperbolic stretch line LCSs
+stretchLineLcs = seed_curves_from_lambda_max(stretchLineLocalMaxDistance,stretchLineMaxLength,-cgEigenvalue(:,1),cgEigenvector(:,3:4),domain,resolution,'odeSolverOptions',stretchLineOdeSolverOptions); %@\label{ll:ocean data stretchLineLcs}

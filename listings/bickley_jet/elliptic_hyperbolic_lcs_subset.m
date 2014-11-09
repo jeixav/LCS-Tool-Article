@@ -27,15 +27,15 @@ periodicBc = [true,false]; %@\label{ll:Bickley jet periodicBc}
 lambdaRange = .8:.01:1.1;
 lambdaLineOdeSolverOptions = odeset('relTol',1e-6);
 
-% Shrinklines
-shrinklineMaxLength = 1e8;
-shrinklineLocalMaxDistance = 8*gridSpace;
-shrinklineOdeSolverOptions = odeset('relTol',1e-4);
+% Shrink lines
+shrinkLineMaxLength = 1e8;
+shrinkLineLocalMaxDistance = 8*gridSpace;
+shrinkLineOdeSolverOptions = odeset('relTol',1e-4);
 
-% Stretchlines
-stretchlineMaxLength = 1e8;
-stretchlineLocalMaxDistance = 4*gridSpace;
-stretchlineOdeSolverOptions = odeset('relTol',1e-4);
+% Stretch lines
+stretchLineMaxLength = 1e8;
+stretchLineLocalMaxDistance = 4*gridSpace;
+stretchLineOdeSolverOptions = odeset('relTol',1e-4);
 
 %% Lambda-line LCSs
 % Define Poincare sections; first point in center of elliptic region and
@@ -66,8 +66,8 @@ for lambda = lambdaRange
 ...    
 end
 ...   
-%% Hyperbolic shrinkline LCSs
-[shrinklineLcs,shrinklineLcsInitialPosition] = seed_curves_from_lambda_max(shrinklineLocalMaxDistance,shrinklineMaxLength,cgEigenvalue(:,2),cgEigenvector(:,1:2),domain,resolution,'periodicBc',periodicBc,'odeSolverOptions',shrinklineOdeSolverOptions);
+%% Hyperbolic shrink line LCSs
+[shrinkLineLcs,shrinkLineLcsInitialPosition] = seed_curves_from_lambda_max(shrinkLineLocalMaxDistance,shrinkLineMaxLength,cgEigenvalue(:,2),cgEigenvector(:,1:2),domain,resolution,'periodicBc',periodicBc,'odeSolverOptions',shrinkLineOdeSolverOptions);
 
-%% Hyperbolic stretchline LCSs
-[stretchlineLcs,stretchlineLcsInitialPosition] = seed_curves_from_lambda_max(stretchlineLocalMaxDistance,stretchlineMaxLength,-cgEigenvalue(:,1),cgEigenvector(:,3:4),domain,resolution,'periodicBc',periodicBc,'odeSolverOptions',stretchlineOdeSolverOptions);
+%% Hyperbolic stretch line LCSs
+[stretchLineLcs,stretchLineLcsInitialPosition] = seed_curves_from_lambda_max(stretchLineLocalMaxDistance,stretchLineMaxLength,-cgEigenvalue(:,1),cgEigenvector(:,3:4),domain,resolution,'periodicBc',periodicBc,'odeSolverOptions',stretchLineOdeSolverOptions);

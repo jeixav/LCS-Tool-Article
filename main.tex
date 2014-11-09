@@ -88,7 +88,7 @@ Lagrangian Coherent Structures (LCSs) are evolving organizing centres of traject
 
 More recent work has focused on an exact mathematical formulation of the properties defining LCSs\citep{haller11:_lagran_coher_struc,farazmand12:_comput_lagran,haller12:_geodes_theor_trans_barrier_two_dimen_flows,haller13:_coher_lagran,haller14:_adden_coher_lagran,farazmand13:_attrac_lagran,blazevski14:_hyper_ellip_trans_barrier_three}.
 In two-dimensional flows, hyperbolic and parabolic LCSs turn out to be stationary curves of the averaged material shear\citep{farazmand14:_shearless}, whereas elliptic LCSs are stationary curves of the averaged strain\citep{haller13:_coher_lagran,haller14:_adden_coher_lagran}.
-These variational formulations lead to explicit solutions for LCSs as null-geodesics of appropriate Lorentzian metrics.
+These variational formulations lead to explicit solutions for LCSs as null geodesics of appropriate Lorentzian metrics.
 
 \begin{sloppypar}
 Here we present an algorithmic introduction to geodesic LCS detection.
@@ -163,7 +163,7 @@ with $\lambda > 0$ playing the role of a parameter. Such closed orbits satisfy t
 r' = \eta_\pm^\lambda(r),
 \label{eq:etafields}
 \end{equation}
-which coincide with null-geodesics of the Lorentzian metric family 
+which coincide with null geodesics of the Lorentzian metric family 
 \[
 e_\lambda(u,v) = \left\langle u,\left[D_{t_0}^t(r) - \lambda^2 I\right] v \right\rangle.
 \]
@@ -182,27 +182,25 @@ D_{t_0}^t = \frac12 [C_{t_0}^t \Omega - \Omega C_{t_0}^t],
 % FIXME Clarify what is meant by _closed_ material lines
 obtained by averaging the Lagrangian shear arising over $[t_0,t]$ along closed material lines parametrized as $r(s)$ with $s \in [0,\sigma]$. More precisely, hyperbolic LCSs are stationary curves of $Q(\gamma)$ with respect to fixed-endpoint perturbations. We note that parabolic LCSs (Lagrangian jet cores) are also stationary curves of $Q(\gamma)$, but under variable endpoint perturbations (cf. \citet{farazmand14:_shearless}).
 
-Solutions to this variational problem turn out to be orbits of the $\xi_1$ or $\xi_2$ eigenvector field. Repelling LCSs (\emph{shrinklines}) are obtained as trajectories of the differential equation
+Solutions to this variational problem turn out to be orbits of the $\xi_1$ or $\xi_2$ eigenvector field. Repelling LCSs (\emph{shrink lines}) are obtained as trajectories of the differential equation
 \begin{equation}
 r' = \xi_1(r),
-\label{eq:shrinkline}
+\label{eq:shrink line}
 \end{equation}
-and attracting LCSs (\emph{stretchlines}) are obtained as trajectories of the differential equation
+and attracting LCSs (\emph{stretch lines}) are obtained as trajectories of the differential equation
 \begin{equation}
 r' = \xi_2(r).
-\label{eq:stretchline}
+\label{eq:stretch line}
 \end{equation}
 
-\begin{sloppypar}
-Shrinklines and stretchlines coincide with the null-geodesics of the Lorentzian metric $h(u,v) = \left\langle u,D_{t_0}^t(r) v \right\rangle$. For this reason, we refer to the computation of hyperbolic LCSs as strongest normally-repelling or normally-attracting orbits of \cref{eq:etafields} as \emph{geodesic detection of hyperbolic LCSs}.
-\end{sloppypar}
+Shrink lines and stretch lines coincide with the null geodesics of the Lorentzian metric $h(u,v) = \left\langle u,D_{t_0}^t(r) v \right\rangle$. For this reason, we refer to the computation of hyperbolic LCSs as strongest normally-repelling or normally-attracting orbits of \cref{eq:etafields} as \emph{geodesic detection of hyperbolic LCSs}.
 
-To compute the normal repulsion of shrinklines, we note that an infinitesimal
-normal perturbation to a shrinkline $\gamma$ at its point $r$ grows under the flow map $F_{t_{0}}^{t}$ by a factor of $\lambda_{2}(r)$ in the direction normal to $F_{t_{0}}^{t}(\gamma).$ Similarly, small normal perturbations to a stretchline decay by a factor $\lambda_{1}(r)$ in the direction normal to the evolving stretchline. 
+To compute the normal repulsion of shrink lines, we note that an infinitesimal
+normal perturbation to a shrink line $\gamma$ at its point $r$ grows under the flow map $F_{t_{0}}^{t}$ by a factor of $\lambda_{2}(r)$ in the direction normal to $F_{t_{0}}^{t}(\gamma).$ Similarly, small normal perturbations to a stretch line decay by a factor $\lambda_{1}(r)$ in the direction normal to the evolving stretch line. 
 
 \section{Numerical methods}
 
-This section describes stepwise the numerical implementation of geodesic detection of elliptic and hyperbolic LCSs based on \cref{eq:etafields,eq:shrinkline,eq:stretchline}. \Cref{t:LCS Tool overview} gives an overview of the steps, functions and variable names used in LCS Tool to analyse a flow.
+This section describes stepwise the numerical implementation of geodesic detection of elliptic and hyperbolic LCSs based on \cref{eq:etafields,eq:shrink line,eq:stretch line}. \Cref{t:LCS Tool overview} gives an overview of the steps, functions and variable names used in LCS Tool to analyse a flow.
 
 \begin{table}
 \begin{enumerate}
@@ -406,7 +404,7 @@ In \cref{f:Poincare return map}, circle markers indicate fixed points of the Poi
 \subsection{Computing hyperbolic LCSs}
 
 \begin{sloppypar}
-As discussed in \cref{sec:Hyperbolic LCSs}, positions of hyperbolic LCSs at time $t_0$ are found as the strongest repelling orbits of the vector field \cref{eq:shrinkline} (repelling LCSs), and strongest attracting orbits of the vector field \cref{eq:stretchline} (attracting LCSs). By repulsion and attraction we mean a property of the LCS (as an evolving material line) under the flow map $F_{t_0}^t$. We identify the strongest repelling shrinklines as those crossing a local maximum of the $\lambda_2(x_0)$ field. Similarly, we identify the strongest attracting stretchlines as those crossing a local minimum of the $\lambda_1(x_0)$ field. These local maxima and minima of the appropriate $\lambda_i(x_0)$ eigenvalue field can be thought of as the extensions of the concept of saddle points to the present finite-time, temporally aperiodic flow setting.
+As discussed in \cref{sec:Hyperbolic LCSs}, positions of hyperbolic LCSs at time $t_0$ are found as the strongest repelling orbits of the vector field \cref{eq:shrink line} (repelling LCSs), and strongest attracting orbits of the vector field \cref{eq:stretch line} (attracting LCSs). By repulsion and attraction we mean a property of the LCS (as an evolving material line) under the flow map $F_{t_0}^t$. We identify the strongest repelling shrink lines as those crossing a local maximum of the $\lambda_2(x_0)$ field. Similarly, we identify the strongest attracting stretch lines as those crossing a local minimum of the $\lambda_1(x_0)$ field. These local maxima and minima of the appropriate $\lambda_i(x_0)$ eigenvalue field can be thought of as the extensions of the concept of saddle points to the present finite-time, temporally aperiodic flow setting.
 \end{sloppypar}
 
 \begin{sloppypar}
@@ -417,12 +415,12 @@ The main steps of our hyperbolic LCS detection algorithm are enumerated in \cref
 \begin{enumerate}
 \item Define a local maximization distance.
 \item Find all points of the main grid that are local maxima of $\lambda_2$ within a circle whose radius is the local  maximization distance.
-\item Define a maximum shrinkline length
-\item Integrate a shrinkline forward and backward according to \cref{eq:shrinkline} and using the largest $\lambda_2$ local maximum as the initial position. Integrate until the shrinkline has attained the maximum shrinkline length, or until it has reached the domain boundary.
-\item Flag any remaining local maxima of $\lambda_2$ within the maximization distance of the shrinkline as ineligible initial positions for subsequent shrinklines
+\item Define a maximum shrink line length
+\item Integrate a shrink line forward and backward according to \cref{eq:shrink line} and using the largest $\lambda_2$ local maximum as the initial position. Integrate until the shrink line has attained the maximum shrink line length, or until it has reached the domain boundary.
+\item Flag any remaining local maxima of $\lambda_2$ within the maximization distance of the shrink line as ineligible initial positions for subsequent shrink lines
 \label{i:flag maxima}
-\item Continue integrating shrinklines using local maxima of $\lambda_2$ as initial positions until no eligible local maxima of $\lambda_2$ remain.
-\item Remove all shrinkline segments within elliptic LCSs.
+\item Continue integrating shrink lines using local maxima of $\lambda_2$ as initial positions until no eligible local maxima of $\lambda_2$ remain.
+\item Remove all shrink line segments within elliptic LCSs.
 \end{enumerate}
 \caption{Algorithm to calculate initial positions of repelling LCSs at time $t_0$. The algorithm for attracting LCSs is similar.}
 \label{t:Hyperbolic LCS algorithm}
@@ -447,7 +445,7 @@ The main steps of our hyperbolic LCS detection algorithm are enumerated in \cref
 \hline
 \lstinline!periodicBc! & optional $1 \times 2$ logical array to specify periodic boundary conditions. Default: \lstinline![false,false]!.\tabularnewline
 \hline
-\lstinline!nMaxCurves! & optional maximum number of curves (i.e. shrinklines or stretchlines) to generate. Default: \lstinline!numel(cgEigenvalue)!.\tabularnewline
+\lstinline!nMaxCurves! & optional maximum number of curves (i.e. shrink lines or stretch lines) to generate. Default: \lstinline!numel(cgEigenvalue)!.\tabularnewline
 \hline
 \lstinline!odeSolverOptions! & optional \lstinline!odeset! structure to specify flow map integration parameters\tabularnewline
 \hline
@@ -528,10 +526,10 @@ of closed orbits from interior to exterior, left gyre: $\lambda=(0.97, 0.98, 0.9
 \end{figure}
 
 \begin{sloppypar}
-\Cref{f:double gyre lambda hyperbolic LCS} shows the complete picture of elliptic and hyperbolic LCSs of the double gyre at this resolution. \Cref{l:double gyre lambda strain stretch LCS} lists the corresponding LCS Tool commands. The maximal length of shrinklines and stretchlines, \lstinline!shrinklineMaxLength! and \lstinline!stretchlineMaxLength!, is set to $20$, a multiple of the domain size, since the hyperbolic LCSs may wind around vortices several times. 
+\Cref{f:double gyre lambda hyperbolic LCS} shows the complete picture of elliptic and hyperbolic LCSs of the double gyre at this resolution. \Cref{l:double gyre lambda strain stretch LCS} lists the corresponding LCS Tool commands. The maximal length of shrink lines and stretch lines, \lstinline!shrinkLineMaxLength! and \lstinline!stretchLineMaxLength!, is set to $20$, a multiple of the domain size, since the hyperbolic LCSs may wind around vortices several times. 
 \end{sloppypar}
 
-As usual, the local maximization distance is set larger for stretchlines than for shrinklines (cf. \cref{ll:shrinklineLocalMaxDistance} and \cref{ll:stretchlineLocalMaxDistance}). The purpose of the maximization distance is to obtain spatially separated LCSs and to avoid a dense tangle of lines that basically indicates the same hyperbolic LCS (cf. \cref{t:Hyperbolic LCS algorithm}, \cref{i:flag maxima}). Setting the local maximization distance for stretchlines larger than for shrinklines allows obtaining a comparable number of stretchlines and shrinklines overall in the flow domain (recall that hyperbolic LCS seed points are discarded if they are within the local maximization distance of an existing hyperbolic LCS). Shrinklines are locally tangent to ridges of $\lambda_2$ maxima, whereas stretchlines are locally normal to these ridges. Setting the local maximization distance of stretchlines and shrinklines equal would therefore produce a greater number of stretchlines than shrinklines overall.
+As usual, the local maximization distance is set larger for stretch lines than for shrink lines (cf. \cref{ll:shrinkLineLocalMaxDistance} and \cref{ll:stretchLineLocalMaxDistance}). The purpose of the maximization distance is to obtain spatially separated LCSs and to avoid a dense tangle of lines that basically indicates the same hyperbolic LCS (cf. \cref{t:Hyperbolic LCS algorithm}, \cref{i:flag maxima}). Setting the local maximization distance for stretch lines larger than for shrink lines allows obtaining a comparable number of stretch lines and shrink lines overall in the flow domain (recall that hyperbolic LCS seed points are discarded if they are within the local maximization distance of an existing hyperbolic LCS). Shrink lines are locally tangent to ridges of $\lambda_2$ maxima, whereas stretch lines are locally normal to these ridges. Setting the local maximization distance of stretch lines and shrink lines equal would therefore produce a greater number of stretch lines than shrink lines overall.
 
 % FIXME Reviewer #5, comment #4: There is too much source code in the main content such as cref{l:double gyre lambda strain stretch LCS,l:Bickley jet elliptic hyperbolic LCS subset,l:ocean data elliptic hyperbolic lcs}. They could be arranged as an appendix at the end.
 \lstinputlisting[
@@ -546,8 +544,8 @@ As usual, the local maximization distance is set larger for stretchlines than fo
 \caption{
 LCSs in the double gyre.
 Resolution is $[500\times250]$.
-Elliptic LCSs are green, shrinkline LCSs are red and stretchline LCSs are blue.
-White dots indicate $\lambda_2$ maxima for shrinklines and $\lambda_1$ minima stretchlines.
+Elliptic LCSs are green, shrink line LCSs are red and stretch line LCSs are blue.
+White dots indicate $\lambda_2$ maxima for shrink lines and $\lambda_1$ minima stretch lines.
 FTLE shown in the background.
 $\lambda = 1.00$ and $1.04$ for the left and the right gyre.
 $\lambda \in [0.93,1.07]$, $\Delta\lambda = 0.01$.
@@ -587,13 +585,13 @@ $\lambda$-values for closed orbit detection are varied over the range $[0.80,1.2
 
 \begin{figure}
 \centering
-% FIXME Shrinkline LCS figure does not treat periodic boundary condition correctly
+% FIXME Shrink line LCS figure does not treat periodic boundary condition correctly
 \includegraphics[width=.475\textwidth]{graphics/bickley_jet/lambda_hyperbolic_lcs}
 \caption{
 LCSs in the Bickley jet.
 Resolution is $[500 \times 276]$.
-Elliptic LCSs are green, shrinkline LCSs are red and stretchline LCSs are blue. 
-White dots indicate $\lambda_2$ maxima for shrinklines and $\lambda_1$ minima stretchlines.
+Elliptic LCSs are green, shrink line LCSs are red and stretch line LCSs are blue. 
+White dots indicate $\lambda_2$ maxima for shrink lines and $\lambda_1$ minima stretch lines.
 FTLE shown in the background.
 $\lambda$ values of elliptic LCSs from left to right are [0.95,\,0.80,\,0.94,\,0.80,\,0.94], $\lambda \in [0.80,1.20]$, $\Delta\lambda = 0.01$.
 }
@@ -606,7 +604,7 @@ $\lambda$ values of elliptic LCSs from left to right are [0.95,\,0.80,\,0.94,\,0
 The final example demonstrates the use of LCS Tool on velocity data derived from satellite-observed sea-surface heights under the geostrophic approximation. In contrast to the previous two analytic examples, the velocity field is available only with discrete temporal and spatial resolution. Our region of interest is a small domain in the South Atlantic Ocean, where exceptionally coherent eddies, Agulhas rings, were recently found by \citet{haller13:_coher_lagran,haller14:_adden_coher_lagran} using the theory we surveyed in \cref{sec:Elliptic LCSs}.
 
 \begin{sloppypar}
-In the geostrophic approximation, the sea-surface height $\eta$ serves as a stream-function for surface velocities. In a longitude-latitude $(\varphi,\theta)$ coordinate system, the evolution of a fluid particle is given by
+In the geostrophic approximation, the sea surface height ($\eta$) serves as a stream-function for surface velocities. In a longitude-latitude $(\varphi,\theta)$ coordinate system, the evolution of a fluid particle is given by
 \begin{gather}
 \pd{\varphi(\varphi,\theta,t)}{t} = -\frac{g}{R^2 f(\theta) \cos\theta} \pd{\eta(\varphi,\theta,t)}{\theta}\label{eq:dtlon}\\
 \pd{\theta(\varphi,\theta,t)}{t} = \frac{g}{R^2 f(\theta) \cos\theta}\pd{\eta(\varphi,\theta,t)}{\varphi}
@@ -626,7 +624,7 @@ The commands for the interpolation of the velocity data are given in \crefrange{
         label={l:ocean data elliptic hyperbolic lcs}]
         {listings/ocean_dataset/elliptic_hyperbolic_lcs_subset.m}
 
-We choose the integration time as $T=30$ days (\cref{l:ocean data elliptic hyperbolic lcs}, \cref{ll:ocean data timespan}), which is larger than the eddy turnover time in this region. The resolution of the main computational grid for initial conditions is set to $400 \times 400$ (\cref{ll:ocean data resolution}). This corresponds to a resolution of roughly 0.015° and gives good results. With this choice, the resolution of the tracer grid is 15 times higher than the resolution of the velocity field. The flow is integrated and the Cauchy-Green strain tensor is computed by the function \lstinline!eig_cgStrain! (\cref{ll:eig_cgStrain}). Incompressibility of the flow is enforced (\cref{ll:incompressible}), the auxiliary grid distance is set to 1\% of the main grid distance (\cref{ll:cgAuxGridRelDelta}), and eigenvalues are computed from the auxiliary grid (\cref{ll:cgEigenvalueFromMainGrid}). Elliptic LCSs are computed in \cref{ll:ocean data poincare_closed_orbit_multi}, after the Poincare sections have been set (\cref{ll:ocean data poincareSection(1),ll:ocean data poincareSection(2)}) and the $\eta_\pm^\lambda$ fields have been defined (\cref{ll:ocean data lambda_line}). $\lambda$-values are varied over a range of $[0.90,1.10]$ with a step of $0.02$ (\cref{ll:ocean data lambdaRange}). Hyperbolic LCSs are computed in \cref{ll:ocean data shrinklineLcs,ll:ocean data stretchlineLcs}.
+We choose the integration time as $T=30$ days (\cref{l:ocean data elliptic hyperbolic lcs}, \cref{ll:ocean data timespan}), which is larger than the eddy turnover time in this region. The resolution of the main computational grid for initial conditions is set to $400 \times 400$ (\cref{ll:ocean data resolution}). This corresponds to a resolution of roughly 0.015° and gives good results. With this choice, the resolution of the tracer grid is 15 times higher than the resolution of the velocity field. The flow is integrated and the Cauchy-Green strain tensor is computed by the function \lstinline!eig_cgStrain! (\cref{ll:eig_cgStrain}). Incompressibility of the flow is enforced (\cref{ll:incompressible}), the auxiliary grid distance is set to 1\% of the main grid distance (\cref{ll:cgAuxGridRelDelta}), and eigenvalues are computed from the auxiliary grid (\cref{ll:cgEigenvalueFromMainGrid}). Elliptic LCSs are computed in \cref{ll:ocean data poincare_closed_orbit_multi}, after the Poincare sections have been set (\cref{ll:ocean data poincareSection(1),ll:ocean data poincareSection(2)}) and the $\eta_\pm^\lambda$ fields have been defined (\cref{ll:ocean data lambda_line}). $\lambda$-values are varied over a range of $[0.90,1.10]$ with a step of $0.02$ (\cref{ll:ocean data lambdaRange}). Hyperbolic LCSs are computed in \cref{ll:ocean data shrinkLineLcs,ll:ocean data stretchLineLcs}.
 
 \Cref{f:ocean dataset LCS} shows the positions of elliptic and hyperbolic LCSs on 22 November 2006, which is the same time instant analysed in \citet{haller13:_coher_lagran,haller14:_adden_coher_lagran,beron-vera13:_objec_agulh}. Here the integration time is chosen as $T = 30$ days, as opposed to 90 days in the cited references, to avoid tangling of hyperbolic LCSs. Our analysis via LCS Tool reveals five coherent eddy boundaries. The large coherent eddy at $(3,-32)$ has a non-stretching boundary, i.e., $\lambda = 1$. It corresponds to eddy \#2 in Figure~3 of \citet{beron-vera13:_objec_agulh}. Additionally, four smaller coherent eddy cores are found. They do not stay coherent over a time of 90 days. All closed orbits are stable under increased spatial resolution for the Cauchy-Green strain tensor field. Repelling LCSs (red) and attracting LCSs (blue) are superimposed over the plot of FTLE values. The hyperbolic LCSs determine the deformation of the fluid in-between coherent eddy cores.
 
@@ -637,8 +635,8 @@ We choose the integration time as $T=30$ days (\cref{l:ocean data elliptic hyper
 \caption{
 LCSs in the ocean velocity data from satellite altimetry.
 Resolution is $[500\times250]$.
-Elliptic LCSs are green, shrinkline LCSs are red and stretchline LCSs are blue. 
-White dots indicate $\lambda_2$ maxima for shrinklines and $\lambda_1$ minima stretchlines.
+Elliptic LCSs are green, shrink line LCSs are red and stretch line LCSs are blue. 
+White dots indicate $\lambda_2$ maxima for shrink lines and $\lambda_1$ minima stretch lines.
 FTLE shown in the background.
 $\lambda=$ 1.00, 1.08, 0.94, 0.90, 1.06
 }
@@ -673,4 +671,4 @@ The altimeter products used in this work are produced by SSALTO/DUACS and distri
 % Local Variables:
 % ispell-dictionary: "en_GB"
 % End:
-% LocalWords:  stretchline stretchlines incompressible gyre eigenvector eigenvectors incompressibility dataset datasets LCS LCSs Lyapunov Bickley Rossby timespan variational adaptively vortices parametrise advected minima extremal FTLE MATLAB maxima geostrophic shrinkline shrinklines Poincare altimetry zonal
+% LocalWords:  incompressible gyre eigenvector eigenvectors incompressibility dataset datasets LCS LCSs Lyapunov Bickley Rossby timespan variational adaptively vortices parametrise advected minima extremal FTLE MATLAB maxima geostrophic Poincare altimetry zonal
