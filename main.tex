@@ -6,6 +6,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 \usepackage[numbered,framed]{mcode}
+\usepackage{microtype}
 \usepackage[hidelinks]{hyperref}
 \usepackage{cleveref}
 
@@ -147,7 +148,6 @@ C_{t_0}^t \xi_i = \lambda_i \xi_i, \qquad 0 < \lambda_1 \leq \lambda_2, \quad i 
 \subsection{Elliptic LCSs}
 \label{sec:Elliptic LCSs}
 
-\begin{sloppypar}
 We seek positions of closed material lines at time $t_0$ that prevail as coherent Lagrangian vortex boundaries (or \emph{elliptic LCSs}) over a time interval $[t_0,t]\subset[t_-,t_+]$. \citet{haller13:_coher_lagran,haller14:_adden_coher_lagran} argue that such initial material line positions are closed stationary curves of the averaged strain functional
 \[
 Q(\gamma) = \frac{1}{\sigma} \int_0^{\sigma} \frac{\sqrt{\langle r'(s),C_{t_0}^t(r(s))r'(s)\rangle}}{\sqrt{\langle r'(s),r'(s)\rangle}} \dif s,
@@ -168,7 +168,6 @@ which coincide with null-geodesics of the Lorentzian metric family
 e_\lambda(u,v) = \left\langle u,\left[D_{t_0}^t(r) - \lambda^2 I\right] v \right\rangle.
 \]
 For this reason, we refer to the computation of elliptic LCSs as limit cycles of \cref{eq:etafields} as \emph{geodesic detection of elliptic LCSs}.
-\end{sloppypar}
 
 Any orbit of \cref{eq:etafields} turns out to stretch uniformly under the flow map $F_{t_0}^t$. Specifically, any subset of an orbit of \cref{eq:etafields} increases its arc length precisely by a factor of $\lambda$. For this reason, we refer to trajectories of \cref{eq:etafields} as $\lambda$-lines. Following \citet{haller13:_coher_lagran,haller14:_adden_coher_lagran}, we call the outermost member of a closed family of $\lambda$-lines a coherent Lagrangian vortex boundary.
 
@@ -616,13 +615,11 @@ In the geostrophic approximation, the sea-surface height $\eta$ serves as a stre
 where $g$ is the constant of gravity, $R$ is the mean radius of the Earth, and $f(\theta) \equiv 2\Omega\sin\theta$ is the Coriolis parameter, with $\Omega$ denoting the Earth's mean angular velocity.
 \end{sloppypar}
 
-\begin{sloppypar}
 The data is given at a spatial resolution of $1/4\degree$ and a temporal resolution of 7 days.
 Due to the discrete data, defining the right hand side of \cref{eq:dtlon} and \cref{eq:dtlat} involves spline interpolation in space and time.
 An interpolant is generated first, then the function \lstinline!flowdata_derivative! evaluates the interpolants for the zonal and meridional velocity at the needed coordinates.
 \Cref{l:ocean data elliptic hyperbolic lcs} shows the relevant part of the code in LCS Tool's ocean demo file \lstinline!demo/ocean_dataset/hyperbolic_shear_lcs.m!.
 The commands for the interpolation of the velocity data are given in \crefrange{ll:interpolation start}{ll:interpolation end}.
-\end{sloppypar}
 
 \lstinputlisting[
         caption={LCS Tool commands for ocean data elliptic and hyperbolic LCSs. Subset of the LCS Tool script \lstinline!demo/ocean_dataset/hyperbolic_shear_lcs.m!},
