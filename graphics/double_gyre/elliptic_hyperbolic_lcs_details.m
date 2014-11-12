@@ -50,11 +50,7 @@ ellipticColor = [0,.6,0];
 lcsInitialPositionMarkerSize = 2;
 
 hAxes = setup_figure(domain);
-delete(get(hAxes,'xlabel'))
-delete(get(hAxes,'ylabel'))
 hFigure = get(hAxes,'parent');
-hColorbar = findobj(hFigure,'Type','ColorBar');
-delete(get(hColorbar,'Label'))
 
 %% Cauchy-Green strain eigenvalues and eigenvectors
 [cgEigenvector,cgEigenvalue] = eig_cgStrain(lDerivative,domain,resolution,timespan,'incompressible',incompressible,'odeSolverOptions',cgStrainOdeSolverOptions);
@@ -117,11 +113,14 @@ uistack(hClosedLambdaLine,'top')
 uistack(hPoincareSection,'top')
 
 filename = 'elliptic_repelling_lcs_details.tikz';
+if ~verLessThan('matlab','8.4')
+    warning([mfilename,':matlabVersion'],'matlab2tikz colormap problem with MATLAB newer than R2014a')
+end
 matlab2tikz(filename,'showInfo',false,'relativeDataPath',fullfile('graphics','double_gyre'),'width','\figurewidth','figurehandle',hFigure,'colormap',colormap(hAxes))
 
 %% Hyperbolic attracting LCSs
 hAxes = setup_figure(domain);
-title(hAxes,'Attracting and elliptic LCSs')
+hFigure = get(hAxes,'parent');
 
 % Plot finite-time Lyapunov exponent
 plot_ftle(hAxes,domain,resolution,ftle_);
@@ -159,4 +158,6 @@ set(hStretchlineLcsInitialPosition,'MarkerFaceColor',attractingColor)
 uistack(hEllipticLcs,'top')
 uistack(hClosedLambdaLine,'top')
 uistack(hPoincareSection,'top')
-uistack(hPoincareSectionText,'top')
+
+filename = 'elliptic_attracting_lcs_details.tikz';
+matlab2tikz(filename,'showInfo',false,'relativeDataPath',fullfile('graphics','double_gyre'),'width','\figurewidth','figurehandle',hFigure,'colormap',colormap(hAxes))
