@@ -73,5 +73,5 @@ for m = 1:numel(resolutionX)
     drawnow
 
     filename = strcat('elliptic_lcs_convergence_',num2str(lResolutionX),'.tikz');
-    matlab2tikz(filename,'showInfo',false,'relativeDataPath',fullfile('graphics','double_gyre'),'width','\figurewidth','figurehandle',hFigure)
+    matlab2tikz(filename,'showInfo',false,'width','\figurewidth','figurehandle',hFigure)
 end
