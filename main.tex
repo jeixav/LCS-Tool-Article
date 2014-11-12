@@ -7,6 +7,7 @@
 \usepackage{listings}
 \usepackage[numbered,framed]{mcode}
 \usepackage{microtype}
+\usepackage{pgfplots}
 \usepackage[hidelinks]{hyperref}
 \usepackage{cleveref}
 
@@ -41,6 +42,11 @@
   \endgroup
 }
 \makeatother
+
+\pgfplotsset{compat=newest}
+\pgfplotsset{plot coordinates/math parser=false}
+\newlength\figureheight
+\newlength\figurewidth
 
 \journal{Journal of Computational Science}
 
@@ -520,8 +526,11 @@ This also suggests that the lowest tested resolution, $500 \times 250$, is suffi
 
 \begin{figure}
 \centering
-\includegraphics[width=.475\textwidth]{graphics/double_gyre/lambda_lcs_convergence}\caption{Convergence of closed $\lambda$-lines for increasing main-grid resolution in the double-gyre model. The outermost closed $\lambda$-line (bold green line) is the vortex boundary. (Top) {[}500x250{]}, $\lambda$-values
-of closed orbits from interior to exterior, left gyre: $\lambda=(0.97, 0.98, 0.99, 1.00, 1.01)$, right gyre: $\lambda=(1.00, 1.01, 1.02, 1.03, 1.04)$; (Middle) {[}750x375{]}, left: $\lambda=(0.97, 0.98, 0.99, 1.00, 1.01)$, right: $\lambda=(1.00, 1.01, 1.02, 1.03, 1.04, 1.05)$; (Bottom) {[}1000x500{]}, left: $\lambda=(0.97, 0.98, 0.99, 1.00, 1.01)$, right: $\lambda=(1.00, 1.01, 1.02, 1.03, 1.04, 1.05)$.}
+\setlength\figurewidth{.4\textwidth}
+\input{graphics/double_gyre/elliptic_lcs_convergence_500.tikz}
+\input{graphics/double_gyre/elliptic_lcs_convergence_750.tikz}
+\input{graphics/double_gyre/elliptic_lcs_convergence_1000.tikz}
+\caption{Convergence of closed $\lambda$-lines for increasing main-grid resolution in the double-gyre. The outermost closed $\lambda$-line (bold green line) is the vortex boundary. Top: $500 \times 250$, middle: $750 \times 375$, bottom: $1000 \times 500$.}
 \label{f:double gyre lambda LCS convergence}
 \end{figure}
 
