@@ -32,12 +32,15 @@ s = warning('off','integrate_line:isDiscontinuousLargeAngle');
 [~,~,hPoincareMap] = poincare_closed_orbit(domain,resolution,etaPos,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions,'showGraph',true);
 warning(s)
 
-delete(findobj(hPoincareMap,'type','axes','Tag','legend'))
+delete(findobj(hPoincareMap,'type','legend'))
 hAxes = findobj(hPoincareMap,'type','axes');
 delete(get(hAxes,'title'))
 set(hAxes,'ylim',[-1,1]*1e-4)
-% Change colors to black
-set(findobj(hAxes,'Marker','none'),'color',[0,0,0])
-set(findobj(hAxes,'Marker','o'),'MarkerEdgeColor',[0,0,0])
-set(findobj(hAxes,'Marker','o','MarkerFaceColor',[1,0,0]),'MarkerFaceColor',[0,0,0])
-set(findobj(hAxes,'Marker','o','MarkerFaceColor',[0,0,1]),'MarkerFaceColor','none')
+set(findobj(hAxes,'Marker','none'),'color','k')
+set(findobj(hAxes,'Marker','o'),'MarkerEdgeColor','k')
+set(findobj(hAxes,'Marker','o','MarkerFaceColor','r'),'MarkerFaceColor','k')
+set(findobj(hAxes,'Marker','o','MarkerFaceColor','b'),'MarkerFaceColor','none')
+
+hFigure = get(hAxes,'parent');
+filename = strcat('poincare_return_map.tikz');
+matlab2tikz(filename,'showInfo',false,'width','\figurewidth','figurehandle',hFigure)
