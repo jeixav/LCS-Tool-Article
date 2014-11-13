@@ -36,7 +36,7 @@ ellipticColor = [0,.6,0];
 for m = 1:numel(resolutionX)
     % Make x and y grid spacing as equal as possible
     lResolutionX = resolutionX(m);
-    resolutionY = equal_resolution(domain,resolutionX);
+    resolutionY = equal_resolution(domain,lResolutionX);
     resolution = [lResolutionX,resolutionY];
     
     hAxes = setup_figure(domain);
@@ -70,8 +70,15 @@ for m = 1:numel(resolutionX)
     hClosedLambdaLineNeg = plot_closed_orbit(hAxes,closedLambdaLineNeg);
     hClosedLambdaLine = [hClosedLambdaLinePos,hClosedLambdaLineNeg];
     set(hClosedLambdaLine,'color',ellipticColor)
-    drawnow
 
+    % Discard closed lambda lines that are only NaN since these give errors
+    % with matlab2tikz
+    for n = 1:numel(hClosedLambdaLine)
+        if all(isnan([get(hClosedLambdaLine(n),'XData'),get(hClosedLambdaLine(n),'YData')]))
+            delete(hClosedLambdaLine(n))
+        end
+    end
+    
     filename = strcat('elliptic_lcs_convergence_',num2str(lResolutionX),'.tikz');
     matlab2tikz(filename,'showInfo',false,'width','\figurewidth','figurehandle',hFigure)
 end

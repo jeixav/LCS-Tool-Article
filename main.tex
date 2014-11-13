@@ -3,6 +3,7 @@
 \usepackage{amsmath}
 \usepackage{commath}
 \usepackage{gensymb}
+\usepackage{import}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 \usepackage[numbered,framed]{mcode}
@@ -284,7 +285,8 @@ of $\nabla F_{t_0}^t$ at a point $x_0$ of the Cartesian grid. Here $\delta x_j$ 
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=.325\textwidth]{graphics/main_aux_grids}
+\def\svgwidth{.325\textwidth}
+\import{graphics/}{main_aux_grids.pdf_tex}
 \end{center}
 \caption{Illustration of the main grid (filled circles) and the auxiliary grid (empty circles) used in the computation of the derivative of the flow map in \cref{eq:CG} of the Cauchy-Green strain tensor. The variable \lstinline!auxGridRelDelta! specifies the grid spacing of the auxiliary grid relative to the main grid spacing.}
 \label{f:main and auxiliary grids}
@@ -387,7 +389,8 @@ The second step is to integrate the $\lambda$-lines  starting from the Poincare 
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=.475\textwidth]{graphics/variable_step_integration}
+\def\svgwidth{.4\textwidth}
+\import{graphics/}{variable_step_integration.pdf_tex}
 \end{center}
 \caption{Schematic illustration of the variable-time-step $\lambda$-line integration. At the initial point, there is an orientation discontinuity at the lower-right grid point that must be corrected prior to linear interpolation. At point \#1, no orientation discontinuities are present. At point \#2 all interpolated $\eta_\pm^\lambda$ vectors must be rotated by 180° to match the orientation of the trajectory.}
 \label{f:variable step integration}
