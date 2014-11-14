@@ -392,7 +392,7 @@ The second step is to integrate the $\lambda$-lines  starting from the Poincare 
 \def\svgwidth{.4\textwidth}
 \import{graphics/}{variable_step_integration.pdf_tex}
 \end{center}
-\caption{Schematic illustration of the variable-time-step $\lambda$-line integration. At the initial point, there is an orientation discontinuity at the lower-right grid point that must be corrected prior to linear interpolation. At point \#1, no orientation discontinuities are present. At point \#2 all interpolated $\eta_\pm^\lambda$ vectors must be rotated by 180° to match the orientation of the trajectory.}
+\caption{Schematic illustration of the variable-time-step $\lambda$-line integration. At the initial point, there is an orientation discontinuity at the lower-right grid point that must be corrected prior to linear interpolation. At point \#1, no orientation discontinuity is present. At point \#2, $\eta_\pm^\lambda$ vectors must be rotated by 180° to match the orientation of the trajectory.}
 \label{f:variable step integration}
 \end{figure}
 
@@ -465,7 +465,10 @@ The core function to compute hyperbolic LCSs is \lstinline!seed_curves_from_lamb
 \label{t:seed_curves_from_lambda_max syntax}
 \end{table*}
 
-In classical, infinite-time dynamical systems, elliptic and hyperbolic invariant manifolds cannot intersect, as the trajectories in their intersection would then have to follow two different asymptotic behaviours simultaneously. In finite-time dynamical systems, hyperbolic LCSs may well intersect elliptic LCSs, with hyperbolic LCSs continuing to act as cores of mixing patterns observed in the interior of elliptic LCSs. Motivated by convention and for clarity in visualization, however, the default setting of LCS Tool removes hyperbolic LCS segments from the interior of elliptic LCSs. These removed segments can be turned back on demand, as shown in \cref{f:ocean_dataset_colortracer}.
+In classical infinite-time dynamical systems, elliptic and hyperbolic invariant manifolds cannot intersect since trajectories at intersections would follow two different asymptotic behaviours simultaneously.
+In finite-time dynamical systems, hyperbolic LCSs may well intersect elliptic LCSs, with hyperbolic LCSs continuing to act as cores of mixing patterns observed in the interior of elliptic LCSs.
+Motivated by convention and for clarity in visualization, however, the default setting of LCS Tool removes hyperbolic LCS segments from the interior of elliptic LCSs.
+These removed segments can be turned on, as shown in \cref{f:ocean_dataset_colortracer}.
 
 \begin{figure}
 \centering
@@ -540,7 +543,7 @@ This also suggests that the lowest tested resolution, $500 \times 250$, is suffi
 
 \Cref{f:double gyre lambda hyperbolic LCS} shows elliptic and hyperbolic LCSs for the double gyre at this resolution.
 % FIXME Sentence below is inaccurate since \cref{l:double gyre lambda strain stretch LCS} gives commands for hyperbolic LCSs only
-\Cref{l:double gyre lambda strain stretch LCS} gives the corresponding LCS Tool commands. The maximum length of shrink lines and stretch lines, \lstinline!shrinkLineMaxLength! and \lstinline!stretchLineMaxLength!, is set to $20$, a multiple of the domain size, since the hyperbolic LCSs may wind around vortices several times.
+\Cref{l:double gyre lambda strain stretch LCS} gives the corresponding LCS Tool commands. The maximum length of shrink lines and stretch lines, \lstinline!shrinkLineMaxLength! and \lstinline!stretchLineMaxLength!, is set to $20$, a multiple of the domain size since the hyperbolic LCSs may wind around vortices several times.
 
 As usual, the local maximization distance is set larger for stretch lines than for shrink lines (cf. \cref{ll:shrinkLineLocalMaxDistance} and \cref{ll:stretchLineLocalMaxDistance}). The purpose of the maximization distance is to obtain spatially separated LCSs and to avoid a dense tangle of lines that basically indicates the same hyperbolic LCS (cf. \cref{t:Hyperbolic LCS algorithm}, \cref{i:flag maxima}). Setting the local maximization distance for stretch lines larger than for shrink lines allows obtaining a comparable number of stretch lines and shrink lines overall in the flow domain (recall that hyperbolic LCS seed points are discarded if they are within the local maximization distance of an existing hyperbolic LCS). Shrink lines are locally tangent to ridges of $\lambda_2$ maxima, whereas stretch lines are locally normal to these ridges. Setting the local maximization distance of stretch lines and shrink lines equal would therefore produce a greater number of stretch lines than shrink lines overall.
 
