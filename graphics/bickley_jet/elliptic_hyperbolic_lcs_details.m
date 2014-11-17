@@ -6,7 +6,7 @@ lengthX = pi*earthRadius;
 lengthY = 1.77e6;
 epsilon = [.075,.4,.3];
 domain = [0,lengthX;[-1,1]*2.25*lengthY];
-timespan = [0,2*lengthX/u];
+timespan = [0,4*lengthX/u];
 resolutionX = 500;
 [resolutionY,deltaX] = equal_resolution(domain,resolutionX);
 resolution = [resolutionX,resolutionY];
@@ -121,11 +121,8 @@ uistack(hClosedLambdaLine,'top')
 uistack(hPoincareSection,'top')
 
 filename = 'elliptic_repelling_lcs_details.tikz';
-if ~verLessThan('matlab','8.4')
-    warning([mfilename,':matlabVersion'],'matlab2tikz colormap problem with MATLAB newer than R2014a')
-end
 hFigure = get(hAxes,'parent');
-matlab2tikz(filename,'showInfo',false,'relativeDataPath',fullfile('graphics','bickley_jet'),'width','\figurewidth','figurehandle',hFigure)
+matlab2tikz(filename,'showInfo',false,'width','\figurewidth','figurehandle',hFigure)
 
 %% Hyperbolic attracting LCSs
 hAxes = setup_figure(domain);
@@ -165,3 +162,7 @@ set(hStretchlineLcsInitialPosition,'MarkerFaceColor',attractingColor)
 uistack(hEllipticLcs,'top')
 uistack(hClosedLambdaLine,'top')
 uistack(hPoincareSection,'top')
+
+filename = 'elliptic_attracting_lcs_details.tikz';
+hFigure = get(hAxes,'parent');
+matlab2tikz(filename,'showInfo',false,'width','\figurewidth','figurehandle',hFigure)
