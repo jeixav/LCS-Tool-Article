@@ -663,7 +663,15 @@ The commands for the interpolation of the velocity data are given in \crefrange{
 
 We choose the integration time as $T=30$ days (\cref{l:ocean data elliptic hyperbolic lcs}, \cref{ll:ocean data timespan}), which is larger than the eddy turnover time in this region. The resolution of the main computational grid for initial conditions is set to $400 \times 400$ (\cref{ll:ocean data resolution}). This corresponds to a resolution of roughly 0.015° and gives good results. With this choice, the resolution of the tracer grid is 15 times higher than the resolution of the velocity field. The flow is integrated and the Cauchy-Green strain tensor is computed by the function \lstinline!eig_cgStrain! (\cref{ll:eig_cgStrain}). Incompressibility of the flow is enforced (\cref{ll:incompressible}), the auxiliary grid distance is set to 1\% of the main grid distance (\cref{ll:cgAuxGridRelDelta}), and eigenvalues are computed from the auxiliary grid (\cref{ll:cgEigenvalueFromMainGrid}). Elliptic LCSs are computed in \cref{ll:ocean data poincare_closed_orbit_multi}, after the Poincare sections have been set (\cref{ll:ocean data poincareSection(1),ll:ocean data poincareSection(2)}) and the $\eta_\pm^\lambda$ fields have been defined (\cref{ll:ocean data lambda_line}). $\lambda$-values are varied over a range of $[0.90,1.10]$ with a step of $0.02$ (\cref{ll:ocean data lambdaRange}). Hyperbolic LCSs are computed in \cref{ll:ocean data shrinkLineLcs,ll:ocean data stretchLineLcs}.
 
-\Cref{f:ocean dataset LCS} shows the positions of elliptic and hyperbolic LCSs on 22 November 2006, which is the same time instant analysed in \citet{haller13:_coher_lagran,haller14:_adden_coher_lagran,beron-vera13:_objec_agulh}. Here the integration time is chosen as $T = 30$ days, as opposed to 90 days in the cited references, to avoid tangling of hyperbolic LCSs. Our analysis via LCS Tool reveals five coherent eddy boundaries. The large coherent eddy at $(3,-32)$ has a non-stretching boundary, i.e., $\lambda = 1$. It corresponds to eddy \#2 in Figure~3 of \citet{beron-vera13:_objec_agulh}. Additionally, four smaller coherent eddy cores are found. They do not stay coherent over a time of 90 days. All closed orbits are stable under increased spatial resolution for the Cauchy-Green strain tensor field. Repelling LCSs (red) and attracting LCSs (blue) are superimposed over the plot of FTLE values. The hyperbolic LCSs determine the deformation of the fluid in-between coherent eddy cores.
+\Cref{f:ocean dataset LCS} shows elliptic and hyperbolic LCSs on 22 November 2006, the same time as analysed in \citet{haller13:_coher_lagran,haller14:_adden_coher_lagran,beron-vera13:_objec_agulh}.
+In those references, the integration time is 90 days.
+We use a shorter time to avoid tangling hyperbolic LCSs.
+Our analysis via LCS Tool reveals five coherent eddies.
+The largest, at $(3,-32)$, has a non-stretching boundary, i.e., $\lambda = 1$.
+It corresponds to eddy \#2 in figure~3 of \citet{beron-vera13:_objec_agulh}.
+Four additional smaller coherent eddies are found.
+They do not stay coherent over 90 days.
+The hyperbolic LCSs determine the deformation of the fluid between coherent eddies.
 
 \begin{figure}
 \begin{center}
