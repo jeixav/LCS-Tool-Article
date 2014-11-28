@@ -155,7 +155,7 @@ C_{t_0}^t \xi_i = \lambda_i \xi_i, \qquad 0 < \lambda_1 \leq \lambda_2, \quad i 
 
 We seek positions of closed material lines at time $t_0$ that prevail as coherent Lagrangian vortex boundaries (or \emph{elliptic LCSs}) over a time interval $[t_0,t]\subset[t_-,t_+]$. \citet{haller13:_coher_lagran,haller14:_adden_coher_lagran} argue that such initial material line positions are closed stationary curves of the averaged strain functional
 \[
-Q(\gamma) = \frac{1}{\sigma} \int_0^{\sigma} \frac{\sqrt{\langle r'(s),C_{t_0}^t(r(s))r'(s)\rangle}}{\sqrt{\langle r'(s),r'(s)\rangle}} \dif s,
+Q(\gamma) = \frac{1}{\sigma} \int_0^\sigma \frac{\sqrt{\langle r'(s),C_{t_0}^t(r(s))r'(s)\rangle}}{\sqrt{\langle r'(s),r'(s)\rangle}} \dif s,
 \]
 obtained by averaging the tangential strain arising over $[t_0,t]$ along closed material lines parametrized as $r(s)$ with $s \in [0,\sigma].$
 Solutions to this variational problem turn out to be closed orbits of one of two parametrized vector-field families
@@ -201,7 +201,8 @@ r' = \xi_2(r).
 Shrink lines and stretch lines coincide with the null geodesics of the Lorentzian metric $h(u,v) = \left\langle u,D_{t_0}^t(r) v \right\rangle$. For this reason, we refer to the computation of hyperbolic LCSs as strongest normally-repelling or normally-attracting orbits of \cref{eq:etafields} as \emph{geodesic detection of hyperbolic LCSs}.
 
 To compute the normal repulsion of shrink lines, we note that an infinitesimal
-normal perturbation to a shrink line $\gamma$ at its point $r$ grows under the flow map $F_{t_{0}}^{t}$ by a factor of $\lambda_{2}(r)$ in the direction normal to $F_{t_{0}}^{t}(\gamma).$ Similarly, small normal perturbations to a stretch line decay by a factor $\lambda_{1}(r)$ in the direction normal to the evolving stretch line. 
+normal perturbation to a shrink line $\gamma$ at its point $r$ grows under the flow map $F_{t_0}^t$ by a factor of $\lambda_2(r)$ in the direction normal to $F_{t_0}^t(\gamma)$.
+Similarly, small normal perturbations to a stretch line decay by a factor $\lambda_1(r)$ in the direction normal to the evolving stretch line.
 
 \section{Numerical methods}
 
@@ -674,7 +675,7 @@ Resolution is $400 \times 400$.
 Elliptic LCSs are green, shrink line LCSs are red and stretch line LCSs are blue.
 White dots indicate $\lambda_2$ maxima for shrink lines and $\lambda_1$ minima stretch lines.
 FTLE shown in the background.
-$\lambda=$ 1.00, 1.08, 0.94, 0.90, 1.06
+$\lambda = 1.00, 1.08, 0.94, 0.90, 1.06$.
 }
 \label{f:ocean dataset LCS}
 \end{figure}
