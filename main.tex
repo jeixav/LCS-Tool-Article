@@ -484,19 +484,6 @@ The core function to compute hyperbolic LCSs is \lstinline!seed_curves_from_lamb
 \label{t:seed_curves_from_lambda_max syntax}
 \end{table*}
 
-In classical infinite-time dynamical systems, elliptic and hyperbolic invariant manifolds cannot intersect since trajectories at intersections would follow two different asymptotic behaviours simultaneously.
-In finite-time dynamical systems, hyperbolic LCSs may well intersect elliptic LCSs, with hyperbolic LCSs continuing to act as cores of mixing patterns observed in the interior of elliptic LCSs.
-Motivated by convention and for clarity in visualization, however, the default setting of LCS Tool removes hyperbolic LCS segments from the interior of elliptic LCSs.
-These removed segments can be turned on, as shown in \cref{f:ocean_dataset_colortracer}.
-
-\begin{figure}
-\centering
-\includegraphics[width=.475\textwidth]{graphics/ocean_dataset/LCS_fwd_coherent_eddy}
-\includegraphics[width=.475\textwidth]{graphics/ocean_dataset/LCS_fwd_colortracer}
-\caption{(Top) Elliptic LCS (green) with repelling LCSs (red) continuing into its interior. (Bottom) Final positions $x(t) = (x_1(t),x_2(t)) = F_{t_0}^t(x_0)$ of tracer particles. $x_1(t)$ position encoded in red and $x_2(t)$ position encoded in green. Note the continued impact of the repelling hyperbolic LCSs (black) on tracer patterns inside the elliptic LCS (white).}
-\label{f:ocean_dataset_colortracer}
-\end{figure}
-
 \section{Examples}
 
 This section presents the use of LCS Tool in three examples: a double gyre, a jet, and an oceanic geostrophic flow. The examples are available as scripts in the demo folder of LCS Tool. Executing these scripts can help readers follow LCS Tool computations.
