@@ -44,6 +44,10 @@ Comment #3
 
 The number of LCS detection software packages in the list of other LCS packages has been reduced and more details have been given. The "all-purpose" description of LCS Tool has been removed and the paragraph about LCS Tool's capabilities reworded.
 
+Reviewer #4
+
+The LCS Tool source code has been uploaded to RunMyCode, as suggested by the editor.
+
 Reviewer #5
 
 Comment #6
