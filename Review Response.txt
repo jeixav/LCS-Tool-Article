@@ -10,6 +10,10 @@ Comment #2
 
 Typo corrected as suggested
 
+Comment #3
+
+A table has been added with benchmarks on memory use.
+
 Comment #4
 
 Typo corrected as suggested

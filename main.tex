@@ -245,7 +245,7 @@ The first step in calculating elliptic and hyperbolic LCSs is the computation of
 \begin{tabular}{|c|p{.7\textwidth}|}
 \hline
 \multicolumn{2}{|p{.95\textwidth}|}{\lstinline![cgEigenvector,cgEigenvalue] = eig_cgStrain(derivative,domain,timespan,resolution)!}\tabularnewline
-\hline
+\hline \hline
 \lstinline!derivative! & function handle for flow velocity equations\tabularnewline
 \hline
 \lstinline!domain! & $2 \times 2$ array to define flow domain\tabularnewline
@@ -299,9 +299,28 @@ For dataset flows, using the auxiliary grid for eigenvalue calculations gives be
 As stated above, a typical main grid for the Cauchy-Green strain tensor has $500 \times 500$ points.
 This means that after the addition of 4 auxiliary grid points around each main grid point, \cref{eq:velocity} must be integrated over 1.25 million initial conditions.
 
-To avoid excessive computational times in MATLAB, we vectorize \cref{eq:velocity}, i.e., combine its right hand side evaluated over each initial point into a single system of equations. The resulting system is composed of independent blocks of two-dimensional first-order ordinary differential equations. We then use MATLAB's \lstinline!ode45! function to perform trajectory integration from all grid points simultaneously. This calculation typically takes five to ten minutes with default error tolerances.
-% FIXME Reviewer #2, comment #3: Add memory use data based on, for example, computations for \cref{f:double gyre lambda LCS convergence}.
-A potential drawback of vector form integration is that memory requirements may become excessive at high resolutions. Furthermore, writing the velocity function in vector form is more error-prone than the simpler two-dimensional form.
+To avoid excessive computational times in MATLAB, we vectorize \cref{eq:velocity}, i.e., combine its right hand side evaluated over each initial point into a single system of equations. The resulting system is composed of independent blocks of two-dimensional first-order ordinary differential equations. We then use MATLAB's \lstinline!ode45! function to perform trajectory integration from all grid points simultaneously. This calculation typically takes five to ten minutes.
+A potential drawback of vector form integration is that memory requirements may become excessive at high resolutions.
+\Cref{t:vector integration memory} lists runtime and memory use to integrate a flow map at different resolutions.
+Furthermore, writing the velocity function in vector form is more error-prone than the simpler two-dimensional form.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Resolution & Runtime (s) & Memory (MB)\tabularnewline
+\hline \hline
+$500 \times 251$ & 29 & 55\tabularnewline
+\hline
+$750 \times 376$ & 63 & 123\tabularnewline
+\hline
+$1000 \times 501$ & 112 & 223\tabularnewline
+\hline
+\end{tabular}
+\end{center}
+\caption{Runtime and memory use associated with vector integration at different resolutions. Results are from the function \lstinline!eig_cgStrain! applied to the double gyre presented in \cref{sec:double gyre}. Results obtained with an Intel Core i3-4130 processor.}
+\label{t:vector integration memory}
+\end{table}
 
 The Cauchy-Green strain tensor can have point singularities, i.e., points where $C_{t_0}^t(x_0)$ has repeated eigenvalues.
 At these points the eigenvectors $\xi_1(x_0)$ and $\xi_2(x_0)$ are no longer well-defined.
@@ -343,7 +362,7 @@ The main steps in calculating elliptic LCSs are enumerated in \cref{t:Elliptic L
 \hline
 \multicolumn{2}{|p{.95\textwidth}|}
 {\lstinline![shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda)!}\tabularnewline
-\hline
+\hline \hline
 \lstinline!cgEigenvector! & array of Cauchy-Green strain eigenvectors\tabularnewline
 \hline
 \lstinline!cgEigenvalue! & array of Cauchy-Green strain eigenvalues\tabularnewline
@@ -351,7 +370,7 @@ The main steps in calculating elliptic LCSs are enumerated in \cref{t:Elliptic L
 \lstinline!lambda! & scalar lambda value in \cref{eq:eta}\tabularnewline
 \hline \hline
 \multicolumn{2}{|p{.95\textwidth}|}{\lstinline![closedOrbits,orbits] = poincare_closed_orbit_multi(domain,resolution,shearline,PSList)!}\tabularnewline
-\hline
+\hline \hline
 \lstinline!domain! & array to define flow domain\tabularnewline
 \hline
 \lstinline!resolution! & $1 \times 2$ array to define main grid resolution for Cauchy-Green strain tensor\tabularnewline
@@ -442,7 +461,7 @@ The core function to compute hyperbolic LCSs is \lstinline!seed_curves_from_lamb
 \hline
 \multicolumn{2}{|p{.95\textwidth}|}
 {\lstinline![curvePosition,curveInitialPosition] = seed_curves_from_lambda_max(distance,cgEigenvalue,cgEigenvector,flowDomain,flowResolution)!}\tabularnewline
-\hline
+\hline \hline
 \lstinline!distance! & threshold distance for placement of $\lambda_2(x_0)$ maxima\tabularnewline
 \hline
 \lstinline!cgEigenvalue! & array of Cauchy-Green strain eigenvalues\tabularnewline
@@ -489,6 +508,8 @@ These functions are written to achieve balance between ease of use and performan
 Running the demo scripts takes on the order of minutes.
 
 \subsection{Double gyre}
+\label{sec:double gyre}
+
 The double gyre is a model for a time-dependent two gyre system observed in geophysical flows \citep{shadden05:_defin_lagran_lyapun}. The model consists of two counter rotating sinusoidal vortices with a harmonically oscillating line in-between. Lagrangian particle motions satisfy the non-autonomous dynamical system
 \begin{equation}
 \begin{split}
