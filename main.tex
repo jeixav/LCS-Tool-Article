@@ -625,8 +625,9 @@ $\lambda$-values for closed orbit detection are varied over the range $[0.80,1.2
 
 \begin{figure}
 \centering
-% FIXME Shrink line LCS figure does not treat periodic boundary condition correctly
-\includegraphics[width=.475\textwidth]{graphics/bickley_jet/lambda_hyperbolic_lcs}
+\setlength\figurewidth{.35\textwidth}
+\import{graphics/bickley_jet/}{elliptic_repelling_lcs_details.tikz}
+\import{graphics/bickley_jet/}{elliptic_attracting_lcs_details.tikz}
 \caption{
 LCSs in the Bickley jet.
 Resolution is $500 \times 200$.
@@ -676,7 +677,9 @@ The hyperbolic LCSs determine the deformation of the fluid between coherent eddi
 
 \begin{figure}
 \begin{center}
-\includegraphics[width=.475\textwidth]{graphics/ocean_dataset/lambda_hyperbolic_lcs}
+\setlength\figurewidth{.4\textwidth}
+\import{graphics/ocean_dataset/}{elliptic_repelling_lcs.tikz}
+\import{graphics/ocean_dataset/}{elliptic_attracting_lcs.tikz}
 \end{center}
 \caption{
 LCSs in the ocean velocity data from satellite altimetry.

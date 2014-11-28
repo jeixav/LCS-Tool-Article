@@ -141,6 +141,11 @@ hEllipticLcs = copyobj(hEllipticLcs,hAxes);
 % minimums
 [stretchlineLcs,stretchlineLcsInitialPosition] = seed_curves_from_lambda_max(stretchlineLocalMaxDistance,stretchlineMaxLength,-cgEigenvalue(:,1),cgEigenvector(:,3:4),domain,resolution,'odeSolverOptions',stretchlineOdeSolverOptions,'periodicBc',periodicBc);
 
+% FIXME Discard stretchlines to prevent pdflatex from running out of memory
+idx = 1:3:numel(stretchlineLcs);
+stretchlineLcs = stretchlineLcs(idx);
+stretchlineLcsInitialPosition = stretchlineLcsInitialPosition(:,idx);
+
 % Remove stretchlines inside elliptic LCSs
 for i = 1:nPoincareSection
     stretchlineLcs = remove_strain_in_elliptic(stretchlineLcs,ellipticLcs{i});
