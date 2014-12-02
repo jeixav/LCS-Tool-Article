@@ -1,7 +1,5 @@
 Highlights
 
-FIXME Reviewer #3: Highlights are so simple that they don't grasp the core contribution of the article.
-
-- New computational platform to compute Lagrangian Coherent Structures (LCSs) from their geodesic theory
+- New computational platform facilitates detection of Lagrangian Coherent Structures (LCSs) from their geodesic theory with minimal effort
 - Step by step explanation of LCS algorithms
-- Three demo cases featuring analytic flow models and experimental flow data
+- Three examples featuring analytic flow models and experimental flow data demonstrate software usage
