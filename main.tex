@@ -533,7 +533,7 @@ In a loop (\crefrange{ll:double gyre lambda loop start}{ll:double gyre lambda lo
 % FIXME Small tolerances (i.e. strict tolerances) should make convergence difficult not easy, so the word "facilitate" in the sentence below seems illogical.
 In this script, we have chosen small values for the error tolerances of the integration of the Cauchy-Green strain tensor (\cref{ll:double gyre cgStrainOdeSolverOptions}) and $\lambda$-lines (\cref{ll:double gyre lambdaLineOdeSolverOptions}) to facilitate convergence.
 
-\lstinputlisting[caption={LCS Tool commands for double gyre elliptic LCSs. Subset of the LCS Tool script \lstinline!demo/double_gyre/hyperbolic_shear_lcs.m!},
+\lstinputlisting[caption={LCS Tool commands for double gyre elliptic LCSs. Subset of the LCS Tool script \lstinline!demo/double_gyre/elliptic_hyperbolic_lcs.m!},
                  label=l:double gyre elliptic LCS]{listings/double_gyre/elliptic_lcs_subset.m}
 
 In \cref{f:double gyre lambda LCS convergence}, the resolution of the  Cauchy-Green strain tensor is varied from $500 \times 250$ to $1000 \times 500$. The location of the outermost closed $\lambda$-line changes insignificantly, demonstrating convergence. For all tested resolutions, the $\lambda$ values of the outermost closed orbits match.
@@ -558,7 +558,7 @@ As usual, the local maximization distance is set larger for stretch lines than f
 
 % FIXME Reviewer #5, comment #4: There is too much source code in the main content such as cref{l:double gyre lambda strain stretch LCS,l:Bickley jet elliptic hyperbolic LCS subset,l:ocean data elliptic hyperbolic lcs}. They could be arranged as an appendix at the end.
 \lstinputlisting[
-        caption={LCS Tool commands for double gyre hyperbolic LCSs. Subset of the LCS Tool script \lstinline!demo/double_gyre/hyperbolic_shear_lcs.m!},
+        caption={LCS Tool commands for double gyre hyperbolic LCSs. Subset of the LCS Tool script \lstinline!demo/double_gyre/elliptic_hyperbolic_lcs.m!},
         label=l:double gyre lambda strain stretch LCS]
         {listings/double_gyre/hyperbolic_lcs_subset.m}
 
@@ -606,7 +606,7 @@ $\lambda$-values for closed orbit detection are varied over the range $[0.80,1.2
 \Cref{f:Bickley jet LCS} shows elliptic and hyperbolic LCSs of the Bickley jet with the FTLE in the background.
 
 \lstinputlisting[
-        caption={LCS Tool commands for Bickley jet elliptic and hyperbolic LCSs. Subset of the LCS Tool script \lstinline!demo/bickley_jet/hyperbolic_shear_lcs.m!},
+        caption={LCS Tool commands for Bickley jet elliptic and hyperbolic LCSs. Subset of the LCS Tool script \lstinline!demo/bickley_jet/elliptic_hyperbolic_lcs.m!},
         label=l:Bickley jet elliptic hyperbolic LCS subset]
         {listings/bickley_jet/elliptic_hyperbolic_lcs_subset.m}
 
@@ -642,11 +642,11 @@ where $g$ is the constant of gravity, $R$ is the mean radius of the Earth, and $
 The data is given at a spatial resolution of $1/4\degree$ and a temporal resolution of 7 days.
 Due to the discrete data, defining the right hand side of \cref{eq:dtlon} and \cref{eq:dtlat} involves spline interpolation in space and time.
 An interpolant is generated first, then the function \lstinline!flowdata_derivative! evaluates the interpolants for the zonal and meridional velocity at the needed coordinates.
-\Cref{l:ocean data elliptic hyperbolic lcs} shows the relevant part of the code in LCS Tool's ocean demo file \lstinline!demo/ocean_dataset/hyperbolic_shear_lcs.m!.
+\Cref{l:ocean data elliptic hyperbolic lcs} shows the relevant part of the code in LCS Tool's ocean demo file \lstinline!demo/ocean_dataset/elliptic_hyperbolic_lcs.m!.
 The commands for the interpolation of the velocity data are given in \crefrange{ll:interpolation start}{ll:interpolation end}.
 
 \lstinputlisting[
-        caption={LCS Tool commands for ocean data elliptic and hyperbolic LCSs. Subset of the LCS Tool script \lstinline!demo/ocean_dataset/hyperbolic_shear_lcs.m!},
+        caption={LCS Tool commands for ocean data elliptic and hyperbolic LCSs. Subset of the LCS Tool script \lstinline!demo/ocean_dataset/elliptic_hyperbolic_lcs.m!},
         label={l:ocean data elliptic hyperbolic lcs}]
         {listings/ocean_dataset/elliptic_hyperbolic_lcs_subset.m}
 
