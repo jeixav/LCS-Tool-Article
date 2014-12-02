@@ -54,6 +54,10 @@ The LCS Tool source code has been uploaded to RunMyCode, as suggested by the edi
 
 Reviewer #5
 
+Comment #1 and #2
+
+The abstract and introduction have been revised based on the review comments.
+
 Comment #6
 
 LCS Tool functions overview table added at beginning of numerical methods section.
