@@ -488,7 +488,7 @@ This section presents the use of LCS Tool in three examples: a double gyre, a je
 % FIXME Performance also described in Conclusions section
 The scripts call LCS Tool functions.
 These functions are written to achieve balance between ease of use and performance.
-% FIXME With lambda range running demos can take over an hour.
+% FIXME With lambda range demo runtimes can be over an hour.
 % FIXME List runtime of demo scripts in a table
 Running the demo scripts takes on the order of minutes.
 
@@ -524,8 +524,12 @@ derivative_(idx1) = -pi*amplitude*sin(pi*forcing).*cos(pi*x(idx2));
 derivative_(idx2) = pi*amplitude*cos(pi*forcing).*sin(pi*x(idx2)).*(2*a*x(idx1) + b);
 \end{lstlisting}
 
-In what follows, the parameter values are: $A = 0.1$, $\epsilon = 0.1$, $\omega = \pi/5$. The flow timespan is $t \in [0,10]$ and the domain is $x \in [0,2]$, $y \in [0,1]$. By examining the FTLE field (which LCS Tool can provide), we position Poincare sections to capture elliptic LCSs. An LCS Tool demo script to perform this operation is given in \cref{l:double gyre elliptic LCS} where two Poincare sections are defined (\cref{ll:double gyre poincareSection(1),ll:double gyre poincareSection(2)}). The free stretching parameter $\lambda$ (\cref{eq:etafields}) is varied over the range $[0.93,1.07]$ with increments of $0.01$ (\cref{ll:double gyre lambdaRange}).
-% FIXME The cited loop contains ellipses (...), that hide important code and should become an LCS Tool function
+In what follows, the parameter values are: $A = 0.1$, $\epsilon = 0.1$, $\omega = \pi/5$.
+The flow timespan is $t \in [0,10]$ and the domain is $x \in [0,2]$, $y \in [0,1]$.
+By examining the FTLE field (which LCS Tool can provide), we position Poincare sections to capture elliptic LCSs.
+An LCS Tool demo script to perform this operation is given in \cref{l:double gyre elliptic LCS} where two Poincare sections are defined (\cref{ll:double gyre poincareSection(1),ll:double gyre poincareSection(2)}).
+The free stretching parameter $\lambda$ (\cref{eq:etafields}) is varied over the range $[0.93,1.07]$ with increments of $0.01$ (\cref{ll:double gyre lambdaRange}).
+% FIXME Loop replaced by the function poincare_closed_orbit_range
 In a loop (\crefrange{ll:double gyre lambda loop start}{ll:double gyre lambda loop end}), closed orbits for all predefined $\lambda$ values are computed and the outermost closed orbit is kept as the Lagrangian vortex boundary.
 % FIXME Small tolerances (i.e. strict tolerances) should make convergence difficult not easy, so the word "facilitate" in the sentence below seems illogical.
 In this script, we have chosen small values for the error tolerances of the integration of the Cauchy-Green strain tensor (\cref{ll:double gyre cgStrainOdeSolverOptions}) and $\lambda$-lines (\cref{ll:double gyre lambdaLineOdeSolverOptions}) to facilitate convergence.
