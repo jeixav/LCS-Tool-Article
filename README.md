@@ -1,7 +1,5 @@
-This repository contains source files for a scientific journal style article on [LCS Tool](//github.com/jeixav/LCS-Tool/). To produce a PDF file, execute:
+This repository contains source files for an article on [LCS Tool](//github.com/jeixav/LCS-Tool/). To produce a PDF file of the article, execute:
 
 	make
 
 The article will be the file main.pdf.
-
-A version of this article is published on arXiv: <http://arxiv.org/abs/1406.3527>

@@ -13,8 +13,8 @@
    height="542.40527"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="variable_step_integration.pdf">
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="variable_step_integration.svg">
   <defs
      id="defs4">
     <inkscape:path-effect
@@ -412,13 +412,13 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.8801539"
-     inkscape:cx="542.77471"
-     inkscape:cy="271.20263"
+     inkscape:cx="133.25412"
+     inkscape:cy="134.51169"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="2560"
-     inkscape:window-height="1541"
+     inkscape:window-width="1600"
+     inkscape:window-height="1134"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
@@ -434,7 +434,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -549,14 +549,15 @@
       <text
          sodipodi:linespacing="125%"
          id="text5156"
-         y="930.34918"
-         x="73.911728"
+         y="920.24365"
+         x="72.847984"
          style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
          xml:space="preserve"><tspan
-           y="930.34918"
-           x="73.911728"
+           y="920.24365"
+           x="72.847984"
            id="tspan5158"
-           sodipodi:role="line">Initial</tspan></text>
+           sodipodi:role="line"
+           style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans">Initial</tspan></text>
     </g>
     <g
        id="g4794-7"
@@ -665,7 +666,8 @@
          sodipodi:role="line"
          id="tspan5280"
          x="303.85931"
-         y="360.173">#1</tspan></text>
+         y="360.173"
+         style="-inkscape-font-specification:Sans;font-family:Sans;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:40px;text-anchor:start;text-align:start;writing-mode:lr;line-height:125%">\#1</tspan></text>
     <g
        id="g4794-7-7"
        transform="matrix(0.37807277,0,0,0.37807277,665.91972,104.89565)">
@@ -744,7 +746,7 @@
        inkscape:connector-curvature="0" />
     <text
        xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans;font-stretch:normal;font-variant:normal;text-anchor:start;text-align:start;writing-mode:lr"
        x="757.4176"
        y="499.21744"
        id="text5278-0"
@@ -752,7 +754,7 @@
          sodipodi:role="line"
          x="757.4176"
          y="499.21744"
-         id="tspan5407">#2</tspan></text>
+         id="tspan5407">\#2</tspan></text>
     <g
        id="g5470"
        transform="translate(177.70543,-56.20875)">
