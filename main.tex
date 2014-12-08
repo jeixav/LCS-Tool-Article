@@ -482,14 +482,29 @@ Once shrinkline and stretchline integration has begun, it may evolve so as to be
 
 \section{Examples}
 
-This section presents the use of LCS Tool in three examples: a double gyre, a jet, and an oceanic geostrophic flow. The examples are available as scripts in the demo folder of LCS Tool. Executing these scripts can help readers follow LCS Tool computations.
-
-% FIXME Performance also described in Conclusions section
-The scripts call LCS Tool functions.
+This section presents the use of LCS Tool in three examples: a double gyre, a jet, and an oceanic geostrophic flow.
+The examples are available as scripts in the demo folder of LCS Tool.
+Executing these scripts demonstrates how to call LCS Tool functions.
 These functions are written to achieve balance between ease of use and performance.
-% FIXME With lambda range demo runtimes can be over an hour.
-% FIXME List runtime of demo scripts in a table
-Running the demo scripts takes on the order of minutes.
+Examples of demo runtimes are given in \cref{t:demo runtimes}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Demo & Runtime (min)\tabularnewline
+\hline \hline
+double\_gyre/elliptic\_hyperbolic\_lcs & 50\tabularnewline
+\hline
+bickley\_jet/elliptic\_hyperbolic\_lcs\_details & 975\tabularnewline
+\hline
+ocean\_dataset/elliptic\_hyperbolic\_lcs\_details & 127\tabularnewline
+\hline
+\end{tabular}
+\end{center}
+\caption{Runtime of some demo scripts Results obtained with an Intel Core i3-4130 processor with eight gigabytes of memory.}
+\label{t:demo runtimes}
+\end{table}
 
 \subsection{Double gyre}
 \label{sec:double gyre}
