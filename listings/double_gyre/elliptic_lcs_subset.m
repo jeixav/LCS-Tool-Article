@@ -3,15 +3,17 @@ epsilon = .1;
 amplitude = .1;
 omega = pi/5;
 domain = [0,2;0,1];
-resolution = [500,250];
+resolutionX = 500;
+[resolutionY,deltaX] = equal_resolution(domain,resolutionX);
+resolution = [resolutionX,resolutionY];
 timespan = [0,10];
 
 %% Velocity definition
-lDerivative = @(t,x)derivative(t,x,false,epsilon,amplitude,omega);
+lDerivative = @(t,x)derivative(t,x,epsilon,amplitude,omega);
 incompressible = true;
 
 %% LCS parameters
-cgStrainOdeSolverOptions = odeset('relTol',1e-5); %@\label{ll:double gyre cgStrainOdeSolverOptions}
+cgOptions = odeset('relTol',1e-5); %@\label{ll:double gyre cgStrainOdeSolverOptions}
 
 % Lambda-lines
 poincareSection = struct('endPosition',{},'numPoints',{},'orbitMaxLength',{});
@@ -24,15 +26,12 @@ for i = 1:nPoincareSection
     poincareSection(i).orbitMaxLength = 2*(2*pi*rOrbit);
 end
 lambdaLineOdeSolverOptions = odeset('relTol',1e-6); %@\label{ll:double gyre lambdaLineOdeSolverOptions}
-lambdaRange = .93:.01:1.07; %@\label{ll:double gyre lambdaRange}
+lambda = .93:.01:1.07; %@\label{ll:double gyre lambdaRange}
 
 %% Cauchy-Green strain eigenvalues and eigenvectors
 [cgEigenvector,cgEigenvalue] = eig_cgStrain(lDerivative,domain,resolution,timespan,'incompressible',incompressible,'odeSolverOptions',cgStrainOdeSolverOptions);
 
-%% Lambda-line LCSs
-
-for lambda = lambdaRange %@\label{ll:double gyre lambda loop start}
-...        
-    closedLambdaLineCandidate = poincare_closed_orbit_multi(domain,resolution,shearline,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions,'showGraph',showGraph);
-...
-end %@\label{ll:double gyre lambda loop end}
+%% Elliptic LCSs
+[closedLambdaLinePos,closedLambdaLineNeg] = poincare_closed_orbit_range(domain,resolution,cgEigenvector,cgEigenvalue,lambda,ps,'odeSolverOptions',lambdaLineOdeSolverOptions); %@\label{ll:double gyre lambda range}
+ellipticLcs = elliptic_lcs(closedLambdaLinePos);
+ellipticLcs = [ellipticLcs,elliptic_lcs(closedLambdaLineNeg)]; %@\label{ll:double gyre elliptic_lcs}

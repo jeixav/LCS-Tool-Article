@@ -23,8 +23,8 @@ periodicBc = [true,false]; %@\label{ll:Bickley jet periodicBc}
 [cgEigenvector,cgEigenvalue] = eig_cgStrain(lDerivative,domain,resolution,timespan,'incompressible',incompressible);
 
 %% LCS parameters
-% Lambda-lines
-lambdaRange = .8:.01:1.1;
+% Lambda lines
+lambda = .8:.01:1.1;
 lambdaLineOdeSolverOptions = odeset('relTol',1e-6);
 
 % Shrink lines
@@ -59,15 +59,25 @@ for i = 1:nPoincareSection
 end
 
 ...
-for lambda = lambdaRange    
-...    
-    [shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda);          
-    closedLambdaLineCandidate = poincare_closed_orbit_multi(domain,resolution,shearline,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions);        
-...    
-end
-...   
+
+%% EllipticLCSs
+[closedLambdaLinePos,closedLambdaLineNeg] = poincare_closed_orbit_range(domain,resolution,cgEigenvector,cgEigenvalue,lambda,poincareSection,'forceEtaComplexNaN',forceEtaComplexNaN,'odeSolverOptions',lambdaLineOdeSolverOptions,'periodicBc',periodicBc);
+
+ellipticLcs = elliptic_lcs(closedLambdaLinePos);
+ellipticLcs = [ellipticLcs,elliptic_lcs(closedLambdaLineNeg)];
+
 %% Hyperbolic shrink line LCSs
-[shrinkLineLcs,shrinkLineLcsInitialPosition] = seed_curves_from_lambda_max(shrinkLineLocalMaxDistance,shrinkLineMaxLength,cgEigenvalue(:,2),cgEigenvector(:,1:2),domain,resolution,'periodicBc',periodicBc,'odeSolverOptions',shrinkLineOdeSolverOptions);
+shrinkLine = seed_curves_from_lambda_max(shrinkLineLocalMaxDistance,shrinkLineMaxLength,cgEigenvalue(:,2),cgEigenvector(:,1:2),domain,resolution,'odeSolverOptions',shrinkLineOdeSolverOptions,'periodicBc',periodicBc);
+
+% Remove shrink lines inside elliptic LCSs
+for i = 1:nPoincareSection
+    shrinkLine = remove_strain_in_elliptic(shrinkLine,ellipticLcs{i});
+end
 
 %% Hyperbolic stretch line LCSs
-[stretchLineLcs,stretchLineLcsInitialPosition] = seed_curves_from_lambda_max(stretchLineLocalMaxDistance,stretchLineMaxLength,-cgEigenvalue(:,1),cgEigenvector(:,3:4),domain,resolution,'periodicBc',periodicBc,'odeSolverOptions',stretchLineOdeSolverOptions);
+stretchLine = seed_curves_from_lambda_max(stretchLineLocalMaxDistance,stretchLineMaxLength,-cgEigenvalue(:,1),cgEigenvector(:,3:4),domain,resolution,'odeSolverOptions',stretchLineOdeSolverOptions,'periodicBc',periodicBc);
+
+% Remove stretch lines inside elliptic LCSs
+for i = 1:nPoincareSection
+    stretchLine = remove_strain_in_elliptic(stretchLine,ellipticLcs{i});
+end
