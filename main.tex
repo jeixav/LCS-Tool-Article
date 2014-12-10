@@ -391,7 +391,10 @@ The main steps in calculating elliptic LCSs are enumerated in \cref{t:Elliptic L
 \label{t:Elliptic LCS functions}
 \end{table*}
 
-The first step is to define the position of Poincare sections in regions where closed $\lambda$-lines are expected based on a visual analysis of the orbit structure of the $\eta_\pm^\lambda$ vector field. The Poincare section is to be oriented such that the first endpoint is close to the centre of the expected Lagrangian vortex, and the second endpoint is outside this vortex. There is no automated procedure implemented in LCS Tool for the positioning of Poincare sections (see however \citet{karrasch14:_autom_lagran} for a recently developed algorithm). Additionally, the number of lambda-lines launched from the Poincare section, \lstinline!poincareSection.numPoints!, must be defined. A reasonable default value is 100.
+The first step is to define the position of Poincare sections in regions where closed $\lambda$-lines are expected based on a visual analysis of the orbit structure of the $\eta_\pm^\lambda$ vector field.
+The Poincare section is to be oriented such that the first endpoint is close to the centre of the expected Lagrangian vortex, and the second endpoint is outside this vortex.
+Additionally, the number of lambda-lines launched from the Poincare section, \lstinline!poincareSection.numPoints!, must be defined.
+A reasonable default value is 100.
 
 The second step is to integrate the $\lambda$-lines  starting from the Poincare section to obtain the corresponding Poincare map. Integration of $\lambda$-lines is performed using the $\eta_\pm^\lambda$ vector fields defined in \cref{eq:eta} over the main grid. The underlying eigenvector fields, $\xi_i(x_0)$, have generic but removable orientation discontinuities, which require monitoring and local reorientation. This process is sketched in \cref{t:variable step integration} and illustrated in \cref{f:variable step integration}. Linear interpolation is used in the interpolation of $\eta_\pm^\lambda$ within a grid element, since using higher-order interpolation would necessitate verifying that there are no orientation discontinuities beyond the four nearest grid points. We identify orientation discontinuities by checking the inner product of the $\eta_\pm^\lambda$ vectors at adjacent grid points. Rotations exceeding 90°, between two such neighbouring vectors are classified as orientation discontinuities and are corrected before linear interpolation. When setting the Cauchy-Green strain tensor main grid resolution, one may find it helpful to calculate a histogram of eigenvector field rotations to ensure that all rotations are well below 90° or almost 180°.
 
@@ -709,7 +712,6 @@ The altimeter products used in this work are produced by SSALTO/DUACS and distri
 
 \section*{References}
 
-% FIXME Citations without pages (karrasch14:_autom_lagran) do not list publication year
 \bibliographystyle{elsarticle-num-names} 
 \bibliography{main}
 
