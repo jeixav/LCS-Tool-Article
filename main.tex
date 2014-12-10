@@ -653,7 +653,7 @@ The commands for the interpolation of the velocity data are given in \crefrange{
 
 We choose the integration time as $T=30$ days (\cref{l:ocean data elliptic hyperbolic lcs}, \cref{ll:ocean data timespan}), which is larger than the eddy turnover time in this region.
 The resolution of the main computational grid for initial conditions is set to $400 \times 400$ (\cref{ll:ocean data resolution}).
-This corresponds to a resolution of roughly 0.015° and gives good results.
+This corresponds to a resolution of roughly 0.015°.
 With this choice, the resolution of the tracer grid is 15 times higher than the resolution of the velocity field.
 The flow is integrated and the Cauchy-Green strain tensor is computed by the function \lstinline!eig_cgStrain! (\cref{ll:eig_cgStrain}).
 The auxiliary grid distance is set to 1\% of the main grid distance (\cref{ll:cgAuxGridRelDelta}), and eigenvalues are computed from the auxiliary grid (\cref{ll:cgEigenvalueFromMainGrid}).
