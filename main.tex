@@ -19,14 +19,16 @@
 \lstloadlanguages{Matlab}
 \lstset{
   basicstyle=\small,
-  breaklines=true,
+  breaklines,
+  breakatwhitespace,
   frame=single,
   float,
   columns=fullflexible,
   numbers=left,
   stepnumber=2,
   backgroundcolor=\color{grey},
-  escapeinside={\%@}{\^^M}
+  escapeinside={\%@}{\^^M},
+  mathescape
 }
 
 % Workaround for bug in elsarticle-num-names.bst
@@ -521,35 +523,19 @@ f(x,t) = \epsilon \sin(\omega t) x^2 + [1 - 2 \epsilon \sin(\omega t)] x.
 \end{equation}
 The MATLAB function describing this velocity field is given in \cref{l:double gyre derivative}, specifying the right hand side of the particle ordinary differential equation in a way that supports vectorized integration.
 
-% FIXME Reviewer #2, comment #8: Check all code listings for awkward splits across pages and line-splits (e.g. semicolon on own line and array indices)
-% FIXME Reviewer #5, comment #3: Format manuscript carefully with regards to code listings
-\begin{lstlisting}[caption={Double gyre derivative function corresponding to \cref{eq:double gyre derivative equations}.},label=l:double gyre derivative]
-function derivative_ = derivative(t,x,epsilon,amplitude,omega)
-
-idx1 = 1:2:numel(x)-1;
-idx2 = 2:2:numel(x);
-
-a = epsilon*sin(omega*t);
-b = 1 - 2*epsilon*sin(omega*t);
-forcing = a*x(idx1).^2 + b*x(idx1);
-
-derivative_ = nan(size(x));
-
-derivative_(idx1) = -pi*amplitude*sin(pi*forcing).*cos(pi*x(idx2));
-derivative_(idx2) = pi*amplitude*cos(pi*forcing).*sin(pi*x(idx2)).*(2*a*x(idx1) + b);
-\end{lstlisting}
+\lstinputlisting[caption={Double gyre derivative function corresponding to \cref{eq:double gyre derivative equations}.},
+                 label=l:double gyre derivative]{listings/double_gyre/derivative.m}
 
 In what follows, the parameter values are: $A = 0.1$, $\epsilon = 0.1$, $\omega = \pi/5$.
 The flow timespan is $t \in [0,10]$ and the domain is $x \in [0,2]$, $y \in [0,1]$.
 By examining the FTLE field (which LCS Tool can provide), we position Poincare sections to capture elliptic LCSs.
 An LCS Tool demo script to perform this operation is given in \cref{l:double gyre elliptic LCS} where two Poincare sections are defined (\cref{ll:double gyre poincareSection(1),ll:double gyre poincareSection(2)}).
 The free stretching parameter $\lambda$ (\cref{eq:etafields}) is varied over the range $[0.93,1.07]$ with increments of $0.01$ (\cref{ll:double gyre lambdaRange}).
-% FIXME Loop replaced by the function poincare_closed_orbit_range
-In a loop (\crefrange{ll:double gyre lambda loop start}{ll:double gyre lambda loop end}), closed orbits for all predefined $\lambda$ values are computed and the outermost closed orbit is kept as the Lagrangian vortex boundary.
+Closed orbits for all predefined $\lambda$ values are computed and the outermost closed orbit is kept as the Lagrangian vortex boundary  (\crefrange{ll:double gyre lambda range}{ll:double gyre elliptic_lcs}).
 % FIXME Small tolerances (i.e. strict tolerances) should make convergence difficult not easy, so the word "facilitate" in the sentence below seems illogical.
 In this script, we have chosen small values for the error tolerances of the integration of the Cauchy-Green strain tensor (\cref{ll:double gyre cgStrainOdeSolverOptions}) and $\lambda$-lines (\cref{ll:double gyre lambdaLineOdeSolverOptions}) to facilitate convergence.
 
-\lstinputlisting[caption={LCS Tool commands for double gyre elliptic LCSs. Subset of the LCS Tool script \lstinline!demo/double_gyre/elliptic_hyperbolic_lcs.m!},
+\lstinputlisting[caption={LCS Tool commands for double gyre elliptic LCSs. Abridged subset of the LCS Tool script \lstinline!demo/double_gyre/elliptic_hyperbolic_lcs.m!},
                  label=l:double gyre elliptic LCS]{listings/double_gyre/elliptic_lcs_subset.m}
 
 In \cref{f:double gyre lambda LCS convergence}, the resolution of the  Cauchy-Green strain tensor is varied from $500 \times 250$ to $1000 \times 500$. The location of the outermost closed $\lambda$-line changes insignificantly, demonstrating convergence. For all tested resolutions, the $\lambda$ values of the outermost closed orbits match.
@@ -567,14 +553,13 @@ This also suggests that the lowest tested resolution, $500 \times 250$, is suffi
 \end{figure}
 
 \Cref{f:double gyre lambda hyperbolic LCS} shows elliptic and hyperbolic LCSs for the double gyre at this resolution.
-% FIXME Sentence below is inaccurate since \cref{l:double gyre lambda strain stretch LCS} gives commands for hyperbolic LCSs only
-\Cref{l:double gyre lambda strain stretch LCS} gives the corresponding LCS Tool commands. The maximum length of shrink lines and stretch lines, \lstinline!shrinkLineMaxLength! and \lstinline!stretchLineMaxLength!, is set to $20$, a multiple of the domain size since the hyperbolic LCSs may wind around vortices several times.
+\Cref{l:double gyre lambda strain stretch LCS} gives the LCS Tool commands to compute hyperbolic LCSs.
+The maximum length of shrink lines and stretch lines, \lstinline!shrinkLineMaxLength! and \lstinline!stretchLineMaxLength!, is set to $20$, a multiple of the domain size since the hyperbolic LCSs may wind around vortices several times.
 
 As usual, the local maximization distance is set larger for stretch lines than for shrink lines (cf. \cref{ll:shrinkLineLocalMaxDistance} and \cref{ll:stretchLineLocalMaxDistance}). The purpose of the maximization distance is to obtain spatially separated LCSs and to avoid a dense tangle of lines that basically indicates the same hyperbolic LCS (cf. \cref{t:Hyperbolic LCS algorithm}, \cref{i:flag maxima}). Setting the local maximization distance for stretch lines larger than for shrink lines allows obtaining a comparable number of stretch lines and shrink lines overall in the flow domain (recall that hyperbolic LCS seed points are discarded if they are within the local maximization distance of an existing hyperbolic LCS). Shrink lines are locally tangent to ridges of $\lambda_2$ maxima, whereas stretch lines are locally normal to these ridges. Setting the local maximization distance of stretch lines and shrink lines equal would therefore produce a greater number of stretch lines than shrink lines overall.
 
-% FIXME Reviewer #5, comment #4: There is too much source code in the main content such as cref{l:double gyre lambda strain stretch LCS,l:Bickley jet elliptic hyperbolic LCS subset,l:ocean data elliptic hyperbolic lcs}. They could be arranged as an appendix at the end.
 \lstinputlisting[
-        caption={LCS Tool commands for double gyre hyperbolic LCSs. Subset of the LCS Tool script \lstinline!demo/double_gyre/elliptic_hyperbolic_lcs.m!},
+        caption={LCS Tool commands for double gyre hyperbolic LCSs. Abridged subset of the LCS Tool script \lstinline!demo/double_gyre/elliptic_hyperbolic_lcs.m!},
         label=l:double gyre lambda strain stretch LCS]
         {listings/double_gyre/hyperbolic_lcs_subset.m}
 
@@ -616,13 +601,13 @@ f_{1,2}(t) = 2.625 \times 10^{-2} \phi_1(t/6.238 \times 10^5)
 The parameter values we use are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$.
 
 The integration time is $T = 4L_x/U$, an integer multiple of the eddy turnover time.
-\Cref{l:Bickley jet elliptic hyperbolic LCS subset} shows the LCS Tool commands in which the chaotically perturbed velocity is defined (\crefrange{ll:Bickley jet velocity definition start}{ll:Bickley jet velocity definition end}), periodic boundary conditions are imposed in the x-direction (\cref{ll:Bickley jet periodicBc}), and five Poincare sections are defined where we expect coherent vortices (\crefrange{ll:Bickley jet Poincare start}{ll:Bickley jet Poincare end}).
+\Cref{l:Bickley jet elliptic hyperbolic LCS subset} shows the LCS Tool commands in which the chaotically perturbed velocity is defined (\cref{ll:Bickley jet velocity definition}), periodic boundary conditions are imposed in the x-direction (\cref{ll:Bickley jet periodicBc}), and five Poincare sections are defined where we expect coherent vortices (\crefrange{ll:Bickley jet Poincare start}{ll:Bickley jet Poincare end}).
 $\lambda$-values for closed orbit detection are varied over the range $[0.80,1.20]$ with a step of $0.01$.
 
 \Cref{f:Bickley jet LCS} shows elliptic and hyperbolic LCSs of the Bickley jet with the FTLE in the background.
 
 \lstinputlisting[
-        caption={LCS Tool commands for Bickley jet elliptic and hyperbolic LCSs. Subset of the LCS Tool script \lstinline!demo/bickley_jet/elliptic_hyperbolic_lcs.m!},
+        caption={LCS Tool commands for Bickley jet elliptic and hyperbolic LCSs. Abridged version of the LCS Tool script \lstinline!demo/bickley_jet/elliptic_hyperbolic_lcs.m!},
         label=l:Bickley jet elliptic hyperbolic LCS subset]
         {listings/bickley_jet/elliptic_hyperbolic_lcs_subset.m}
 
@@ -662,11 +647,19 @@ An interpolant is generated first, then the function \lstinline!flowdata_derivat
 The commands for the interpolation of the velocity data are given in \crefrange{ll:interpolation start}{ll:interpolation end}.
 
 \lstinputlisting[
-        caption={LCS Tool commands for ocean data elliptic and hyperbolic LCSs. Subset of the LCS Tool script \lstinline!demo/ocean_dataset/elliptic_hyperbolic_lcs.m!},
+        caption={LCS Tool commands for ocean data elliptic and hyperbolic LCSs. Abridged version of the LCS Tool script \lstinline!demo/ocean_dataset/elliptic_hyperbolic_lcs.m!},
         label={l:ocean data elliptic hyperbolic lcs}]
         {listings/ocean_dataset/elliptic_hyperbolic_lcs_subset.m}
 
-We choose the integration time as $T=30$ days (\cref{l:ocean data elliptic hyperbolic lcs}, \cref{ll:ocean data timespan}), which is larger than the eddy turnover time in this region. The resolution of the main computational grid for initial conditions is set to $400 \times 400$ (\cref{ll:ocean data resolution}). This corresponds to a resolution of roughly 0.015° and gives good results. With this choice, the resolution of the tracer grid is 15 times higher than the resolution of the velocity field. The flow is integrated and the Cauchy-Green strain tensor is computed by the function \lstinline!eig_cgStrain! (\cref{ll:eig_cgStrain}). Incompressibility of the flow is enforced (\cref{ll:incompressible}), the auxiliary grid distance is set to 1\% of the main grid distance (\cref{ll:cgAuxGridRelDelta}), and eigenvalues are computed from the auxiliary grid (\cref{ll:cgEigenvalueFromMainGrid}). Elliptic LCSs are computed in \cref{ll:ocean data poincare_closed_orbit_multi}, after the Poincare sections have been set (\cref{ll:ocean data poincareSection(1),ll:ocean data poincareSection(2)}) and the $\eta_\pm^\lambda$ fields have been defined (\cref{ll:ocean data lambda_line}). $\lambda$-values are varied over a range of $[0.90,1.10]$ with a step of $0.02$ (\cref{ll:ocean data lambdaRange}). Hyperbolic LCSs are computed in \cref{ll:ocean data shrinkLineLcs,ll:ocean data stretchLineLcs}.
+We choose the integration time as $T=30$ days (\cref{l:ocean data elliptic hyperbolic lcs}, \cref{ll:ocean data timespan}), which is larger than the eddy turnover time in this region.
+The resolution of the main computational grid for initial conditions is set to $400 \times 400$ (\cref{ll:ocean data resolution}).
+This corresponds to a resolution of roughly 0.015° and gives good results.
+With this choice, the resolution of the tracer grid is 15 times higher than the resolution of the velocity field.
+The flow is integrated and the Cauchy-Green strain tensor is computed by the function \lstinline!eig_cgStrain! (\cref{ll:eig_cgStrain}).
+The auxiliary grid distance is set to 1\% of the main grid distance (\cref{ll:cgAuxGridRelDelta}), and eigenvalues are computed from the auxiliary grid (\cref{ll:cgEigenvalueFromMainGrid}).
+Elliptic LCSs are computed in \cref{ll:ocean data poincare_closed_orbit_multi}, after the Poincare sections have been set (\cref{ll:ocean data poincareSection(1)}).
+$\lambda$-values are varied over a range of $[0.90,1.10]$ with a step of $0.02$ (\cref{ll:ocean data lambdaRange}).
+Hyperbolic LCSs are computed in \cref{ll:ocean data shrinkLineLcs,ll:ocean data stretchLineLcs}.
 
 \begin{sloppypar}
 \Cref{f:ocean dataset LCS} shows elliptic and hyperbolic LCSs on 22 November 2006, the same time as analysed in \citet{haller13:_coher_lagran,haller14:_adden_coher_lagran,beron-vera13:_objec_agulh}.

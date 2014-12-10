@@ -1,66 +1,43 @@
 % Input parameters
 domain = [0,6;-34,-28];
-resolution = [400,400]; %@\label{ll:ocean data resolution}
-timespan = [100,130]; %@\label{ll:ocean data timespan}
+res = [400,400]; %@\label{ll:ocean data resolution}
+time = [100,130]; %@\label{ll:ocean data timespan}
 
 % Velocity definition
 load('ocean_geostrophic_velocity.mat');
 ...
-interpMethod = 'spline'; %@\label{ll:interpolation start}
-vlon_interpolant = griddedInterpolant({time,lat,lon},vlon,interpMethod);
-vlat_interpolant = griddedInterpolant({time,lat,lon},vlat,interpMethod);
-lDerivative = @(t,x,~)flowdata_derivative(t,x,vlon_interpolant,vlat_interpolant); %@\label{ll:interpolation end}
-incompressible = true; %@\label{ll:incompressible}
+intMet = 'spline'; %@\label{ll:interpolation start}
+vLonI = griddedInterpolant({time,lat,lon},vLon,intMet);
+vLatI = griddedInterpolant({time,lat,lon},vLat,intMet);
+lDerivative = @(t,x,~)flowdata_derivative(t,x,vLonI,vLatI); %@\label{ll:interpolation end}
 
 % LCS parameters
 % Cauchy-Green strain
-cgEigenvalueFromMainGrid = false; %@\label{ll:cgEigenvalueFromMainGrid}
-cgAuxGridRelDelta = .01; %@\label{ll:cgAuxGridRelDelta}
+cgVmg = false; %@\label{ll:cgEigenvalueFromMainGrid}
+cgAgd = .01; %@\label{ll:cgAuxGridRelDelta}
 
-% Lambda-lines
-lambdaRange = .9:.02:1.1; %@\label{ll:ocean data lambdaRange}
-lambdaLineOdeSolverOptions = odeset('relTol',1e-6);
-
+% Lambda lines
+...
+ps(1).endPosition = [3.3,-32.1;3.7,-31.6]; %@\label{ll:ocean data poincareSection(1)}
+...
+lambda = .9:.02:1.1; %@\label{ll:ocean data lambdaRange}
+llOptions = odeset('relTol',1e-6);
+...
 % Shrink lines
-shrinkLineMaxLength = 20;
-gridSpace = diff(domain(1,:))/(double(resolution(1))-1);
-shrinkLineLocalMaxDistance = 2*gridSpace;
-shrinkLineOdeSolverOptions = odeset('relTol',1e-4);
-
+shrinkLMaxLength = 20;
+shrinkLMaxDistance = 2*gridSpace;
+...
 % Stretch lines
-stretchLineMaxLength = 20;
-stretchLineLocalMaxDistance = 4*gridSpace;
-stretchLineOdeSolverOptions = odeset('relTol',1e-4);
-...
-% Cauchy-Green strain eigenvalues and eigenvectors
-[cgEigenvector,cgEigenvalue] = eig_cgStrain(lDerivative,domain,resolution,timespan,'incompressible',incompressible,'eigenvalueFromMainGrid',cgEigenvalueFromMainGrid,'auxGridRelDelta',cgAuxGridRelDelta); %@\label{ll:eig_cgStrain}
-
-% Lambda-line LCSs
-% Define Poincare sections; ...
-poincareSection = struct('endPosition',{},'numPoints',{},'orbitMaxLength',{});
-...
-poincareSection(1).endPosition = [3.3,-32.1;3.7,-31.6]; %@\label{ll:ocean data poincareSection(1)}
-poincareSection(2).endPosition = [1.3,-30.9;1.9,-31.1]; %@\label{ll:ocean data poincareSection(2)}
-
-% Number of orbit seed points along each Poincare section
-[poincareSection.numPoints] = deal(100);
-
-% Set maximum orbit length to twice the expected circumference
-nPoincareSection = numel(poincareSection);
-for i = 1:nPoincareSection
-    rOrbit = hypot(diff(poincareSection(i).endPosition(:,1)),diff(poincareSection(i).endPosition(:,2)));
-    poincareSection(i).orbitMaxLength = 2*(2*pi*rOrbit);
-end
-
-for lambda = lambdaRange
-...
-    [shearline.etaPos,shearline.etaNeg] = lambda_line(cgEigenvector,cgEigenvalue,lambda); %@\label{ll:ocean data lambda_line}
-    closedLambdaLineCandidate = poincare_closed_orbit_multi(domain,resolution,shearline,poincareSection,'odeSolverOptions',lambdaLineOdeSolverOptions,'showGraph',showGraph); %@\label{ll:ocean data poincare_closed_orbit_multi}
-...
-end
+stretchLMaxLength = 20;
+stretchLMaxDistance = 4*gridSpace;
+...  
+%% Cauchy-Green strain eigenvalues and eigenvectors
+[cgV,cgD] = eig_cgStrain(lDerivative,domain,res,time, 'eigenvalueFromMainGrid',cgVmg,'auxGridRelDelta', cgAgd); %@\label{ll:eig_cgStrain}
+%% Elliptic LCSs
+[closedLlp,closedLln] = poincare_closed_orbit_range(domain,res,cgV,cgD, lambda,ps,'lambdaLineOdeSolverOptions',llOptions);%@\label{ll:ocean data poincare_closed_orbit_multi}
 ...
 % Hyperbolic shrink line LCSs
-shrinkLineLcs = seed_curves_from_lambda_max(shrinkLineLocalMaxDistance,shrinkLineMaxLength,cgEigenvalue(:,2),cgEigenvector(:,1:2),domain,resolution,'odeSolverOptions',shrinkLineOdeSolverOptions); %@\label{ll:ocean data shrinkLineLcs}
+shrinkL = seed_curves_from_lambda_max( shrinkLMaxDistance,shrinkLMaxLength,cgV(:,2), cgD(:,1:2),domain,res); %@\label{ll:ocean data shrinkLineLcs}
 ...
 % Hyperbolic stretch line LCSs
-stretchLineLcs = seed_curves_from_lambda_max(stretchLineLocalMaxDistance,stretchLineMaxLength,-cgEigenvalue(:,1),cgEigenvector(:,3:4),domain,resolution,'odeSolverOptions',stretchLineOdeSolverOptions); %@\label{ll:ocean data stretchLineLcs}
+stretchL = seed_curves_from_lambda_max( stretchLMaxDistance,stretchLMaxLength,-cgV(:,1), cgD(:,3:4),domain,res); %@\label{ll:ocean data stretchLineLcs}
