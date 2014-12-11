@@ -183,10 +183,12 @@ Next we consider positions of material lines at time $t_0$ that prevail as most 
 Q(\gamma) = \frac{1}{\sigma} \int_0^\sigma \frac{\langle r'(s),D_{t_0}^t(r(s)) r'(s)\rangle}{\sqrt{\langle r'(s),C_{t_0}^t(r(s)) r'(s)\rangle\langle r'(s),r'(s)\rangle}}\dif s,\\
 D_{t_0}^t = \frac12 [C_{t_0}^t \Omega - \Omega C_{t_0}^t],
 \end{gather*}
-% FIXME Clarify what is meant by _closed_ material lines
-obtained by averaging the Lagrangian shear arising over $[t_0,t]$ along closed material lines parametrized as $r(s)$ with $s \in [0,\sigma]$. More precisely, hyperbolic LCSs are stationary curves of $Q(\gamma)$ with respect to fixed-endpoint perturbations. We note that parabolic LCSs (Lagrangian jet cores) are also stationary curves of $Q(\gamma)$, but under variable endpoint perturbations (cf. \citet{farazmand14:_shearless}).
+obtained by averaging the Lagrangian shear arising over $[t_0,t]$ along material lines parametrized as $r(s)$ with $s \in [0,\sigma]$.
+More precisely, hyperbolic LCSs are stationary curves of $Q(\gamma)$ with respect to fixed-endpoint perturbations.
+We note that parabolic LCSs (Lagrangian jet cores) are also stationary curves of $Q(\gamma)$, but under variable endpoint perturbations (cf. \citet{farazmand14:_shearless}).
 
-Solutions to this variational problem turn out to be orbits of the $\xi_1$ or $\xi_2$ eigenvector field. Repelling LCSs (\emph{shrink lines}) are obtained as trajectories of the differential equation
+Solutions to this variational problem turn out to be curves of the $\xi_1$ or $\xi_2$ eigenvector field.
+Repelling LCSs (\emph{shrink lines}) are obtained as trajectories of the differential equation
 \begin{equation}
 r' = \xi_1(r),
 \label{eq:shrink line}
@@ -197,7 +199,8 @@ r' = \xi_2(r).
 \label{eq:stretch line}
 \end{equation}
 
-Shrink lines and stretch lines coincide with the null geodesics of the Lorentzian metric $h(u,v) = \left\langle u,D_{t_0}^t(r) v \right\rangle$. For this reason, we refer to the computation of hyperbolic LCSs as strongest normally-repelling or normally-attracting orbits of \cref{eq:etafields} as \emph{geodesic detection of hyperbolic LCSs}.
+Shrink lines and stretch lines coincide with the null geodesics of the Lorentzian metric $h(u,v) = \left\langle u,D_{t_0}^t(r) v \right\rangle$.
+For this reason, we refer to the computation of hyperbolic LCSs as strongest normally-repelling or normally-attracting curves of \cref{eq:etafields} as \emph{geodesic detection of hyperbolic LCSs}.
 
 To compute the normal repulsion of shrink lines, we note that an infinitesimal
 normal perturbation to a shrink line $\gamma$ at its point $r$ grows under the flow map $F_{t_0}^t$ by a factor of $\lambda_2(r)$ in the direction normal to $F_{t_0}^t(\gamma)$.
@@ -211,9 +214,9 @@ This section describes stepwise the numerical implementation of geodesic detecti
 \begin{enumerate}
 \item Define a velocity field, \lstinline!dx = derivative(t,x,p)!
 \item Compute Cauchy-Green strain tensor invariants, \lstinline![v,d] = eig_cgStrain(derivative)!
+% FIXME lambda_line and poincare_closed_orbit have been removed from demo scripts. Now use poincare_closed_orbit_range and elliptic_lcs.
 \item Compute $\lambda$-lines, \lstinline![etaPos,etaNeg] = lambda_line(v,d,lambda)!
 \item Define Poincare sections, \lstinline!ps!
-% FIXME function call below does not reflect LCS Tool usage (e.g. poincare_close_orbit_multi)
 \item Detect elliptic LCSs, \lstinline!ellipticLcs = poincare_closed_orbit(etaPos,etaNeg,ps)!
 \item Define a local maximization/minimization distance for hyperbolic LCSs \lstinline!lmd!
 % FIXME function call below does not reflect LCS Tool usage (e.g. remove_strain_in_shear)
@@ -355,7 +358,7 @@ The main steps in calculating elliptic LCSs are enumerated in \cref{t:Elliptic L
 \label{t:Elliptic LCS algorithm}
 \end{table}
 
-% FIXME Need to update table to account for lambda range
+% FIXME lambda_line and poincare_closed_orbit have been removed from demo scripts. Now use poincare_closed_orbit_range and elliptic_lcs.
 \begin{table*}
 \begin{tabular}{|c|p{.7\textwidth}|}
 \hline
@@ -432,8 +435,7 @@ In \cref{f:Poincare return map}, circle markers indicate fixed points of the Poi
 
 \subsection{Computing hyperbolic LCSs}
 
-% FIXME Clarify use of the term "orbit"
-As discussed in \cref{sec:Hyperbolic LCSs}, hyperbolic LCS positions at time $t_0$ are found as the strongest repelling orbits of the vector field \cref{eq:shrink line} (repelling LCSs), and strongest attracting orbits of the vector field \cref{eq:stretch line} (attracting LCSs).
+As discussed in \cref{sec:Hyperbolic LCSs}, hyperbolic LCS positions at time $t_0$ are found as the strongest repelling curves of the vector field \cref{eq:shrink line} (repelling LCSs), and strongest attracting curves of the vector field \cref{eq:stretch line} (attracting LCSs).
 By repulsion and attraction we mean a property of the LCS (as an evolving material line) under the flow map $F_{t_0}^t$.
 We identify the strongest repelling shrink lines as those crossing a local maximum of the $\lambda_2(x_0)$ field.
 Similarly, we identify the strongest attracting stretch lines as those crossing a local minimum of the $\lambda_1(x_0)$ field.
