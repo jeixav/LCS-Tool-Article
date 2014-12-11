@@ -24,7 +24,7 @@ Figure caption modified to explain notation of axes
 
 Comment #6
 
-Figure captions modified to explain labelling of lambda extrema
+Figure captions modified to explain labelling of lambda extrema and figures have been regenerated to improve the appearance of initial conditions
 
 Comment #7
 
