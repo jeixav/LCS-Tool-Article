@@ -48,7 +48,7 @@ Paragraph added at the beginning of Examples section to explain LCS Tool functio
 
 Comment #3
 
-The number of LCS detection software packages in the list of other LCS packages has been reduced and more details have been given. The “all-purpose” description of LCS Tool has been removed and the paragraph about LCS Tool's capabilities reworded.
+The number of LCS detection software packages in the list of other LCS packages has been reduced and more details have been given. The "all-purpose" description of LCS Tool has been removed and the paragraph about LCS Tool's capabilities reworded.
 
 Comment #4
 
@@ -73,6 +73,10 @@ The abstract and introduction have been revised based on the review comments.
 Comment #3 and #4
 
 Code listings have been revised and shortened.
+
+Comment # 5
+
+Applications of LCSs are cited in the introduction. Applications of the software 'LCS Tool' specifically are shown in the example part of the article. A manuscript about the detection of elliptic LCSs with LCS Tool in large scale ocean data is in preparation (Huhn et al., Coherent Lagrangian eddies and coherent transport in the Agulhas leakage).
 
 Comment #6
 

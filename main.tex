@@ -87,7 +87,6 @@ Lagrangian coherent structures \sep Mathematical software \sep Non-autonomous dy
 \section{Introduction}
 
 \begin{sloppypar}
-% FIXME Reviewer #5, comment #5: Please provide information regarding practical applications of this algorithmic software tool.
 Lagrangian Coherent Structures (LCSs) are evolving organizing centres of trajectory patterns in non-autonomous dynamical systems\citep{haller00:_lagran,peacock13:_lagran,haller15:_langr_coher_struc}. Applications of LCSs include oceanic and atmospheric flows\citep{beron-vera13:_objec_agulh,koh02:_hyper}, biological transport problems\citep{wilson09:_lagran_reynol,tallapragada11:_lagran,huhn12:_south_indian_ocean_count_madag}, aeronautics\citep{tang10:_accur_lagran_hong_kong_inter_airpor}, celestial mechanics\citep{gawlik09:_lagran}, crowd dynamics\citep{ali07:_lagran_partic_dynam_approac_crowd}, and aperiodically forced mechanical oscillators\citep{hadjighasem13:_detec_kam}.
 \end{sloppypar}
 
@@ -214,14 +213,11 @@ This section describes stepwise the numerical implementation of geodesic detecti
 \begin{enumerate}
 \item Define a velocity field, \lstinline!dx = derivative(t,x,p)!
 \item Compute Cauchy-Green strain tensor invariants, \lstinline![v,d] = eig_cgStrain(derivative)!
-% FIXME lambda_line and poincare_closed_orbit have been removed from demo scripts. Now use poincare_closed_orbit_range and elliptic_lcs.
-\item Compute $\lambda$-lines, \lstinline![etaPos,etaNeg] = lambda_line(v,d,lambda)!
+\item Define a range of $\lambda$ values, \lstinline!lambda!
 \item Define Poincare sections, \lstinline!ps!
-\item Detect elliptic LCSs, \lstinline!ellipticLcs = poincare_closed_orbit(etaPos,etaNeg,ps)!
-\item Define a local maximization/minimization distance for hyperbolic LCSs \lstinline!lmd!
-% FIXME function call below does not reflect LCS Tool usage (e.g. remove_strain_in_shear)
-% FIXME seed_curves_from_lambda_max is a poor name for a function that detects hyperbolic LCSs
-\item Detect hyperbolic LCSs, \lstinline!hyperbolicLcs = seed_curves_from_lambda_max(v,d,ellipticLcs,lmd)!
+\item Detect elliptic LCSs, \lstinline!closedLambdaLine = poincare_closed_orbit_range(v,d,lambda,ps)! and \lstinline!ellipticLcs = elliptic_lcs(closedLambdaLine)!
+\item Define a local maximization/minimization distance for hyperbolic LCSs, \lstinline!lmd!
+\item Detect hyperbolic LCSs, \lstinline!hyperbolicLine = seed_curves_from_lambda_max(v,d,ellipticLcs,lmd)! and \lstinline!hyperbolicLcs = remove_strain_in_elliptic( hyperbolicLine,ellipticLcs)!
 \end{enumerate}
 \caption{Overview of sequence of computations to detect LCSs with LCS Tool functions.}
 \label{t:LCS Tool overview}
@@ -320,7 +316,11 @@ $1000 \times 501$ & 112 & 223\tabularnewline
 \hline
 \end{tabular}
 \end{center}
-\caption{Runtime and memory use associated with vector integration at different resolutions. Results are from the function \lstinline!eig_cgStrain! applied to the double gyre presented in \cref{sec:double gyre}. Results obtained with an Intel Core i3-4130 processor.}
+\caption{
+Runtime and memory use associated with vector integration at different resolutions.
+Results are from the function \lstinline!eig_cgStrain! applied to the double gyre presented in \cref{sec:double gyre}.
+Results obtained with an Intel Core i3-4130 3.4 GHz processor.
+}
 \label{t:vector integration memory}
 \end{table}
 
@@ -358,7 +358,6 @@ The main steps in calculating elliptic LCSs are enumerated in \cref{t:Elliptic L
 \label{t:Elliptic LCS algorithm}
 \end{table}
 
-% FIXME lambda_line and poincare_closed_orbit have been removed from demo scripts. Now use poincare_closed_orbit_range and elliptic_lcs.
 \begin{table*}
 \begin{tabular}{|c|p{.7\textwidth}|}
 \hline
@@ -390,7 +389,10 @@ The main steps in calculating elliptic LCSs are enumerated in \cref{t:Elliptic L
 \lstinline!periodicBc! & optional $1 \times 2$ logical array to specify periodic boundary conditions. Default: \lstinline![false,false]!.\tabularnewline
 \hline
 \end{tabular}
-\caption{Syntax for LCS Tool elliptic LCS functions.}
+\caption{
+Syntax for LCS Tool elliptic LCS functions.
+Both functions are called by the function \lstinline!poincare_closed_orbit_range!.
+}
 \label{t:Elliptic LCS functions}
 \end{table*}
 
@@ -510,7 +512,10 @@ ocean dataset & 127\tabularnewline
 \hline
 \end{tabular}
 \end{center}
-\caption{Runtime of some demo scripts Results obtained with an Intel Core i3-4130 processor with eight gigabytes of memory.}
+\caption{
+Runtime of some demo scripts.
+Results obtained with an Intel Core i3-4130 3.4 GHz processor with 8 GB of memory.
+}
 \label{t:demo runtimes}
 \end{table}
 
@@ -537,14 +542,12 @@ By examining the FTLE field (which LCS Tool can provide), we position Poincare s
 A script to perform this operation is given in \cref{l:double gyre elliptic LCS} where two Poincare sections are defined (\cref{ll:double gyre poincareSection(1),ll:double gyre poincareSection(2)}).
 The free stretching parameter $\lambda$ (\cref{eq:etafields}) is varied over the range $[0.93,1.07]$ with increments of $0.01$ (\cref{ll:double gyre lambdaRange}).
 Closed orbits for all predefined $\lambda$ values are computed and the outermost closed orbit is kept as the Lagrangian vortex boundary  (\crefrange{ll:double gyre lambda range}{ll:double gyre elliptic_lcs}).
-% FIXME Small tolerances (i.e. strict tolerances) should make convergence difficult not easy, so the word "facilitate" in the sentence below seems illogical.
-We have chosen small values for the error tolerances of the integration of the Cauchy-Green strain tensor (\cref{ll:double gyre cgStrainOdeSolverOptions}) and $\lambda$-lines (\cref{ll:double gyre lambdaLineOdeSolverOptions}) to facilitate convergence.
+We have chosen small values for the error tolerances of the integration of the Cauchy-Green strain tensor (\cref{ll:double gyre cgStrainOdeSolverOptions}) and $\lambda$-lines (\cref{ll:double gyre lambdaLineOdeSolverOptions}) to ensure convergence.
 
 \lstinputlisting[caption={LCS Tool commands for double gyre elliptic LCSs. Abridged subset of the LCS Tool script \lstinline!demo/double_gyre/elliptic_hyperbolic_lcs.m!},
                  label=l:double gyre elliptic LCS]{listings/double_gyre/elliptic_lcs_subset.m}
 
 In \cref{f:double gyre lambda LCS convergence}, the resolution of the  Cauchy-Green strain tensor is varied from $500 \times 250$ to $1000 \times 500$. The location of the outermost closed $\lambda$-line changes insignificantly, demonstrating convergence. For all tested resolutions, the $\lambda$ values of the outermost closed orbits match.
-% FIXME Should reduce lowest resolution used to demonstrate problems if selected resolution is too low
 This also suggests that the lowest tested resolution, $500 \times 250$, is sufficient to identify elliptic LCSs.
 
 \begin{figure}
@@ -644,11 +647,13 @@ In the geostrophic approximation, sea surface height ($\eta$) serves as a stream
 \end{gather}
 where $g$ is the constant of gravity, $R$ is the mean radius of the Earth, and $f(\theta) \equiv 2\Omega\sin\theta$ is the Coriolis parameter, with $\Omega$ denoting the Earth's mean angular velocity.
 
+\begin{sloppypar}
 The data is given at a spatial resolution of $1/4\degree$ and a temporal resolution of 7 days.
 Due to the discrete data, defining the right hand side of \cref{eq:dtlon} and \cref{eq:dtlat} involves spline interpolation in space and time.
 An interpolant is generated first, then the function \lstinline!flowdata_derivative! evaluates the interpolants for the zonal and meridional velocity at the needed coordinates.
 \Cref{l:ocean data elliptic hyperbolic lcs} shows the relevant part of the code in LCS Tool's ocean demo file \lstinline!demo/ocean_dataset/elliptic_hyperbolic_lcs.m!.
 The commands for the interpolation of the velocity data are given in \crefrange{ll:interpolation start}{ll:interpolation end}.
+\end{sloppypar}
 
 \lstinputlisting[
         caption={LCS Tool commands for ocean data elliptic and hyperbolic LCSs. Abridged version of the LCS Tool script \lstinline!demo/ocean_dataset/elliptic_hyperbolic_lcs.m!},
