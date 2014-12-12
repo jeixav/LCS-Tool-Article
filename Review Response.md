@@ -1,6 +1,7 @@
 Response to reviewer comments
 
 Reviewer #2
+===========
 
 Comment #1
 
@@ -35,6 +36,7 @@ Comment #8
 Code listings have been revised and checked for poor breaks across lines and pages
 
 Reviewer #3
+===========
 
 Comment #1
 
@@ -57,10 +59,12 @@ Comment #5
 The Highlights have been revised. The core contribution of the article is to present LCS Tool, a software tool to enable easy geodesic LCS computation. We believe the highlights explain this.
 
 Reviewer #4
+===========
 
 The LCS Tool source code has been uploaded to RunMyCode, as suggested by the editor.
 
 Reviewer #5
+===========
 
 Comment #1 and #2
 
