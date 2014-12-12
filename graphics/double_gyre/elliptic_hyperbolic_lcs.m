@@ -1,4 +1,4 @@
-function elliptic_hyperbolic_lcs_details
+function elliptic_hyperbolic_lcs
 
 % Parameters
 epsilon = .1;
@@ -112,7 +112,7 @@ uistack(hEllipticLcs,'top')
 uistack(hClosedLambdaLine,'top')
 uistack(hPoincareSection,'top')
 
-filename = 'elliptic_repelling_lcs_details.tikz';
+filename = 'elliptic_repelling_lcs.tex';
 if ~verLessThan('matlab','8.4')
     warning([mfilename,':matlabVersion'],'matlab2tikz colormap problem with MATLAB newer than R2014a')
 end
@@ -159,5 +159,5 @@ uistack(hEllipticLcs,'top')
 uistack(hClosedLambdaLine,'top')
 uistack(hPoincareSection,'top')
 
-filename = 'elliptic_attracting_lcs_details.tikz';
+filename = 'elliptic_attracting_lcs.tex';
 matlab2tikz(filename,'showInfo',false,'relativeDataPath',fullfile('graphics','double_gyre'),'width','\figurewidth','figurehandle',hFigure,'colormap',colormap(hAxes))

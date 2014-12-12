@@ -1,4 +1,4 @@
-function elliptic_lcs_convergence
+function elliptic_lcs
 
 % Parameters
 epsilon = .1;
@@ -79,6 +79,6 @@ for m = 1:numel(resolutionX)
         end
     end
     
-    filename = strcat('elliptic_lcs_convergence_',num2str(lResolutionX),'.tikz');
+    filename = strcat('elliptic_lcs_convergence_',num2str(lResolutionX),'.tex');
     matlab2tikz(filename,'showInfo',false,'width','\figurewidth','figurehandle',hFigure)
 end

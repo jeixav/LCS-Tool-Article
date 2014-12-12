@@ -42,5 +42,5 @@ set(findobj(hAxes,'Marker','o','MarkerFaceColor','r'),'MarkerFaceColor','k')
 set(findobj(hAxes,'Marker','o','MarkerFaceColor','b'),'MarkerFaceColor','none')
 
 hFigure = get(hAxes,'parent');
-filename = strcat('poincare_return_map.tikz');
+filename = strcat('poincare_return_map.tex');
 matlab2tikz(filename,'showInfo',false,'width','\figurewidth','figurehandle',hFigure)

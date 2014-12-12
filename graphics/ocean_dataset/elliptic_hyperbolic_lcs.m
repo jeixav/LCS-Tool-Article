@@ -106,7 +106,7 @@ set(hStrainlineLcs,'color',repellingColor)
 uistack(hEllipticLcs,'top')
 uistack(hPoincareSection,'top')
 
-filename = 'elliptic_repelling_lcs.tikz';
+filename = 'elliptic_repelling_lcs.tex';
 hFigure = get(hAxes,'parent');
 matlab2tikz(filename,'showInfo',false,'width','\figurewidth','figurehandle',hFigure)
 
@@ -145,6 +145,6 @@ set(hStretchlineLcs,'color',attractingColor)
 uistack(hEllipticLcs,'top')
 uistack(hPoincareSection,'top')
 
-filename = 'elliptic_attracting_lcs.tikz';
+filename = 'elliptic_attracting_lcs.tex';
 hFigure = get(hAxes,'parent');
 matlab2tikz(filename,'showInfo',false,'width','\figurewidth','figurehandle',hFigure)

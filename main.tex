@@ -422,7 +422,7 @@ In \cref{f:Poincare return map}, circle markers indicate fixed points of the Poi
 \begin{figure}
 \begin{center}
 \setlength\figurewidth{.75\textwidth}
-\input{graphics/double_gyre/poincare_return_map.tikz}
+\import{graphics/double_gyre/}{poincare_return_map}
 \end{center}
 \caption{Example of a Poincare map obtained for an elliptic LCS. The abscissa, $s$, represents distance along Poincare section. The ordinate, $p(s) - s$, represents distance of Poincare orbit return point from initial position. Circle markers indicate closed orbit positions. The filled circle indicates the outermost fixed point of the Poincare map, marking the intersection of a coherent Lagrangian vortex boundary with the Poincare section.}
 \label{f:Poincare return map}
@@ -553,9 +553,9 @@ This also suggests that the lowest tested resolution, $500 \times 250$, is suffi
 \begin{figure}
 \centering
 \setlength\figurewidth{.875\textwidth}
-\import{graphics/double_gyre/}{elliptic_lcs_convergence_500.tikz}
-\import{graphics/double_gyre/}{elliptic_lcs_convergence_750.tikz}
-\import{graphics/double_gyre/}{elliptic_lcs_convergence_1000.tikz}
+\import{graphics/double_gyre/}{elliptic_lcs_500}
+\import{graphics/double_gyre/}{elliptic_lcs_750}
+\import{graphics/double_gyre/}{elliptic_lcs_1000}
 \caption{Convergence of closed $\lambda$-lines for increasing main-grid resolution in the double-gyre. The outermost closed $\lambda$-line (bold green line) is the vortex boundary. Top: $500 \times 250$, middle: $750 \times 375$, bottom: $1000 \times 500$.}
 \label{f:double gyre lambda LCS convergence}
 \end{figure}
@@ -574,8 +574,8 @@ As usual, the local maximization distance is set larger for stretch lines than f
 \begin{figure}
 \centering
 \setlength\figurewidth{.8\textwidth}
-\import{graphics/double_gyre/}{elliptic_repelling_lcs_details.tikz}
-\import{graphics/double_gyre/}{elliptic_attracting_lcs_details.tikz}
+\import{graphics/double_gyre/}{elliptic_repelling_lcs}
+\import{graphics/double_gyre/}{elliptic_attracting_lcs}
 \caption{
 LCSs in the double gyre.
 Resolution is $500 \times 250$.
@@ -621,8 +621,8 @@ $\lambda$-values for closed orbit detection are varied over the range $[0.80,1.2
 \begin{figure}
 \centering
 \setlength\figurewidth{.775\textwidth}
-\import{graphics/bickley_jet/}{elliptic_repelling_lcs_details.tikz}
-\import{graphics/bickley_jet/}{elliptic_attracting_lcs_details.tikz}
+\import{graphics/bickley_jet/}{elliptic_repelling_lcs}
+\import{graphics/bickley_jet/}{elliptic_attracting_lcs}
 \caption{
 LCSs in the Bickley jet.
 Resolution is $500 \times 200$.
@@ -681,8 +681,8 @@ The hyperbolic LCSs determine the deformation of the fluid between coherent eddi
 \begin{figure}
 \begin{center}
 \setlength\figurewidth{.85\textwidth}
-\import{graphics/ocean_dataset/}{elliptic_repelling_lcs.tikz}
-\import{graphics/ocean_dataset/}{elliptic_attracting_lcs.tikz}
+\import{graphics/ocean_dataset/}{elliptic_repelling_lcs}
+\import{graphics/ocean_dataset/}{elliptic_attracting_lcs}
 \end{center}
 \caption{
 LCSs in the ocean velocity data from satellite altimetry.

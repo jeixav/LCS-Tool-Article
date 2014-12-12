@@ -1,4 +1,4 @@
-function elliptic_hyperbolic_lcs_details
+function elliptic_hyperbolic_lcs
 
 %% Input parameters
 u = 62.66;
@@ -79,7 +79,7 @@ set(hPoincareSection,'marker','o')
 set(hPoincareSection,'MarkerFaceColor',ellipticColor)
 set(hPoincareSection,'MarkerEdgeColor','w')
 
-[closedLambdaLinePos,closedLambdaLineNeg] = poincare_closed_orbit_range(domain,resolution,cgEigenvector,cgEigenvalue,lambda,poincareSection,'forceEtaComplexNaN',forceEtaComplexNaN,'lambdaLineOdeSolverOptions',lambdaLineOdeSolverOptions,'periodicBc',periodicBc);
+[closedLambdaLinePos,closedLambdaLineNeg] = poincare_closed_orbit_range(domain,resolution,cgEigenvector,cgEigenvalue,lambda,poincareSection,'forceEtaComplexNaN',forceEtaComplexNaN,'odeSolverOptions',lambdaLineOdeSolverOptions,'periodicBc',periodicBc);
 
 ellipticLcs = elliptic_lcs(closedLambdaLinePos);
 ellipticLcs = [ellipticLcs,elliptic_lcs(closedLambdaLineNeg)];
@@ -120,7 +120,7 @@ uistack(hEllipticLcs,'top')
 uistack(hClosedLambdaLine,'top')
 uistack(hPoincareSection,'top')
 
-filename = 'elliptic_repelling_lcs_details.tikz';
+filename = 'elliptic_repelling_lcs.tex';
 hFigure = get(hAxes,'parent');
 matlab2tikz(filename,'showInfo',false,'width','\figurewidth','figurehandle',hFigure)
 
@@ -168,6 +168,6 @@ uistack(hEllipticLcs,'top')
 uistack(hClosedLambdaLine,'top')
 uistack(hPoincareSection,'top')
 
-filename = 'elliptic_attracting_lcs_details.tikz';
+filename = 'elliptic_attracting_lcs.tex';
 hFigure = get(hAxes,'parent');
 matlab2tikz(filename,'showInfo',false,'width','\figurewidth','figurehandle',hFigure)
