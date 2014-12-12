@@ -32,9 +32,9 @@ stretchLMaxLength = 20;
 stretchLMaxDistance = 4*gridSpace;
 ...  
 %% Cauchy-Green strain eigenvalues and eigenvectors
-[cgV,cgD] = eig_cgStrain(lDerivative,domain,res,time, 'eigenvalueFromMainGrid',cgVmg,'auxGridRelDelta', cgAgd); %@\label{ll:eig_cgStrain}
+[cgV,cgD] = eig_cgStrain(lDerivative,domain,res,time, 'eigenvalueFromMainGrid',cgVmg, 'auxGridRelDelta',cgAgd); %@\label{ll:eig_cgStrain}
 %% Elliptic LCSs
-[closedLlp,closedLln] = poincare_closed_orbit_range(domain,res,cgV,cgD, lambda,ps,'lambdaLineOdeSolverOptions',llOptions);%@\label{ll:ocean data poincare_closed_orbit_multi}
+[closedLlp,closedLln] = poincare_closed_orbit_range(domain,res,cgV,cgD, lambda,ps,'odeSolverOptions',llOptions);%@\label{ll:ocean data poincare_closed_orbit_multi}
 ...
 % Hyperbolic shrink line LCSs
 shrinkL = seed_curves_from_lambda_max( shrinkLMaxDistance,shrinkLMaxLength,cgV(:,2), cgD(:,1:2),domain,res); %@\label{ll:ocean data shrinkLineLcs}

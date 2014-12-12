@@ -38,5 +38,5 @@ ps(5).endPosition = [1.65e7,1.5e6;1.5e7,2.6e6]; %@\label{ll:Bickley jet Poincare
 shrinkL = seed_curves_from_lambda_max(shrinkLMaxDistance, shrinkLMaxLength,cgV(:,2),cgD(:,1:2),domain,res, 'periodicBc',pBc);
 ...
 %% Hyperbolic stretch line LCSs
-stretchL = seed_curves_from_lambda_max(stretchLMaxDistance, stretchLMaxLength,-cgV(:,1),cgD(:,3:4),domain,res, 'periodicBc',pBc);
+stretchL = seed_curves_from_lambda_max( stretchLMaxDistance,stretchLMaxLength,-cgV(:,1), cgD(:,3:4),domain,res,'periodicBc',pBc);
 ...
