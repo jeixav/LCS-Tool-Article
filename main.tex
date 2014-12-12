@@ -194,14 +194,12 @@ This section describes stepwise the numerical implementation of geodesic detecti
 \begin{enumerate}
 \item Define a velocity field, \lstinline!dx = derivative(t,x,p)!
 \item Compute Cauchy-Green strain tensor invariants, \lstinline![v,d] = eig_cgStrain(derivative)!
-% FIXME lambda_line and poincare_closed_orbit have been removed from demo scripts. Now use poincare_closed_orbit_range and elliptic_lcs.
-\item Compute $\lambda$-lines, \lstinline![etaPos,etaNeg] = lambda_line(v,d,lambda)!
+\item Define a range of $\lambda$ values, \lstinline!lambda!
 \item Define Poincare sections, \lstinline!ps!
-\item Detect elliptic LCSs, \lstinline!ellipticLcs = poincare_closed_orbit(etaPos,etaNeg,ps)!
-\item Define a local maximization/minimization distance for hyperbolic LCSs \lstinline!lmd!
-% FIXME function call below does not reflect LCS Tool usage (e.g. remove_strain_in_shear)
+\item Detect elliptic LCSs, \lstinline!closedLambdaLine = poincare_closed_orbit_range(v,d,lambda,ps)! and \lstinline!ellipticLcs = elliptic_lcs(closedLambdaLine)!
+\item Define a local maximization/minimization distance for hyperbolic LCSs, \lstinline!lmd!
 % FIXME seed_curves_from_lambda_max is a poor name for a function that detects hyperbolic LCSs
-\item Detect hyperbolic LCSs, \lstinline!hyperbolicLcs = seed_curves_from_lambda_max(v,d,ellipticLcs,lmd)!
+\item Detect hyperbolic LCSs, \lstinline!hyperbolicLine = seed_curves_from_lambda_max(v,d,ellipticLcs,lmd)! and \lstinline!hyperbolicLcs = remove_strain_in_elliptic(hyperbolicLine,ellipticLcs)!
 \end{enumerate}
 \caption{Overview of sequence of computations to detect LCSs with LCS Tool functions.}
 \label{t:LCS Tool overview}
@@ -300,7 +298,11 @@ $1000 \times 501$ & 112 & 223\tabularnewline
 \hline
 \end{tabular}
 \end{center}
-\caption{Runtime and memory use associated with vector integration at different resolutions. Results are from the function \lstinline!eig_cgStrain! applied to the double gyre presented in \cref{sec:double gyre}. Results obtained with an Intel Core i3-4130 processor.}
+\caption{
+Runtime and memory use associated with vector integration at different resolutions.
+Results are from the function \lstinline!eig_cgStrain! applied to the double gyre presented in \cref{sec:double gyre}.
+Results obtained with an Intel Core i3-4130 processor.
+}
 \label{t:vector integration memory}
 \end{table}
 
@@ -376,11 +378,19 @@ The main steps in calculating elliptic LCSs are enumerated in \cref{t:Elliptic L
 \lstinline!periodicBc! & optional $1 \times 2$ logical array to specify periodic boundary conditions. Default: \lstinline![false,false]!.\tabularnewline
 \hline
 \end{tabular}
-\caption{Syntax for LCS Tool elliptic LCS functions.}
+\caption{
+Syntax for LCS Tool elliptic LCS functions.
+Both functions are called by the function \lstinline!poincare_closed_orbit_range!.
+}
 \label{t:Elliptic LCS functions}
 \end{table*}
 
-The first step is to define the position of Poincare sections in regions where closed $\lambda$-lines are expected based on a visual analysis of the orbit structure of the $\eta_\pm^\lambda$ vector field. The Poincare section is to be oriented such that the first endpoint is close to the centre of the expected Lagrangian vortex, and the second endpoint is outside this vortex. There is no automated procedure implemented in LCS Tool for the positioning of Poincare sections (see however \textcite{karrasch14:_autom_lagran} for a recently developed algorithm). Additionally, the number of lambda-lines launched from the Poincare section, \lstinline!poincareSection.numPoints!, must be defined. A reasonable default value is 100.
+The first step is to define the position of Poincare sections in regions where closed $\lambda$-lines are expected based on a visual analysis of the orbit structure of the $\eta_\pm^\lambda$ vector field.
+The Poincare section is to be oriented such that the first endpoint is close to the centre of the expected Lagrangian vortex, and the second endpoint is outside this vortex.
+% FIXME Move citation to conclusions, as a candidate for future work.
+There is no automated procedure implemented in LCS Tool for the positioning of Poincare sections (see however \textcite{karrasch14:_autom_lagran} for a recently developed algorithm).
+Additionally, the number of lambda-lines launched from the Poincare section, \lstinline!poincareSection.numPoints!, must be defined.
+A reasonable default value is 100.
 
 The second step is to integrate the $\lambda$-lines  starting from the Poincare section to obtain the corresponding Poincare map. Integration of $\lambda$-lines is performed using the $\eta_\pm^\lambda$ vector fields defined in \cref{eq:eta} over the main grid. The underlying eigenvector fields, $\xi_i(x_0)$, have generic but removable orientation discontinuities, which require monitoring and local reorientation. This process is sketched in \cref{t:variable step integration} and illustrated in \cref{f:variable step integration}. Linear interpolation is used in the interpolation of $\eta_\pm^\lambda$ within a grid element, since using higher-order interpolation would necessitate verifying that there are no orientation discontinuities beyond the four nearest grid points. We identify orientation discontinuities by checking the inner product of the $\eta_\pm^\lambda$ vectors at adjacent grid points. Rotations exceeding 90°, between two such neighbouring vectors are classified as orientation discontinuities and are corrected before linear interpolation. When setting the Cauchy-Green strain tensor main grid resolution, one may find it helpful to calculate a histogram of eigenvector field rotations to ensure that all rotations are well below 90° or almost 180°.
 
@@ -449,7 +459,7 @@ The core function to compute hyperbolic LCSs is \lstinline!seed_curves_from_lamb
 \begin{tabular}{|c|p{.7\textwidth}|}
 \hline
 \multicolumn{2}{|p{.95\textwidth}|}
-{\lstinline![curvePosition,curveInitialPosition] = seed_curves_from_lambda_max(distance,cgEigenvalue,cgEigenvector,flowDomain,flowResolution)!}\tabularnewline
+{\lstinline![curvePosition,curveInitialPosition] = seed_curves_from_lambda_max(distance,cgEigenvalue,cgEigenvector,flowDomain, flowResolution)!}\tabularnewline
 \hline \hline
 \lstinline!distance! & threshold distance for placement of $\lambda_2(x_0)$ maxima\tabularnewline
 \hline
@@ -501,7 +511,10 @@ ocean\_dataset/elliptic\_hyperbolic\_lcs\_details & 127\tabularnewline
 \hline
 \end{tabular}
 \end{center}
-\caption{Runtime of some demo scripts Results obtained with an Intel Core i3-4130 processor with eight gigabytes of memory.}
+\caption{
+Runtime of some demo scripts.
+Results obtained with an Intel Core i3-4130 processor with eight gigabytes of memory.
+}
 \label{t:demo runtimes}
 \end{table}
 
@@ -528,8 +541,7 @@ By examining the FTLE field (which LCS Tool can provide), we position Poincare s
 A script to perform this operation is given in \cref{l:double gyre elliptic LCS} where two Poincare sections are defined (\cref{ll:double gyre poincareSection(1),ll:double gyre poincareSection(2)}).
 The free stretching parameter $\lambda$ (\cref{eq:etafields}) is varied over the range $[0.93,1.07]$ with increments of $0.01$ (\cref{ll:double gyre lambdaRange}).
 Closed orbits for all $\lambda$ values are computed and the outermost closed orbit is kept as the Lagrangian vortex boundary  (\crefrange{ll:double gyre lambda range}{ll:double gyre elliptic_lcs}).
-% FIXME Small tolerances (i.e. strict tolerances) should make convergence difficult not easy, so the word "facilitate" in the sentence below seems illogical.
-We have chosen small values for the error tolerances of the integration of the Cauchy-Green strain tensor (\cref{ll:double gyre cgStrainOdeSolverOptions}) and $\lambda$-lines (\cref{ll:double gyre lambdaLineOdeSolverOptions}) to facilitate convergence.
+We have chosen small values for the error tolerances of the integration of the Cauchy-Green strain tensor (\cref{ll:double gyre cgStrainOdeSolverOptions}) and $\lambda$-lines (\cref{ll:double gyre lambdaLineOdeSolverOptions}) to ensure convergence.
 
 \lstinputlisting[caption={LCS Tool commands for double gyre elliptic LCSs. Abridged subset of the LCS Tool script \lstinline!demo/double_gyre/elliptic_hyperbolic_lcs.m!},
                  label=l:double gyre elliptic LCS]{listings/double_gyre/elliptic_lcs_subset.m}
@@ -590,7 +602,7 @@ The velocity is given by $v(x,y,t) = (-\partial_y \psi, \partial_x \psi)$ where
 As a forcing function, we choose a solution running on the chaotic attractor of the damped and forced Duffing oscillator, specifically
 \begin{gather*}
 \od{\phi_1}{t} = \phi_2,\\
-\od{\phi_1}{t} = -0.1 \phi_2 - \phi_1^3 + 11 \cos(t),\\
+\od{\phi_2}{t} = -0.1 \phi_2 - \phi_1^3 + 11 \cos(t),\\
 f_{1,2}(t) = 2.625 \times 10^{-2} \phi_1(t/6.238 \times 10^5)
 \end{gather*}
 The parameter values we use are: $U = 62.66$, $c_2 = 0.205 U$, $c_3 = 0.461 U$, $L_y = 1.77 \times 10^6$, $\epsilon_1 = 0.0075$, $\epsilon_2 = 0.04$, $\epsilon_3 = 0.3$, $L_x = 6.371 \times 10^6 \pi$, $k_n = 2 n \pi/L_x$, $\sigma_1 = 0.5 k_2 (c_2 - c_3)$, $\sigma_2 = 2 \sigma_1$.
